@@ -10,6 +10,8 @@ import pandas as pd
 # creates a dataframe structure that is efficent than CSV or SQLlite in Python
 import os
 # for getting directory locations
+import re
+# for regular expressions
 
 def newsparser(url):
 
@@ -22,26 +24,17 @@ def newsparser(url):
     page = urllib.request.urlopen(url) #opens the URL page
     content = page.read() # reads the content of the page
     soup = BeautifulSoup(content, 'html.parser')
-    article = []
+    article = [] # creates an empty list of article
+
+    """
+    The chemical watch articles contain
+    """
     for i in soup.select("section > p"):
         article.append(i.text)
-    # articles = soup.find_all('main', text=True)
-    # for article in articles:
-    #     print(article.contents)
+    article = " ".join(article)
+    article = article.replace("\xa0", "") #removes nbsp from text
     data = (soup.select("section > h2")[0].text, article)
-    #creates the soup out of the content, so the attributes can be processed
-    # articles = soup.find_all('div', {'itemprop': 'articleBody'})
-    # authors = soup.find_all('span', {'class': 'author'})
-    # dates = soup.find_all('span', {'clas':'date'})
-    # sources = soup.find_all('a', {'class':'source'})
-    # images = soup.find_all('div', {'class': 'news-card-image'})
-    # data = zip(heads, articles, authors, dates, sources, images)
-    # stored = []
-    # cols = ['headline', 'articleBody', 'author', 'date', 'source', 'image']
-    # for head, article, author, date, source, image in data:
-    #     stored.append([head.get_text(), article.get_text(), author.get_text(), date.get_text(), source['href'], image])
-    # df = pd.DataFrame(stored, columns = cols)
-    # return df
+    print(data)
     return data
 
 # neighbourhood words
