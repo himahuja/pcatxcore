@@ -9,7 +9,20 @@ import os
 
 
 
+
 def newsparser(url):
+    """
+    Parses the URL passed as an argument and returns a Pandas DF. It also saves a CSV file.
+    Keyword arguments:
+    url: It is the URL of the webpage it's going to crawl.
+    """
+
+    page = urllib.request.urlopen(url) #opens the URL page
+    content = page.read() # reads the content of the page
+    soup = BeautifulSoup(content, 'html.parser')
+    #creates the soup out of the content, so the attributes can be processed
+    heads = soup.find_all('span', {'itemprop': 'headline'})
+
     """
     Takes the input url for processing and returns a csv of the following forrmat:
     ['headline', 'article', 'author', 'date', 'source', 'image']
@@ -17,10 +30,14 @@ def newsparser(url):
     source contains the articles where the inshorts article is referenced from.
     Returns a PANDAS dataframe
     """
-    page = urllib.request.urlopen(url)
-    content = page.read()
-    soup = BeautifulSoup(content, 'html.parser')
-    heads = soup.find_all('span', {'itemprop': 'headline'})
+
+# neighbourhood words
+def search(text,n):
+    """Searches for text, and retrieves n words either side of the text, which are retuned seperatly"""
+    word = r"\W*([\w]+)"
+    groups = re.search(r'{}\W*{}{}'.format(word*n,'place',word*n), text).groups()
+    return groups[:n],groups[n:]
+
     articles = soup.find_all('div', {'itemprop': 'articleBody'})
     authors = soup.find_all('span', {'class': 'author'})
     dates = soup.find_all('span', {'clas':'date'})
@@ -47,6 +64,11 @@ def newsparser2(url):
         for head in heads:
             stored.append(head.get_text())
         return stored
+
+if __name__ == "__main__":
+    # sample URL for testing.
+    url = 'https://news.thomasnet.com/imt/2000/11/13/changing_the_im'
+
 
 
 # df = newsparser('file:///Applications/XAMPP/xamppfiles/htdocs/NIS/AI-to-News-in-Shorts/data/7_inshorts.html')
