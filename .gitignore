@@ -102,3 +102,85 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+#############################
+### ADDING COMMON IGNORES ###
+#############################
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.dbsw
+
+#################################################################
+####### JUPYTER GITIGNORE #######################################
+#################################################################
+
+docs/man/*.gz
+docs/source/api/generated
+docs/source/config.rst
+docs/gh-pages
+notebook/i18n/*/LC_MESSAGES/*.mo
+notebook/i18n/*/LC_MESSAGES/nbjs.json
+notebook/static/components
+notebook/static/style/*.min.css*
+notebook/static/*/js/built/
+notebook/static/*/built/
+notebook/static/built/
+notebook/static/*/js/main.min.js*
+notebook/static/lab/*bundle.js
+node_modules
+*.py[co]
+__pycache__
+*.egg-info
+*~
+*.bak
+.ipynb_checkpoints
+.tox
+.DS_Store
+\#*#
+.#*
+.coverage
+src
+
+*.swp
+*.map
+.idea/
+Read the Docs
+config.rst
+
+/.project
+/.pydevproject
