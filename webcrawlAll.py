@@ -3,7 +3,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-if __name__ = "__main__":
+
+if __name__ == "__main__":
     search_query = ""
     search_query.replace(" ", "+")
-    url = "https://chemicalwatch.com/search?q=".append("search_query")
+    url = "https://chemicalwatch.com/search?q=" + search_query
+    driver = webdriver.Chrome()
+    driver.get(url)

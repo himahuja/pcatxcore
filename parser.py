@@ -14,13 +14,11 @@ import re
 # for regular expressions
 
 def newsparser(url):
-
     """
-    Parses the URL passed as an argument and returns a Pandas DF. It also saves a CSV file.
+    Parses the URL passed as an argument and returns a Pandas Dataframe. It also saves a CSV file.
     Keyword arguments:
     url: It is the URL of the webpage it's going to crawl.
     """
-
     page = urllib.request.urlopen(url) #opens the URL page
     content = page.read() # reads the content of the page
     soup = BeautifulSoup(content, 'html.parser')
@@ -49,7 +47,8 @@ if __name__ == "__main__":
     # sample URL for testing.
     # url = 'https://news.thomasnet.com/imt/2000/11/13/changing_the_im'
     url = 'https://events.chemicalwatch.com/68002/from-raw-material-to-final-product'
-    store.append(newsparser(url))
+    newsparser(url)
+    # store.append(newsparser(url))
 
 
 # df = newsparser('file:///Applications/XAMPP/xamppfiles/htdocs/NIS/AI-to-News-in-Shorts/data/7_inshorts.html')
