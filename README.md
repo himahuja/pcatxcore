@@ -40,25 +40,25 @@ Allows you to treat the object (Mapper) like the dictionary inside of it
 Prints the dictionary in a pretty JSON format.
 
 > {\
-    "0000001": [\
-        "Micron Technology, Inc.",\
-        "Micron",\
-        "MU",\
-        "Micron Technology",\
-        "Micron Tech"\
-    ],\
-    "0000002": [\
-        "Olin Corporation",\
-        "Olin",\
-        "OLN",\
-        "Olin Corp"\
-    ],\
-    "0000003": [\
-        "Intel Corporation",\
-        "Intel",\
-        "INTC",\
-        "Intel Corp"\
-    ]\
+\    "0000001": [\
+\        "Micron Technology, Inc.",\
+\        "Micron",\
+\        "MU",\
+\        "Micron Technology",\
+\        "Micron Tech"\
+\    ],\
+\    "0000002": [\
+\        "Olin Corporation",\
+\        "Olin",\
+\        "OLN",\
+\        "Olin Corp"\
+\    ],\
+\    "0000003": [\
+\        "Intel Corporation",\
+\        "Intel",\
+\        "INTC",\
+\        "Intel Corp"\
+\    ]\
 }\
 
 ### Parser
