@@ -80,7 +80,7 @@ Prints the dictionary in a pretty JSON format.
 &nbsp;&nbsp;&nbsp;&nbsp;]\
 }
 
-##### __setitem__(key, value)
+##### `__setitem__(key, value)`
 
 * **key** is the key which is being changed
 * **value** is the value which is being changed
