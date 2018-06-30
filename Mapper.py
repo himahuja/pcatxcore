@@ -49,6 +49,16 @@ class Mapper(object):
     #Prints the dictionary in a pretty JSON format.
     def __str__(self):
         return json.dumps(self.mapping, sort_keys = True, indent = 4)
+    
+    #adds the value to the list of values associated with the key
+    def add(self, key, value):
+        value_list = self.mapping[key]
+        value_list.append(value)
+        self.mapping[key] = value_list
+        
+    #clears the values from the dictionary
+    def clear(self):
+        self.mapping.clear()
         
     #get the aliases (list of strings) from the ID number
     def get(self, key):
@@ -57,14 +67,30 @@ class Mapper(object):
     #get the aliases (list of strings) from the ID number
     def id_to_alias(self, key):
         return(self.mapping[key])
-
     
+    #Return a new view of the dictionary’s items ((key, value) pairs).
+    def items(self):
+        return(self.mapping.items())
+    
+    def keys(self):
+        return(self.mapping.keys())
+
+    def pop(self, key):
+        try:
+            return(self.mapping.pop(key))
+        except:
+            return([])
+            
+    def update(self, other_key_value):
+        self.mapping.update(other_key_value)
+    
+    def values(self):
+        return self.mapping.values()
         
         
 def main():
     mapper = Mapper(file="KPM/id_to_alias.JSON")
-    print(mapper)
-    print(mapper["0000004"])
+    print(mapper.values())
     
     
 if __name__ == u"__main__" :
