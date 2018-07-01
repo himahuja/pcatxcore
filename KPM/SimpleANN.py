@@ -190,6 +190,59 @@ class five_layer_ANN(object):
            
         print("Output After Training:")
         print(l4)
+        
+class n_layer_ANN(object):
+    
+    def __init__(self, n, X, Y):
+        self.X = X
+        self.Y = Y
+        self.n = n - 1
+        # randomly initialize our weights with mean 0
+        np.random.seed(1)
+        self.syn_list = []
+        self.syn_list.append(2*np.random.random((X.shape[1],X.shape[0])) - 1)
+        for i in range(self.n-2):
+            self.syn_list.append(2*np.random.random((X.shape[0],X.shape[0])) - 1)
+        
+        self.syn_list.append(2*np.random.random((X.shape[0],Y.shape[1])) - 1)
+    
+    def reset_synapses(self):
+        np.random.seed(1)
+        self.syn_list[0] = 2*np.random.random((X.shape[1],X.shape[0])) - 1
+        for i in range(self.n-2):
+            self.syn_list[i+1] = 2*np.random.random((X.shape[0],X.shape[0])) - 1
+        self.syn_list[self.n-1] = 2*np.random.random((X.shape[0],Y.shape[1])) - 1
+    
+    def train(self, iterations):
+        for j in range(iterations):
+        
+        	# Feed forward through layers 0, 1, and 2
+            layer_list = []
+            layer_list.append(self.X)
+            for i in range(self.n):
+                layer_list.append(sigmoid(np.dot(layer_list[i],self.syn_list[i])))
+        
+            # how much did we miss the target value?
+            error_list = []
+            error_list.append(self.Y - layer_list[self.n])
+            
+            if (j% 10000) == 0:
+                print("Error: " + str(np.mean(np.abs(error_list[0]))))
+                
+            # in what direction is the target value?
+            # were we really sure? if so, don't change too much.
+            delta_list = []
+            delta_list.append(error_list[0]*sigmoid(layer_list[self.n],deriv=True))
+            
+            for i in range(self.n-1):
+                error_list.append(delta_list[i].dot(self.syn_list[self.n-i-1].T))
+                delta_list.append(error_list[i+1]*sigmoid(layer_list[self.n-i-1], deriv=True))
+            
+            for i in range(self.n):
+                self.syn_list[i] += layer_list[i].T.dot(delta_list[self.n-1-i])
+           
+        print("Output After Training:")
+        print(layer_list[self.n])
    
 def main():
     X = np.array([[0,0,1],
@@ -202,7 +255,7 @@ def main():
 			[1],
 			[0]])
    
-    ann = five_layer_ANN(X,y)
+    ann = n_layer_ANN(2,X,y)
     ann.train(50000)
     
     
