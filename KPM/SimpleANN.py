@@ -190,19 +190,24 @@ class five_layer_ANN(object):
            
         print("Output After Training:")
         print(l4)
-        
-X = np.array([[0,0,1],
+   
+def main():
+    X = np.array([[0,0,1],
             [0,1,1],
             [1,0,1],
             [1,1,1]])
                 
-y = np.array([[0],
+    y = np.array([[0],
 			[1],
 			[1],
 			[0]])
    
-ann = five_layer_ANN(X,y)
-ann.train(50000)
+    ann = five_layer_ANN(X,y)
+    ann.train(50000)
+    
+    
+if __name__ == u"__main__" :
+    main()
 
 
 
