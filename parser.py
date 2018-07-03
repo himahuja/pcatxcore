@@ -9,7 +9,7 @@ import os
 import webbrowser
 import PyPDF2
 import nltk, os, urllib.request
-
+import pdfkit
 
 def tag_visible(element):
     if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:
@@ -49,6 +49,8 @@ def parser(linkList):
     for link in linkList:
         if link[-4:] != '.pdf':
             try:
+                orig_page_name = "orig_page"+str(linkList.index(link))+".pdf"
+                pdfkit.from_url(link,os.path.join("data/source/", orig_page_name))
                 html = urllib.request.urlopen(link).read()
                 file_name = "page"+str(linkList.index(link))+".txt"
                 text_list = nltk.sent_tokenize(text_from_html(html))
