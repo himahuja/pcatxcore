@@ -2,53 +2,81 @@
 # -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
-# used for parsing the HTML contents on webscript
+from bs4.element import Comment
 import urllib.request
-# to open up the URL to access the webpage
-import pandas as pd
-# creates a dataframe structure that is efficent than CSV or SQLlite in Python
+from urllib.request import urlopen
 import os
-# for getting directory locations
-import re
-# for regular expressions
-
-def newsparser(url):
-    """
-    Parses the URL passed as an argument and returns a Pandas Dataframe. It also saves a CSV file.
-    Keyword arguments:
-    url: It is the URL of the webpage it's going to crawl.
-    """
-    page = urllib.request.urlopen(url) #opens the URL page
-    content = page.read() # reads the content of the page
-    soup = BeautifulSoup(content, 'html.parser')
-    article = [] # creates an empty list of article
-
-    """
-    The chemical watch articles contain
-    """
-    for i in soup.select("section > p"):
-        article.append(i.text)
-    article = " ".join(article)
-    article = article.replace("\xa0", "") #removes nbsp from text
-    data = (soup.select("section > h2")[0].text, article)
-    print(data)
-    return data
-
-# neighbourhood words
-# def search(text,n):
-#     """Searches for text, and retrieves n words either side of the text, which are retuned seperatly"""
-#     word = r"\W*([\w]+)"
-#     groups = re.search(r'{}\W*{}{}'.format(word*n,'place',word*n), text).groups()
-#     return groups[:n],groups[n:]
-
-if __name__ == "__main__":
-    store = []
-    # sample URL for testing.
-    # url = 'https://news.thomasnet.com/imt/2000/11/13/changing_the_im'
-    url = 'https://events.chemicalwatch.com/68002/from-raw-material-to-final-product'
-    newsparser(url)
-    # store.append(newsparser(url))
+import webbrowser
+import PyPDF2
+import nltk, os, urllib.request
 
 
-# df = newsparser('file:///Applications/XAMPP/xamppfiles/htdocs/NIS/AI-to-News-in-Shorts/data/7_inshorts.html')
-# df.to_csv('data/7.csv')
+def tag_visible(element):
+    if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:
+        return False
+    if isinstance(element, Comment):
+        return False
+    if element.name in ['header','footer','button','nav']:
+        return False
+    return True
+
+def text_from_html(body):
+    soup = BeautifulSoup(body, 'lxml')
+    texts = soup.findAll(text=True)
+    visible_texts = filter(tag_visible, texts)
+    return u" ".join(t.strip() for t in visible_texts)
+
+def get_PDF_content(link, linkList):
+    #download pdf file ,from web
+    content=urlopen(link).read()
+    file_name = "pdf"+str(linkList.index(link))+".pdf"
+    fout=open(os.path.join("data/source", file_name), "wb")
+    fout.write(content)
+    fout.close()
+
+    #convert PDF to text
+    content = ""
+    #load PDF into PyPDF2
+    pdf = PyPDF2.PdfFileReader(file_name)
+    #iterate pages
+    for i in range(pdf.getNumPages()):
+    #extract text from page and add to content
+        content += pdf.getPage(i).extractText() + "\n"
+        content = " ".join(content.replace("\xa0", " ").strip().split())
+    return content
+
+def parser(linkList):
+    for link in linkList:
+        if link[-4:] != '.pdf':
+            try:
+                html = urllib.request.urlopen(link).read()
+                file_name = "page"+str(linkList.index(link))+".txt"
+                text_list = nltk.sent_tokenize(text_from_html(html))
+                text_file = open(os.path.join("data/sentences", file_name), "w")
+                for i in range(len(text_list)):
+                    text_file.write(text_list[i].strip() + "\n")
+                text_file.close()
+            except:
+                pass
+        else:
+            try:
+                content = get_PDF_content(link, linkList)
+                file_name = "page"+str(linkList.index(link))+".txt"
+                text_list = nltk.sent_tokenize(text_from_html(html))
+                text_file = open(os.path.join("data/sentences", file_name), "w")
+                for i in range(len(text_list)):
+                    text_file.write(text_list[i].strip() + "\n")
+                text_file.close()
+            except:
+                pass
+        print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
+
+def main():
+    with open("KPM/articles.txt") as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
+    parser(content)
+
+
+if __name__ == "__main__" :
+    main()

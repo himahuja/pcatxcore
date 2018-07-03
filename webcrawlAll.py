@@ -10,3 +10,5 @@ if __name__ == "__main__":
     url = "https://chemicalwatch.com/search?q=" + search_query
     driver = webdriver.Chrome()
     driver.get(url)
+
+# GOING TO ADD THE httrack script here for the terminal.

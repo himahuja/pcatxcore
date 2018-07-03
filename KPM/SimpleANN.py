@@ -2,8 +2,7 @@ import numpy as np
 
 def sigmoid(x,deriv=False):
 	if(deriv==True):
-	    return x*(1-x)
-
+         return x*(1-x)
 	return 1/(1+np.exp(-x))
     
 class two_layer_ANN(object):
@@ -200,18 +199,18 @@ class n_layer_ANN(object):
         # randomly initialize our weights with mean 0
         np.random.seed(1)
         self.syn_list = []
-        self.syn_list.append(2*np.random.random((X.shape[1],X.shape[0])) - 1)
-        for i in range(self.n-2):
-            self.syn_list.append(2*np.random.random((X.shape[0],X.shape[0])) - 1)
-        
-        self.syn_list.append(2*np.random.random((X.shape[0],Y.shape[1])) - 1)
+        self.reset_synapses()
     
     def reset_synapses(self):
         np.random.seed(1)
-        self.syn_list[0] = 2*np.random.random((X.shape[1],X.shape[0])) - 1
-        for i in range(self.n-2):
-            self.syn_list[i+1] = 2*np.random.random((X.shape[0],X.shape[0])) - 1
-        self.syn_list[self.n-1] = 2*np.random.random((X.shape[0],Y.shape[1])) - 1
+        if (self.n == 1):
+            self.syn_list.append(2*np.random.random((self.X.shape[1],self.Y.shape[1])) - 1)
+        else:
+            self.syn_list.append(2*np.random.random((self.X.shape[1],self.X.shape[0])) - 1)
+            for i in range(self.n-2):
+                self.syn_list.append(2*np.random.random((self.X.shape[0],self.X.shape[0])) - 1)
+            
+            self.syn_list.append(2*np.random.random((self.X.shape[0],self.Y.shape[1])) - 1)
     
     def train(self, iterations):
         for j in range(iterations):
@@ -255,7 +254,7 @@ def main():
 			[1],
 			[0]])
    
-    ann = n_layer_ANN(2,X,y)
+    ann = n_layer_ANN(5,X,y)
     ann.train(50000)
     
     
