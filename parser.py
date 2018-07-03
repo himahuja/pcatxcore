@@ -1,10 +1,14 @@
 from bs4 import BeautifulSoup
 from bs4.element import Comment
+<<<<<<< HEAD
 import urllib.request
 from urllib.request import urlopen
 import os
 import webbrowser
 import PyPDF2
+=======
+import nltk, os, urllib.request
+>>>>>>> 641a7d037cf4ac795f856023b97db10835cf822c
 
  
 def tag_visible(element):
@@ -43,6 +47,7 @@ def get_PDF_content(url):
 
 def parser(linkList):
     for link in linkList:
+<<<<<<< HEAD
         if link[-4:] != '.pdf':
             html = urllib.request.urlopen(link).read()
             file_name = "page"+str(linkList.index(link))+".txt"
@@ -55,3 +60,16 @@ def parser(linkList):
             text_file = open(file_name, "w")
             text_file.write(content)
             text_file.close()  
+=======
+        html = urllib.request.urlopen(link).read()
+        file_name = "page"+str(linkList.index(link))+".txt"
+        print(file_name)
+        text_list = nltk.sent_tokenize(text_from_html(html))
+        text_file = open(os.path.join("KPM/Sentences", file_name), "w")
+        for i in range(len(text_list)):
+            print(text_list[i].strip() + "\n")
+            text_file.write(text_list[i].strip() + "\n")
+        text_file.close()
+
+parser(["https://www.chem.info/news/2015/08/exxonmobil-knocks-proposed-phthalate-bans"])
+>>>>>>> 641a7d037cf4ac795f856023b97db10835cf822c
