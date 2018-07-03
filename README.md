@@ -2,7 +2,7 @@
 
 A web crawling and artificial intelligence framework for Praedicat, Inc. developed by the 2018 RIPS team at UCLA's Institute for Pure and Applied Mathematics. Our goal utlize Natural Language Processing techniques and Artificial Intelligence to collect automate data collection for the InsurTech company.
 
-![Diagram of PCATx Core Architecture](https://github.com/babahooja/pcatxcore/blob/master/KPM/PCATxCOREArchitecture.jpg)
+![Diagram of PCATx Core Architecture](https://github.com/babahooja/pcatxcore/blob/master/img/PCATxCOREArchitecture.jpg)
 
 ### Table of Contents
 ---------------------
