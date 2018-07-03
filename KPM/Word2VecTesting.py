@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from gensim.models import KeyedVectors
 from gensim.models import Word2Vec
 import logging, os
 
@@ -28,8 +28,11 @@ class MySentences(object):
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
-sentences = MySentences("../data/sentences/")
-model = Word2Vec(sentences, min_count=1, workers = 3)
+sentences = MySentences("../data/sentences")
+model = Word2Vec(sentences, workers = 3)
+print("...beginning training...")
+model.train(sentences, total_examples=model.corpus_count, epochs=model.iter)
+model.wv.similarity('woman', 'man')
 #min_count is minimimum appearances to be included (default = 5)
 #size is the NN layers (default = 100)
 #workers is number of cores (default = 1)
