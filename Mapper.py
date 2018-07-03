@@ -93,5 +93,5 @@ def main():
     print(mapper.values())
     
     
-if __name__ == u"__main__" :
+if __name__ == "__main__" :
     main()
