@@ -21,7 +21,7 @@ def tag_visible(element):
     return True
 
 def text_from_html(body):
-    soup = BeautifulSoup(body, 'lxml')
+    soup = BeautifulSoup(body.decode("utf-8", "ignore"), 'lxml')
     texts = soup.findAll(text=True)
     visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
@@ -49,18 +49,19 @@ def parser(linkList):
     for link in linkList:
         if link[-4:] != '.pdf':
             try:
-                orig_page_name = "orig_page"+str(linkList.index(link))+".pdf"
-                pdfkit.from_url(link,os.path.join("data/source/", orig_page_name))
+                file_name = "page"+str(linkList.index(link))
+                text_file = open(os.path.join("data/sentences", file_name+".txt"), "w")
+                html_file = open(os.path.join("data/source", file_name+".html"), "w")
                 html = urllib.request.urlopen(link).read()
-                file_name = "page"+str(linkList.index(link))+".txt"
+                html_file.write(html.decode("utf-8", "ignore"))
                 text_list = nltk.sent_tokenize(text_from_html(html))
                 text_file = open(os.path.join("data/sentences", file_name), "w")
                 for i in range(len(text_list)):
                     text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
                     text_file.write(text_list[i].strip() + "\n")
                 text_file.close()
-            except:
-                pass
+            except Exception as e:
+                print(e)
         else:
             try:
                 content = get_PDF_content(link, linkList)
