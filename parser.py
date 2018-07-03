@@ -68,9 +68,14 @@ def parser(linkList):
                 pass
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
 
+def main():
+    with open("KPM/articles.txt") as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
+    parser(content)
+    
+    
+if __name__ == "__main__" :
+    main()
 
-with open("KPM/articles.txt") as f:
-    content = f.readlines()
-content = [x.strip() for x in content]
-parser(content)
     
