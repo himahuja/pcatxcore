@@ -56,6 +56,7 @@ def parser(linkList):
                 text_list = nltk.sent_tokenize(text_from_html(html))
                 text_file = open(os.path.join("data/sentences", file_name), "w")
                 for i in range(len(text_list)):
+                    text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
                     text_file.write(text_list[i].strip() + "\n")
                 text_file.close()
             except:
@@ -67,6 +68,7 @@ def parser(linkList):
                 text_list = nltk.sent_tokenize(content)
                 text_file = open(os.path.join("data/sentences", file_name), "w")
                 for i in range(len(text_list)):
+                    text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
                     text_file.write(text_list[i].strip() + "\n")
                 text_file.close()
             except Exception as e:
