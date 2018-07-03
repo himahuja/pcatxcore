@@ -1,14 +1,11 @@
 from bs4 import BeautifulSoup
 from bs4.element import Comment
-<<<<<<< HEAD
 import urllib.request
 from urllib.request import urlopen
 import os
 import webbrowser
 import PyPDF2
-=======
 import nltk, os, urllib.request
->>>>>>> 641a7d037cf4ac795f856023b97db10835cf822c
 
  
 def tag_visible(element):
@@ -26,11 +23,11 @@ def text_from_html(body):
     visible_texts = filter(tag_visible, texts)  
     return u" ".join(t.strip() for t in visible_texts)
 
-def get_PDF_content(url):
-    #download pdf file from web
-    content=urlopen(url).read()
+def get_PDF_content(link, linkList):
+    #download pdf file ,from web
+    content=urlopen(link).read()
     file_name = "pdf"+str(linkList.index(link))+".pdf"
-    fout=open(file_name, "wb")
+    fout=open(os.path.join("data/source", file_name), "wb")
     fout.write(content)
     fout.close()
 
@@ -47,29 +44,33 @@ def get_PDF_content(url):
 
 def parser(linkList):
     for link in linkList:
-<<<<<<< HEAD
         if link[-4:] != '.pdf':
-            html = urllib.request.urlopen(link).read()
-            file_name = "page"+str(linkList.index(link))+".txt"
-            text_file = open(file_name, "w")
-            text_file.write(text_from_html(html))
-            text_file.close()
+            try:
+                html = urllib.request.urlopen(link).read()
+                file_name = "page"+str(linkList.index(link))+".txt"
+                text_list = nltk.sent_tokenize(text_from_html(html))
+                text_file = open(os.path.join("data/sentences", file_name), "w")
+                for i in range(len(text_list)):
+                    text_file.write(text_list[i].strip() + "\n")
+                text_file.close()
+            except:
+                pass
         else:
-            content = get_PDF_content(link)
-            file_name = "page"+str(linkList.index(link))+".txt"
-            text_file = open(file_name, "w")
-            text_file.write(content)
-            text_file.close()  
-=======
-        html = urllib.request.urlopen(link).read()
-        file_name = "page"+str(linkList.index(link))+".txt"
-        print(file_name)
-        text_list = nltk.sent_tokenize(text_from_html(html))
-        text_file = open(os.path.join("KPM/Sentences", file_name), "w")
-        for i in range(len(text_list)):
-            print(text_list[i].strip() + "\n")
-            text_file.write(text_list[i].strip() + "\n")
-        text_file.close()
+            try:
+                content = get_PDF_content(link, linkList)
+                file_name = "page"+str(linkList.index(link))+".txt"
+                text_list = nltk.sent_tokenize(text_from_html(html))
+                text_file = open(os.path.join("data/sentences", file_name), "w")
+                for i in range(len(text_list)):
+                    text_file.write(text_list[i].strip() + "\n")
+                text_file.close()
+            except:
+                pass
+        print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
 
-parser(["https://www.chem.info/news/2015/08/exxonmobil-knocks-proposed-phthalate-bans"])
->>>>>>> 641a7d037cf4ac795f856023b97db10835cf822c
+
+with open("KPM/articles.txt") as f:
+    content = f.readlines()
+content = [x.strip() for x in content]
+parser(content)
+    
