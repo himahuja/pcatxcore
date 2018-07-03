@@ -3,13 +3,7 @@
 
 from bs4 import BeautifulSoup
 from bs4.element import Comment
-import urllib.request
-from urllib.request import urlopen
-import os
-import webbrowser
-import PyPDF2
-import nltk, os, urllib.request
-import pdfkit
+import urllib.request, os, webbrowser, PyPDF2, nltk, os, pdfkit
 
 def tag_visible(element):
     if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:
