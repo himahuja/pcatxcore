@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from bs4 import BeautifulSoup
 from bs4.element import Comment
 import urllib.request
@@ -7,7 +10,7 @@ import webbrowser
 import PyPDF2
 import nltk, os, urllib.request
 
- 
+
 def tag_visible(element):
     if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:
         return False
@@ -20,7 +23,7 @@ def tag_visible(element):
 def text_from_html(body):
     soup = BeautifulSoup(body, 'lxml')
     texts = soup.findAll(text=True)
-    visible_texts = filter(tag_visible, texts)  
+    visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
 
 def get_PDF_content(link, linkList):
@@ -73,9 +76,7 @@ def main():
         content = f.readlines()
     content = [x.strip() for x in content]
     parser(content)
-    
-    
+
+
 if __name__ == "__main__" :
     main()
-
-    
