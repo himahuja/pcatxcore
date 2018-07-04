@@ -19,7 +19,7 @@ A web crawling and artificial intelligence framework for Praedicat, Inc. develop
 
 This module is divided into two parts: the Mapper and the Keyword Producing Model (KPM). 
 
-Mapper is essentially a wrapper for a dictionary, it associates unique identifiers with a list of aliases for the entity identified. An example would be "00001" -> ["Micron Technology", "MU", "Micron"]. 
+Mapper is essentially a wrapper for a dictionary, it associates unique identifiers with a list of aliases for the entity identified. An example would be "00001" -> ["Micron Technology", "MU", "Micron"]. For full documentation on Mapper, go to [docs/Mapper.md](docs/Mapper.md).
 
 The Keyword Producing Model takes data and finds words highly associated with our entities to build the list of aliases using data2vec and neural networks.
 
