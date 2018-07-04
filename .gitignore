@@ -1,6 +1,10 @@
 # IGNORE THESE DIRECTORIES
 
-data/*
+data/
+
+#kpm
+kpm/data/dictionary.txt
+kpm/doc2vec_model
 
 
 # Byte-compiled / optimized / DLL files

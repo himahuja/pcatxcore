@@ -89,7 +89,7 @@ class Mapper(object):
         
         
 def main():
-    mapper = Mapper(file="KPM/id_to_alias.JSON")
+    mapper = Mapper(file="kpm/data/id_to_alias.JSON")
     print(mapper.values())
     
     
