@@ -4,10 +4,10 @@ from gensim.utils import SaveLoad
 from gensim import corpora
 from six import iteritems
 import logging
-from docsProcessor import docsProcessor
+from corpusBuilder import corpusBuilder
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-documents = docsProcessor("../data/sentences/")
+documents = corpusBuilder("../data/sentences/")
 
 model = Word2Vec(min_count=1)
 model.build_vocab(documents)
