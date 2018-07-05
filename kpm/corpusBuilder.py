@@ -16,7 +16,7 @@ class corpusBuilder(object):
             for fname in os.listdir(self.dirname):
                 file = codecs.open(os.path.join(self.dirname, fname), "r",encoding='utf-8', errors='ignore')
                 text = file.read()
-                text = re.sub('[^A-Za-z\']+', ' ', text)
+                text = re.sub('[^A-Za-z]+', ' ', text)
                 text = text.lower().splitlines()
                 doc_list = []
                 for line in text:
@@ -26,6 +26,8 @@ class corpusBuilder(object):
                 self.sent_list.append(doc_list)
                 if (os.listdir(self.dirname).index(fname) != 0 and os.listdir(self.dirname).index(fname) % 100 == 99):
                     print("...{:.2f}% done, processing document {} of {}".format(((os.listdir(self.dirname).index(fname)+1)/len(os.listdir(self.dirname)))*100,os.listdir(self.dirname).index(fname)+1,len(os.listdir(self.dirname))))
+            print("...{:.2f}% done, processing document {} of {}".format(100,len(os.listdir(self.dirname)),len(os.listdir(self.dirname))))
+            print("...filtering the dictionary...")
             self.filter_dict()
         else:
             self.dirname = dirname
@@ -56,8 +58,17 @@ class corpusBuilder(object):
         return string
         
     def filter_dict(self):
-        stoplist = set('for a is com gov on it of are this the and to in edu'.split())
+        stoplist = set('for com gov are this the and edu and that with which from can have these has such'.split())
         self.sent_list = [[word for word in document if word not in stoplist] for document in self.sent_list]
+        for i in range(len(self.sent_list)):
+            sent_set = set(self.sent_list[i])
+            for word in sent_set:
+                if len(word) < 3:
+                    while(word in self.sent_list[i]):
+                        try:
+                            self.sent_list[i].remove(word)
+                        except:
+                            pass
         
     def load(self, file_name):
         self.sent_list = json.loads(open(file_name).read())

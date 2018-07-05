@@ -11,9 +11,7 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
                 
 cb = corpusBuilder(dirname=None)
-print("hi")
 cb.load("corpus.json")
-print("hello")
 docs = cb.to_TaggedDocument()
 model = models.Doc2Vec(docs, workers=3)
 
