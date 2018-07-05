@@ -1,4 +1,4 @@
-# Keyword Producing Model (KPM)
+# Keyword Producing Module (KPM)
 -------------------------------
 
 The Keyword Producing Module (KPM) is currently being developed as part of PCATx CORE, a web crawling and artificial intelligence framework for Praedicat, Inc. developed by the 2018 RIPS team at UCLA's Institute for Pure and Applied Mathematics. Our goal utilize Natural Language Processing techniques and Artificial Intelligence to collect automate data collection for the InsurTech company.

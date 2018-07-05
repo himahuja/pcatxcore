@@ -14,7 +14,7 @@ A web crawling and artificial intelligence framework for Praedicat, Inc. develop
 ### Classifier
 --------------
 
-### Keyword Producing Model (KPM)
+### Keyword Producing Module (KPM)
 ---------------------------------
 
 This module is divided into two parts: the Mapper and the Keyword Producing Model (KPM).
