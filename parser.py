@@ -22,7 +22,7 @@ def text_from_html(body):
 
 def get_PDF_content(link, linkList):
     #download pdf file ,from web
-    content=urlopen(link).read()
+    content=urllib.request.urlopen(link).read()
     file_name = "pdf"+str(linkList.index(link))+".pdf"
     fout=open(os.path.join("data/source/", file_name), "wb")
     fout.write(content)
