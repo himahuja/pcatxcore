@@ -20,10 +20,10 @@ def text_from_html(body):
     visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
 
-def get_PDF_content(link, linkList):
+def get_PDF_content(query_string, link, linkList):
     #download pdf file ,from web
     content=urllib.request.urlopen(link).read()
-    file_name = "pdf"+str(linkList.index(link))+".pdf"
+    file_name = query_string+str(linkList.index(link))+".pdf"
     fout=open(os.path.join("data/source/", file_name), "wb")
     fout.write(content)
     fout.close()
@@ -39,11 +39,11 @@ def get_PDF_content(link, linkList):
         content = " ".join(content.replace("\xa0", " ").strip().split())
     return content
 
-def parser(linkList):
+def parser(query_string, linkList):
     for link in linkList:
         if link[-4:] != '.pdf':
             try:
-                file_name = "page"+str(linkList.index(link)) + ".txt"
+                file_name = query_string+str(linkList.index(link)) + ".txt"
                 text_file = open(os.path.join("data/sentences", file_name), "w")
                 html_file = open(os.path.join("data/source", file_name+".html"), "w")
                 html = urllib.request.urlopen(link).read()
@@ -58,8 +58,8 @@ def parser(linkList):
                 print(e)
         else:
             try:
-                content = get_PDF_content(link, linkList)
-                file_name = "page"+str(linkList.index(link))+".txt"
+                content = get_PDF_content(query_string, link, linkList)
+                file_name = query_string+str(linkList.index(link))+".txt"
                 text_list = nltk.sent_tokenize(content)
                 text_file = open(os.path.join("data/sentences", file_name), "w")
                 for i in range(len(text_list)):
@@ -74,7 +74,7 @@ def main():
     with open("kpm/data/articles.txt") as f:
         content = f.readlines()
     content = [x.strip() for x in content]
-    parser(content)
+    parser("test", content)
 
 
 if __name__ == "__main__" :
