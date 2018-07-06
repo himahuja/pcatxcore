@@ -5,6 +5,8 @@ Created on Tue Jul  3 22:17:12 2018
 @author: alex
 """
 from gensim.models.doc2vec import TaggedDocument
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.corpus import stopwords
 import codecs, json, os, re
 
 class corpusBuilder(object):
@@ -16,6 +18,7 @@ class corpusBuilder(object):
             for fname in os.listdir(self.dirname):
                 file = codecs.open(os.path.join(self.dirname, fname), "r",encoding='utf-8', errors='ignore')
                 text = file.read()
+                text = re.sub('\S*@\S*\s?', "", text)
                 text = re.sub('[^A-Za-z]+', ' ', text)
                 text = text.lower().splitlines()
                 doc_list = []
@@ -24,8 +27,9 @@ class corpusBuilder(object):
                     for word in words:
                         doc_list.append(word.strip())
                 self.sent_list.append(doc_list)
-                if (os.listdir(self.dirname).index(fname) != 0 and os.listdir(self.dirname).index(fname) % 100 == 99):
-                    print("...{:.2f}% done, processing document {} of {}".format(((os.listdir(self.dirname).index(fname)+1)/len(os.listdir(self.dirname)))*100,os.listdir(self.dirname).index(fname)+1,len(os.listdir(self.dirname))))
+                if (os.listdir(self.dirname).index(fname) % 100 == 99):
+                    if (os.listdir(self.dirname).index(fname)+1 != len(os.listdir(self.dirname))):
+                        print("...{:2.2f}% done, processing document {} of {}".format(((os.listdir(self.dirname).index(fname)+1)/len(os.listdir(self.dirname)))*100,os.listdir(self.dirname).index(fname)+1,len(os.listdir(self.dirname))))
             print("...{:.2f}% done, processing document {} of {}".format(100,len(os.listdir(self.dirname)),len(os.listdir(self.dirname))))
             print("...filtering the dictionary...")
             self.filter_dict()
@@ -58,17 +62,22 @@ class corpusBuilder(object):
         return string
         
     def filter_dict(self):
-        stoplist = set('for com gov are this the and edu and that with which from can have these has such'.split())
+        stoplist = set(stopwords.words('english'))
         self.sent_list = [[word for word in document if word not in stoplist] for document in self.sent_list]
+        ps = PorterStemmer()        
         for i in range(len(self.sent_list)):
             sent_set = set(self.sent_list[i])
             for word in sent_set:
+                word = ps.stem(word)
                 if len(word) < 3:
                     while(word in self.sent_list[i]):
                         try:
                             self.sent_list[i].remove(word)
                         except:
                             pass
+            if (i % 100 == 99):
+                    if (i+1 != len(self.sent_list)):
+                            print("...{:2.2f}% done, filtering document {} of {}".format((i+1)/len(self.sent_list)*100,i+1,len(self.sent_list)))
         
     def load(self, file_name):
         self.sent_list = json.loads(open(file_name).read())
@@ -82,7 +91,7 @@ class corpusBuilder(object):
             docs.append(TaggedDocument(words=self.sent_list[i], tags=[i]))
         return docs
 
-def main():    
+def main():
     docs = corpusBuilder("../data/sentences/")
     docs.save("corpus.json")
     docs.load("corpus.json")

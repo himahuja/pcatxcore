@@ -43,8 +43,8 @@ def parser(linkList):
     for link in linkList:
         if link[-4:] != '.pdf':
             try:
-                file_name = "page"+str(linkList.index(link))
-                text_file = open(os.path.join("data/sentences", file_name+".txt"), "w")
+                file_name = "page"+str(linkList.index(link)) + ".txt"
+                text_file = open(os.path.join("data/sentences", file_name), "w")
                 html_file = open(os.path.join("data/source", file_name+".html"), "w")
                 html = urllib.request.urlopen(link).read()
                 html_file.write(html.decode("utf-8", "ignore"))
