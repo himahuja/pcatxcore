@@ -79,11 +79,17 @@ class corpusBuilder(object):
                     if (i+1 != len(self.sent_list)):
                             print("...{:2.2f}% done, filtering document {} of {}".format((i+1)/len(self.sent_list)*100,i+1,len(self.sent_list)))
         
-    def load(self, file_name):
-        self.sent_list = json.loads(open(file_name).read())
+    def load(self, file_name=None):
+        if file_name != None:
+            self.sent_list = json.loads(open(file_name).read())
+        else:
+            self.sent_list = json.loads(open("data/corpus.json").read())
                
-    def save(self, file_name):
-        open(file_name, "w").write(json.dumps(self.sent_list, sort_keys = True, indent = 4))
+    def save(self, file_name=None):
+        if file_name != None:
+            open(file_name, "w").write(json.dumps(self.sent_list, sort_keys = True, indent = 4))
+        else:
+            open("data/corpus.json", "w").write(json.dumps(self.sent_list, sort_keys = True, indent = 4))
     
     def to_TaggedDocument(self):
         docs = []
@@ -93,8 +99,7 @@ class corpusBuilder(object):
 
 def main():
     docs = corpusBuilder("../data/sentences/")
-    docs.save("corpus.json")
-    docs.load("corpus.json")
+    docs.save()
     
 if __name__ == "__main__" :
     main()

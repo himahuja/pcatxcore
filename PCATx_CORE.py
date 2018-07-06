@@ -8,11 +8,11 @@ import parser
 from kpm.corpusBuilder import *
 
 def URLs_to_KPM(list_of_URLs):
-#    parser.parser(list_of_URLs)
+    parser.parser(list_of_URLs)
     cb = corpusBuilder("data/sentences/")
-    cb.save("corpus.json")
+    cb.save()
     docs = cb.to_TaggedDocument()
-    model = models.Doc2Vec(docs, workers=3)
+    model = models.Doc2Vec(docs, workers=3, min_count=20)
     print("Start training process...")
     model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
     print(model.wv.most_similar(positive=['woman', 'king'], negative=['man']))
