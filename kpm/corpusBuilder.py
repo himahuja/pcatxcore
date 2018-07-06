@@ -15,9 +15,11 @@ class corpusBuilder(object):
         if (dirname != None):
             self.dirname = dirname
             self.sent_list = []
+            self.tag_list = []
             for fname in os.listdir(self.dirname):
                 file = codecs.open(os.path.join(self.dirname, fname), "r",encoding='utf-8', errors='ignore')
                 text = file.read()
+                self.tag_list(re.sub('[^A-Za-z]+', '', fname))
                 text = re.sub('\S*@\S*\s?', "", text)
                 text = re.sub('[^A-Za-z]+', ' ', text)
                 text = text.lower().splitlines()
@@ -94,7 +96,7 @@ class corpusBuilder(object):
     def to_TaggedDocument(self):
         docs = []
         for i in range(len(self.sent_list)):
-            docs.append(TaggedDocument(words=self.sent_list[i], tags=[i]))
+            docs.append(TaggedDocument(words=self.sent_list[i], tags=self.tag_list[i]))
         return docs
 
 def main():

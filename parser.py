@@ -20,6 +20,15 @@ def text_from_html(body):
     visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
 
+def sentence_filter(text_list):
+    new_list = [] + text_list
+    for sent in text_list:
+        for i in range(len(sent) - 2):
+            if sent[i] == sent[i+1] and sent[i+1] == sent[i+2]:
+                if sent in new_list:
+                    new_list.remove(sent)
+    return new_list
+
 def get_PDF_content(query_string, link, linkList):
     #download pdf file ,from web
     content=urllib.request.urlopen(link).read()
@@ -48,7 +57,7 @@ def parser(query_string, linkList):
                 html_file = open(os.path.join("data/source", file_name+".html"), "w")
                 html = urllib.request.urlopen(link).read()
                 html_file.write(html.decode("utf-8", "ignore"))
-                text_list = nltk.sent_tokenize(text_from_html(html))
+                text_list = sentence_filter(nltk.sent_tokenize(text_from_html(html)))
                 text_file = open(os.path.join("data/sentences", file_name), "w")
                 for i in range(len(text_list)):
                     text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
@@ -60,7 +69,7 @@ def parser(query_string, linkList):
             try:
                 content = get_PDF_content(query_string, link, linkList)
                 file_name = query_string+str(linkList.index(link))+".txt"
-                text_list = nltk.sent_tokenize(content)
+                text_list = sentence_filter(nltk.sent_tokenize(content))
                 text_file = open(os.path.join("data/sentences", file_name), "w")
                 for i in range(len(text_list)):
                     text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
