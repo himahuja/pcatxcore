@@ -39,6 +39,19 @@ A simple module with functions for processing text files in particular formats w
 
 ### Parser
 ----------
+This is a parser that extracts visible and relevant content from webpages.
+It can 1) save original html pages and pdf contents
+       2) write new files with relevant html/pdf contents in a directory
+
+# Documentation
+
+|Function | Input        | Processing           | Output  |
+|-----   | ------------- |:-------------:| -----:|
+|parser(linkList)    | a list of URLs      | create text files | None |
+|tag_visible(element)    |  a string of webpage content   | determine if the content in a tag is visible and relevant | True/False|
+|text_from_html(body)    |  a string of webpage content  | extract relevant content |a string of visible and relevant text|
+|sentence_filter(sentence_list)| a list of sentences | remove non-sentences | a list of sentences after removal|
+
 
 ### Query Formulator
 ------------------------------------
