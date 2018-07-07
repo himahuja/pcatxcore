@@ -19,7 +19,7 @@ class corpusBuilder(object):
             for fname in os.listdir(self.dirname):
                 file = codecs.open(os.path.join(self.dirname, fname), "r",encoding='utf-8', errors='ignore')
                 text = file.read()
-                self.tag_list(re.sub('[^A-Za-z]+', '', fname))
+                self.tag_list.append((re.sub('[^A-Za-z]+', '', fname)))
                 text = re.sub('\S*@\S*\s?', "", text)
                 text = re.sub('[^A-Za-z]+', ' ', text)
                 text = text.lower().splitlines()

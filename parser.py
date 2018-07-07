@@ -41,6 +41,8 @@ def get_PDF_content(query_string, link, linkList):
     content = ""
     #load PDF into PyPDF2
     pdf = PyPDF2.PdfFileReader(os.path.join("data/source/", file_name))
+    if pdf.isEncrypted:
+        pdf.decrypt('')
     #iterate pages
     for i in range(pdf.getNumPages()):
     #extract text from page and add to content
@@ -64,7 +66,7 @@ def parser(query_string, linkList):
                     text_file.write(text_list[i].strip() + "\n")
                 text_file.close()
             except Exception as e:
-                print(e)
+                print(link + " threw the following exception " + str(e))
         else:
             try:
                 content = get_PDF_content(query_string, link, linkList)
@@ -76,7 +78,7 @@ def parser(query_string, linkList):
                     text_file.write(text_list[i].strip() + "\n")
                 text_file.close()
             except Exception as e:
-                print(e)
+                print(link + " threw the following exception " + str(e))
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
 
 def main():
