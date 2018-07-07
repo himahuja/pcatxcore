@@ -7,9 +7,11 @@ import logging
 from corpusBuilder import corpusBuilder
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-documents = corpusBuilder("../data/sentences/")
+documents = corpusBuilder()
+documents.load()
 
-model = Word2Vec(min_count=1)
-model.build_vocab(documents)
+model = Word2Vec(documents, workers=3)
 model.train(documents, total_examples=model.corpus_count, epochs=model.iter)
-print(model.wv.most_similar(positive=['cat']))
+print(model.wv.most_similar(positive=['woman', 'king'], negative=['man']))
+print(model.wv.doesnt_match("breakfast cereal dinner lunch".split()))
+print(model.wv.similarity('woman', 'man'))

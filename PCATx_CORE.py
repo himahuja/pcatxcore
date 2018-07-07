@@ -7,8 +7,8 @@ Created on Fri Jul  6 14:10:12 2018
 import parser
 from kpm.corpusBuilder import *
 
-def URLs_to_KPM(list_of_URLs):
-    parser.parser(list_of_URLs)
+def URLs_to_KPM(query_string, list_of_URLs):
+    parser.parser(query_string, list_of_URLs)
     cb = corpusBuilder("data/sentences/")
     cb.save()
     docs = cb.to_TaggedDocument()
@@ -23,7 +23,7 @@ def main():
     with open("kpm/data/articles.txt") as f:
         content = f.readlines()
     content = [x.strip() for x in content]
-    URLs_to_KPM(content)
+    URLs_to_KPM("test", content)
     
 if __name__ == "__main__" :
     main()
