@@ -40,10 +40,11 @@ A simple module with functions for processing text files in particular formats w
 ### Parser
 ----------
 This is a parser that extracts visible and relevant content from webpages.
-It can 1) save original html pages and pdf contents
-       2) write new files with relevant html/pdf contents in a directory
+It can
+* save original html pages and pdf contents
+* write new files with relevant html/pdf contents in a directory
 
-# Documentation
+#### Documentation
 
 |Function | Input        | Processing           | Output  |
 |-----   | ------------- |:-------------:| -----:|
