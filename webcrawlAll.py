@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
+import json
 
 def linkFilter(url):
     filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone']
@@ -47,7 +48,7 @@ def setDriver():
     options.add_argument('start-maximized') #
     options.add_argument('disable-infobars')
     options.add_argument("--disable-extensions")
-    driver = webdriver.Chrome('/Users/himanshuahuja/chromedriver', chrome_options=options)
+    driver = webdriver.Chrome('/home/alex/Documents/GitHubRepositories/PCAT/PCATx CORE/chromedriver', chrome_options=options)
     return driver
 
 def crawlerWrapper(search_query, engine):

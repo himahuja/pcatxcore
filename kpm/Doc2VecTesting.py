@@ -13,7 +13,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 cb = corpusBuilder(dirname=None)
 cb.load()
 docs = cb.to_TaggedDocument()
-model = models.Doc2Vec(docs, workers=3, min_count=20)
+model = models.Doc2Vec(docs, workers=3, vector_size=300)
 
 print("Start training process...")
 model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
@@ -23,4 +23,3 @@ model.save("data/doc2vec_model")
 print(model.wv.most_similar(positive=['woman', 'king'], negative=['man']))
 print(model.wv.doesnt_match("breakfast cereal dinner lunch".split()))
 print(model.wv.similarity('woman', 'man'))
-print(model.docsvecs.most_similar("sports are cool".split()))
