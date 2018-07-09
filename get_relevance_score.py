@@ -10,11 +10,11 @@ tfidf.fit_transform(document_list)
 def get_relevance_score(document, tfidf):
     response = tfidf.transform([document])
     feature_names = tfidf.get_feature_names()
-  
+
     score_dict = {}
     for col in response.nonzero()[1]:
         score_dict[feature_names[col]] = response[0,col]
-    
+
     word_list = nltk.word_tokenize(document)
     total_score = 0
     count_keywords = 0

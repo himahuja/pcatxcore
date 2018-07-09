@@ -41,6 +41,9 @@ def search_google(query, driver, number_of_pages):
     return link_href
 
 def search_sec(query, driver):
+    """
+        Add the functionality to return the time
+    """
     driver.get(query)
     link_href = []
     link_timestamps = []
@@ -59,6 +62,7 @@ def search_sec(query, driver):
             """
             if temp_list[0] == '10-K': #option 2
                 # link_timestamps.append(timestamps[x].get_attribute('text'))
+                # print(timestamps[x].get_attribute('text'))
                 # print(search_results[x].get_attribute('href'))
                 link_href.append(search_results[x].get_attribute('href').split('\'')[1])
                 # print(search_results[x].get_attribute('href').split('\'')[1])
@@ -121,8 +125,23 @@ def crawlerWrapper(search_query, engine):
         dateEnd = search_query['dateEnd']
         url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text=*&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&queryCik={}&fromDate={}&toDate={}&numResults=100".format(cik, dateStart, dateEnd)
         # url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}}&numResults=100".
-        [timestamps, links] = search_sec(url, driver)
+        links = search_sec(url, driver)
+        # print(timestamps)
     elif engine == 'sec10kall':
+        """
+            uses the sec10k engine and list of cik keywords to get the 10Ks of all the companies in the SEC list
+        """
+
+
+    elif engine == 'secsic10K':
+        """
+            uses the SIC codes to gather all the companies' 10K in that particular
+        """
+        pass
+    elif engine == 'secE21':
+        """
+            uses the company CIK to find if it has any subidaries from the E-21 form
+        """
         pass
     elif engine == 'bloomberg':
         pass
