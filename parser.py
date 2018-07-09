@@ -18,7 +18,7 @@ def text_from_html(body):
     soup = BeautifulSoup(body.decode("utf-8", "ignore"), 'lxml')
     texts = soup.findAll(text=True)
     visible_texts = filter(tag_visible, texts)
-    return u" ".join(t.strip() for t in visible_texts)
+    return " ".join(t.strip() for t in visible_texts)
 
 def sentence_filter(text_list):
     new_list = [] + text_list
@@ -33,14 +33,15 @@ def get_PDF_content(query_string, link, linkList):
     #download pdf file ,from web
     content=urllib.request.urlopen(link).read()
     file_name = query_string+str(linkList.index(link))+".pdf"
-    fout=open(os.path.join("data/source/", file_name), "wb")
+    fout=open(os.path.join("data/tmp", file_name), "wb")
     fout.write(content)
     fout.close()
 
     #convert PDF to text
     content = ""
     #load PDF into PyPDF2
-    pdf = PyPDF2.PdfFileReader(os.path.join("data/source/", file_name))
+    pdf = PyPDF2.PdfFileReader(os.path.join("data/tmp/", file_name))
+
     if pdf.isEncrypted:
         pdf.decrypt('')
     #iterate pages
@@ -61,6 +62,7 @@ def parser(query_string, linkList):
                 html_file.write(html.decode("utf-8", "ignore"))
                 text_list = sentence_filter(nltk.sent_tokenize(text_from_html(html)))
                 text_file = open(os.path.join("data/sentences", file_name), "w")
+                text_file.write(link + "\n")
                 for i in range(len(text_list)):
                     text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
                     text_file.write(text_list[i].strip() + "\n")
@@ -73,6 +75,7 @@ def parser(query_string, linkList):
                 file_name = query_string+str(linkList.index(link))+".txt"
                 text_list = sentence_filter(nltk.sent_tokenize(content))
                 text_file = open(os.path.join("data/sentences", file_name), "w")
+                text_file.write(link + "\n")
                 for i in range(len(text_list)):
                     text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
                     text_file.write(text_list[i].strip() + "\n")
@@ -80,6 +83,29 @@ def parser(query_string, linkList):
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
+        
+def parser_to_FM(query_string, linkList):
+    #turn into a generator with yield?
+    doc_list = []
+    for link in linkList:
+        doc = {'url' : link, 'query': query_string }
+        if link[-4:] != '.pdf':
+            try:
+                html = urllib.request.urlopen(link).read()
+                doc['html'] = html
+                doc['text'] = bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore')
+            except Exception as e:
+                print(link + " threw the following exception " + str(e))
+        else:
+            try:
+                content = get_PDF_content(query_string, link, linkList)
+                doc['pdf'] = urllib.request.urlopen(link).read()
+                doc['text'] = content
+            except Exception as e:
+                print(link + " threw the following exception " + str(e))
+        doc_list.append(doc)
+        print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
+    return doc_list
 
 def main():
     with open("kpm/data/articles.txt") as f:

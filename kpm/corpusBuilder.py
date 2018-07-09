@@ -7,19 +7,19 @@ Created on Tue Jul  3 22:17:12 2018
 from gensim.models.doc2vec import TaggedDocument
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from nltk.corpus import stopwords
-import codecs, json, os, re
+import codecs, json, pickle, os, re
 
 class corpusBuilder(object):
     
     def __init__(self, dirname=None):
+        self.dirname = dirname
+        self.sent_list = []
+        self.tag_list = []
         if (dirname != None):
-            self.dirname = dirname
-            self.sent_list = []
-            self.tag_list = []
             for fname in os.listdir(self.dirname):
                 file = codecs.open(os.path.join(self.dirname, fname), "r",encoding='utf-8', errors='ignore')
                 text = file.read()
-                self.tag_list.append((re.sub('[^A-Za-z]+', '', fname)))
+                self.tag_list.append(fname)
                 text = re.sub('\S*@\S*\s?', "", text)
                 text = re.sub('[^A-Za-z]+', ' ', text)
                 text = text.lower().splitlines()
@@ -35,9 +35,6 @@ class corpusBuilder(object):
             print("...{:.2f}% done, processing document {} of {}".format(100,len(os.listdir(self.dirname)),len(os.listdir(self.dirname))))
             print("...filtering the dictionary...")
             self.filter_dict()
-        else:
-            self.dirname = dirname
-            self.sent_list = []
             
     def __getitem__(self, key):
         return self.sent_list[key]
@@ -70,37 +67,50 @@ class corpusBuilder(object):
         for i in range(len(self.sent_list)):
             sent_set = set(self.sent_list[i])
             for word in sent_set:
-                word = ps.stem(word)
                 if len(word) < 3:
                     while(word in self.sent_list[i]):
                         try:
                             self.sent_list[i].remove(word)
                         except:
                             pass
+            for j in range(len(self.sent_list[i])):
+                self.sent_list[i][j] = ps.stem(self.sent_list[i][j])
             if (i % 100 == 99):
                     if (i+1 != len(self.sent_list)):
                             print("...{:2.2f}% done, filtering document {} of {}".format((i+1)/len(self.sent_list)*100,i+1,len(self.sent_list)))
         
-    def load(self, file_name=None):
-        if file_name != None:
-            self.sent_list = json.loads(open(file_name).read())
+    def load(self, dir_name=None):
+        if dir_name != None:
+            with open("{}/corpus.pk".format(dir_name), "rb") as handle:
+                self.sent_list = pickle.load(handle)
+            with open("{}/tags.pk".format(dir_name), "rb") as handle:
+                self.tag_list = pickle.load(handle)
         else:
-            self.sent_list = json.loads(open("data/corpus.json").read())
+            with open("data/corpus.pk", "rb") as handle:
+                self.sent_list = pickle.load(handle)
+            with open("data/tags.pk", "rb") as handle:
+                self.tag_list = pickle.load(handle)
                
-    def save(self, file_name=None):
-        if file_name != None:
-            open(file_name, "w").write(json.dumps(self.sent_list, sort_keys = True, indent = 4))
+    def save(self, dir_name=None):
+        if dir_name != None:
+            with open('{}/corpus.pk'.format(dir_name), 'wb') as handle:
+                pickle.dump(self.sent_list, handle)
+            with open('{}/tags.pk'.format(dir_name), 'wb') as handle:
+                pickle.dump(self.tag_list, handle)
         else:
-            open("data/corpus.json", "w").write(json.dumps(self.sent_list, sort_keys = True, indent = 4))
+            with open('data/corpus.pk', 'wb') as handle:
+                pickle.dump(self.sent_list, handle)
+            with open('data/tags.pk', 'wb') as handle:
+                pickle.dump(self.tag_list, handle)
     
     def to_TaggedDocument(self):
         docs = []
         for i in range(len(self.sent_list)):
-            docs.append(TaggedDocument(words=self.sent_list[i], tags=self.tag_list[i]))
+            docs.append(TaggedDocument(words=self.sent_list[i], tags=[self.tag_list[i],(re.sub('[^A-Za-z]+', '', self.tag_list[i]))]))
         return docs
 
 def main():
-    docs = corpusBuilder("../data/sentences/")
+    docs = corpusBuilder("data/sentences/")
     docs.save()
     
 if __name__ == "__main__" :
