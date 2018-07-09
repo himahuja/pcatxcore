@@ -10,18 +10,26 @@ from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
 
+def linkFilter(url):
+    filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone']
+    urlList = url.split('.')
+    if any(x in urlList for x in filterList):
+        return 0
+    else:
+        return 1
 
-def search_google(query, driver):
+def search_google(query, driver, number_of_pages):
     driver.get(query)
     link_href = []
-    while True:
+    for i in range(number_of_pages):
         search_results = []
         # finds all the search boxes in a page
         search_results = driver.find_elements_by_css_selector('h3.r')
         for x in range(0,len(search_results)):
         # TODO: Associate each link with the rank it appeared on google
             link = search_results[x].find_element_by_tag_name('a')
-            link_href.append(link.get_attribute('href'))
+            if linkFilter(link.get_attribute('href')):
+                link_href.append(link.get_attribute('href'))
         # Goes to the next page
         try:
             next_page = driver.find_element_by_css_selector('a#pnnext.pn')
@@ -33,7 +41,7 @@ def search_google(query, driver):
 
 def setDriver():
     options = Options()
-    # options.add_argument("--headless") # Runs Chrome in headless mode.
+    options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
@@ -63,7 +71,8 @@ def crawlerWrapper(search_query, engine):
     if engine == 'google':
         search_query.replace(" ", "+")
         url = "https://www.google.com/search?q=" + search_query
-        links = search_google(url, driver)
+        # change the number in the line below to limit the number of pages it parses
+        links = search_google(url, driver, 2)
     elif engine == 'sec10k':
         """
         search query format:
