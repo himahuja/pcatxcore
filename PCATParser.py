@@ -92,6 +92,7 @@ def parser_iter(query_string, linkList):
                 html = urllib.request.urlopen(link).read()
                 doc['html'] = html
                 doc['text'] = bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore')
+                yield doc
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
         else:
@@ -99,9 +100,9 @@ def parser_iter(query_string, linkList):
                 content = get_PDF_content(query_string, link, linkList)
                 doc['pdf'] = urllib.request.urlopen(link).read()
                 doc['text'] = content
+                yield doc
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
-        yield doc
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
 
 def main():
