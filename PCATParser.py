@@ -83,10 +83,8 @@ def parser(query_string, linkList):
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
-        
-def parser_to_FM(query_string, linkList):
-    #turn into a generator with yield?
-    doc_list = []
+      
+def parser_iter(query_string, linkList):
     for link in linkList:
         doc = {'url' : link, 'query': query_string }
         if link[-4:] != '.pdf':
@@ -103,9 +101,8 @@ def parser_to_FM(query_string, linkList):
                 doc['text'] = content
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
-        doc_list.append(doc)
+        yield doc
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
-    return doc_list
 
 def main():
     with open("kpm/data/articles.txt") as f:

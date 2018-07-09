@@ -7,7 +7,7 @@ A web crawling and artificial intelligence framework for Praedicat, Inc. develop
 ### Table of Contents
 ---------------------
 * Classifier
-* KPM == Keyword Producing Model
+* Keyword Producing Module (KPM)
 * Parser
 * Query Formulator
 
@@ -28,7 +28,10 @@ The following modules and scripts are part of the Keyword Producing Model:
 * [corpusBuilder.py](kpm/corpusBuilder.py) --- [Documentation](kpm/docs/corpusBuilder.md)
 corpusBuilder is a wrapper for a list of lists that is specifically designed to process text documents and get them into a format which is optimal for doc2vec.
 
-* [Mapper.py](Mapper.py) --- [Documentation](kpm/docs/Mapper.md)
+* [FileManager.py](kpm/FileManager.py) --- [Documentation](kpm/docs/FileManager.md)
+FileManager is a class for helping manage a database of web resources. FileManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintains two dictionaries: UUID to URL and URL to UUID. Using this uniform data storage system and a simple API, FileManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.
+
+* [Mapper.py](kpm/Mapper.py) --- [Documentation](kpm/docs/Mapper.md)
 Mapper is essentially a wrapper for a dictionary, it associates unique identifiers with a list of aliases for the entity identified. An example would be "00001" -> ["Micron Technology", "MU", "Micron"].
 
 ##### /bin
