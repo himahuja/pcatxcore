@@ -42,6 +42,12 @@ class FileManager(object):
         this = { 'uuid_to_url': self.uuid_to_url, 'url_to_uuid': self.url_to_uuid }
         return json.dumps(this, sort_keys = True, indent = 4)
         
+    def absorb_file_manager(self, other_file_manager):
+        for item in other_file_manager:
+            if item['id'] not in self.uuid_to_url.keys():
+                self.uuid_to_url[item['id']] = item['url']
+                self.url_to_uuid[item['url']] = item['id']
+        
     def get(self, key):
         try:
             if self.rel_path == None:

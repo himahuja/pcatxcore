@@ -130,7 +130,7 @@ class corpusBuilder(object):
     def to_TaggedDocument(self):
         docs = []
         for i in range(len(self.sent_list)):
-            docs.append(TaggedDocument(words=self.sent_list[i], tags=[self.tag_list[i],(re.sub('[^A-Za-z]+', '', self.tag_list[i]))]))
+            docs.append(TaggedDocument(words=self.sent_list[i], tags=self.tag_list[i]))
         return docs
 
 def main():

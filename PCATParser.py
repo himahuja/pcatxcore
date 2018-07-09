@@ -83,7 +83,7 @@ def parser(query_string, linkList):
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
-      
+
 def parser_iter(query_string, linkList):
     for link in linkList:
         doc = {'url' : link, 'query': query_string }

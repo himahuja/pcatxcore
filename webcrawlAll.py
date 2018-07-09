@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
-import json
+import json, re
 
 def linkFilter(url):
     filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone']
@@ -96,7 +96,7 @@ def crawlerWrapper(search_query, engine):
     else:
         print("Engine hasn't been defined yet.")
 
-    with open('data/parsedLinks/{}.pk'.format(search_query), 'wb') as handle:
+    with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
         pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
     driver.quit()
