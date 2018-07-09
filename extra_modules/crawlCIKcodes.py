@@ -3,6 +3,7 @@ def crawlCIKcodes(filename):
     """
     Takes in the CIK code list from: https://www.sec.gov/Archives/edgar/full-index/<YYYY>/QTR<1,2,3,4>/master.gz
     Extract the .gz file, and remove all the lines above the code list
+    The file is renamed to : CIK_YYYY_<QTR Digit>.txt, example: CIK_2018_1.txt
 
     INPUT: filename of the file as described above
     OUTPUT: dictionary of CIK codes
@@ -11,14 +12,27 @@ def crawlCIKcodes(filename):
     """
     lines = open(filename, 'r').readlines()
     try:
-        with open('../data//{}.pk'.format(search_query), 'wb') as handle:
-            pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
+        with open('../data/SEC_data/cikcodes2name.pk', 'rb') as f:
+            cikcodes2name = pickle.load(f)
+    except:
+        cikcodes2name = {}
 
-    cikcodes2name = {}
+    try:
+        with open('../data/SEC_data/ciknames2code.pk', 'rb') as f:
+            ciknames2code = pickle.load(f)
+    except:
+        ciknames2code = {}
+
     for line in lines:
         k = line.split('|')
+        ciknames2code[k[1]] = k[0]
         cikcodes2name[k[0]] = k[1]
 
+    with open('../data/SEC_data/cikcodes2name.pk', 'wb') as handle:
+        pk.dump(cikcodes2name, handle, protocol=pk.HIGHEST_PROTOCOL)
+
+    with open('../data/SEC_data/ciknames2code.pk', 'wb') as handle:
+        pk.dump(ciknames2code, handle, protocol=pk.HIGHEST_PROTOCOL)
 
 if __name__ == '__main__':
     filename = '../data/SEC_Data/CIK_2018_1.txt'
