@@ -99,7 +99,7 @@ def crawlerWrapper(search_query, engine):
         """
         search query format:
         TYPE: dictionary
-        {name: <STRING, CIK Code of the company>,
+        {cik: <STRING, CIK Code of the company>,
          dateStart: <STRING, '/' seperated date, MM/DD/YYYY>,
          dateEnd: <STRING, '/' seperated date, MM/DD/YYYY>,}
         """
@@ -126,16 +126,3 @@ def crawlerWrapper(search_query, engine):
 
 if __name__ == "__main__":
     crawlerWrapper('Hello I am Himanshu Ahuja what is python we love code wtf', 'google')
-    # search_query = "deep learning"
-    # search_query.replace(" ", "+")
-    # url = "https://www.google.com/search?q=" + search_query
-    # # url = "https://chemicalwatch.com/search?q=" + search_query
-    # driver = setDriver()
-    # links = search_google(url, driver)
-    # with open('filename.pickle', 'wb') as handle:
-    #     pickle.dump(a, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    # # driver = webdriver.Chrome()
-    # # driver.get(url) # opens the URL
-    # # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
-    # driver.quit()
-# GOING TO ADD THE httrack script here for the terminal.
