@@ -47,9 +47,13 @@ def crawlerWrapper(search_query, engine):
     """
         Takes in the query to search for on a portal
         Currently supported portals:
-            1. Google
+            1. google: searches the google page for that company
+            2. sec10k: searches the 10k filing for that company
+            3. sec10kall: finds the 10Ks of all the companies
+            #TODO: add the dates for finding the 10Ks for all the companies
+
         INPUT:
-            search_query: STRING, spaced string as query to be searched
+            search_query: ANY, check the specific engine for more details
             #TODO: engine: STRING, default: 'google', engine to be used for performing the query
         OUTPUT:
             Returns nothing
@@ -61,6 +65,22 @@ def crawlerWrapper(search_query, engine):
         search_query.replace(" ", "+")
         url = "https://www.google.com/search?q=" + search_query
         links = search_google(url, driver)
+    elif engine == 'sec10k':
+        """
+        search query format:
+        TYPE: dictionary
+        {name: <STRING, CIK Code of the company>,
+         dateStart: <STRING, '/' seperated date, MM/DD/YYYY>,
+         dateEnd: <STRING, '/' seperated date, MM/DD/YYYY>,}
+        """
+        #TODO: Module on hold, because of the errorneous results
+        name = search_query['name']
+        dateStart = search_query['dateStart']
+        dateEnd = search_query['dateEnd']
+        name.replace(" ", "%20")
+        url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}}&numResults=100".format(name, dateStart, dateEnd)
+        driver.get(url)
+    elif engine == 'sec10kall'
     elif engine == 'bloomberg':
         pass
     else:
