@@ -40,7 +40,7 @@ def setDriver():
     options.add_argument('start-maximized') #
     options.add_argument('disable-infobars')
     options.add_argument("--disable-extensions")
-    driver = webdriver.Chrome('/home/alex/Documents/GitHubRepositories/PCAT/PCATx CORE/chromedriver', chrome_options=options)
+    driver = webdriver.Chrome('/home/alex/Documents/chromedriver', chrome_options=options)
     return driver
 
 def crawlerWrapper(search_query, engine):
@@ -80,7 +80,8 @@ def crawlerWrapper(search_query, engine):
         name.replace(" ", "%20")
         url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}}&numResults=100".format(name, dateStart, dateEnd)
         driver.get(url)
-    elif engine == 'sec10kall'
+    elif engine == 'sec10kall':
+        pass
     elif engine == 'bloomberg':
         pass
     else:

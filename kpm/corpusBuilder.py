@@ -5,6 +5,8 @@ Created on Tue Jul  3 22:17:12 2018
 
 @author: alex
 """
+import sys
+sys.path.append("..")
 from gensim.models.doc2vec import TaggedDocument
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from nltk.corpus import stopwords
@@ -33,14 +35,14 @@ class corpusBuilder(object):
                 if (os.listdir(self.dirname).index(fname) % 100 == 99):
                     if (os.listdir(self.dirname).index(fname)+1 != len(os.listdir(self.dirname))):
                         print("...{:2.2f}% done, processing document {} of {}".format(((os.listdir(self.dirname).index(fname)+1)/len(os.listdir(self.dirname)))*100,os.listdir(self.dirname).index(fname)+1,len(os.listdir(self.dirname))))
-            print("...{:.2f}% done, processing document {} of {}".format(100,len(os.listdir(self.dirname)),len(os.listdir(self.dirname))))
+            print("...100.00% done, processing document {} of {}".format(len(os.listdir(self.dirname)),len(os.listdir(self.dirname))))
             print("...filtering the dictionary...")
             self.filter_dict()
         if (file_manager != None):
             count = 0
             for file in file_manager:
                 text = file['text']
-                self.tag_list.append(file['query'])
+                self.tag_list.append([file['query'], file['id']])
                 text = re.sub('\S*@\S*\s?', "", text)
                 text = re.sub('[^A-Za-z]+', ' ', text)
                 text = text.lower().splitlines()
@@ -54,7 +56,7 @@ class corpusBuilder(object):
                     if (count+1 != len(file_manager)):
                         print("...{:2.2f}% done, processing document {} of {}".format(((count+1)/len(file_manager))*100,count+1,len(file_manager)))
                 count+=1
-            print("...{:.2f}% done, processing document {} of {}".format(100,len(os.listdir(self.dirname)),len(os.listdir(self.dirname))))
+            print("...100.00% done, processing document {} of {}".format(len(file_manager),len(file_manager)))
             
             print("...filtering the dictionary...")
             self.filter_dict()
@@ -102,13 +104,14 @@ class corpusBuilder(object):
             if (i % 100 == 99):
                     if (i+1 != len(self.sent_list)):
                             print("...{:2.2f}% done, filtering document {} of {}".format((i+1)/len(self.sent_list)*100,i+1,len(self.sent_list)))
+        print("...100.00% done, filtering document {} of {}".format(len(self.sent_list),len(self.sent_list)))
         
     def load(self, dir_name=None):
         if dir_name != None:
-            with open("{}/corpus.json".format(dir_name), "rb") as file:
+            with open("{}/corpus.json".format(dir_name), "r") as file:
                 this = json.loads(file.read())
         else:
-            with open("data/corpus.json", "rb") as file:
+            with open("data/corpus.json", "r") as file:
                 this = json.loads(file.read())
         self.sent_list = this['sent_list']
         self.tag_list = this['tag_list']

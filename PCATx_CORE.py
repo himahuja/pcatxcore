@@ -12,8 +12,10 @@ def WC_to_KPM(query_string):
     crawlerWrapper(query_string, "google")
     with open("data/parsedLinks/{}.pk".format(query_string), "rb") as handle:
         url_list = pickle.load(handle)
-    parser.parser(query_string, url_list)
-    cb = corpusBuilder("data/sentences/")
+    fm = FileManager()
+    fm.read_in_docs(parser_iter("test", url_list))
+    fm.save()
+    cb = corpusBuilder(file_manager=fm)
     cb.save()
     docs = cb.to_TaggedDocument()
     model = models.Doc2Vec(docs, workers=3, min_count=20)
@@ -24,7 +26,7 @@ def WC_to_KPM(query_string):
     print(model.wv.similarity('woman', 'man'))
 
 def main():
-    WC_to_KPM("olin polyethyl")
+    WC_to_KPM("pewdiepie")
     
 if __name__ == "__main__" :
     main()

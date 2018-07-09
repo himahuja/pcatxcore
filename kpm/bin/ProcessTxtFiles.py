@@ -38,10 +38,16 @@ def ProcessPipeDelineated(file_in, file_out):
     for line in codecs.open(file_in, "r",encoding='utf-8', errors='ignore').read().splitlines():
         dictionary[line[:line.find("|")]] = line[line.find("|")+1:].strip()
     open(file_out, "w").write(json.dumps(dictionary, sort_keys = True, indent = 4))
+    
+def TxtToJson(file_in, file_out):
+    dictionary = {}
+    for line in codecs.open(file_in, "r",encoding='utf-8', errors='ignore').read().splitlines():
+        dictionary[line.strip().lower()] = line.strip().lower()
+    open(file_out, "w").write(json.dumps(dictionary, sort_keys = True, indent = 4))
 
 
 def main():    
-    ProcessPipeDelineated(os.path.join("../../data/praedicat_data/", "naics2017_to_naics2017_title.txt"), os.path.join("../data/", "naics2017_to_naics2017_title.json"))
+    TxtToJson(os.path.join("../../data/praedicat_data/", "Companies.txt"), os.path.join("../data/", "companies_to_alias.json"))
     
 if __name__ == "__main__" :
     main()
