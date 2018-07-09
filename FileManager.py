@@ -71,6 +71,7 @@ class FileManager(object):
         file.close()
         self.uuid_to_url = this['uuid_to_url']
         self.url_to_uuid = this['url_to_uuid']
+
     
     def read_in_docs(self, iterator_of_docs):
         for item in iterator_of_docs:
@@ -120,8 +121,12 @@ def main():
         content = f.readlines()
     content = [x.strip() for x in content]
     fm = FileManager()
-    fm.read_in_docs(parser_iter("test", content))
+    for file in os.listdir("data/filemanager"):
+        tmp = FileManager()
+        tmp.load(os.path.join("data/filemanager", file))
+        fm.absorb_file_manager(tmp)
     fm.save()
+    print(len(fm))
     
 if __name__ == "__main__" :
     main()

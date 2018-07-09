@@ -19,7 +19,6 @@ def linkFilter_google(url):
     else:
         return 1
 
-def linkFilter_SEC(url):
 
 def search_google(query, driver, number_of_pages):
     driver.get(query)

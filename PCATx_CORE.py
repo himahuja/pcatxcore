@@ -31,7 +31,9 @@ def WC_to_KPM(query_string):
 def main():
     with open("data/praedicat_data/Companies.txt") as f:
         content = f.readlines()
+    content.reverse()
     for line in content:
+        print("Currently web crawling: {}".format(line))
         line = line.strip()
         WC_to_KPM(line)
     
