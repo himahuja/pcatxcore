@@ -9,15 +9,17 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
-import json, re
+import json, os, re
 
-def linkFilter(url):
+def linkFilter_google(url):
     filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone']
     urlList = url.split('.')
     if any(x in urlList for x in filterList):
         return 0
     else:
         return 1
+
+def linkFilter_SEC(url):
 
 def search_google(query, driver, number_of_pages):
     driver.get(query)
@@ -40,7 +42,26 @@ def search_google(query, driver, number_of_pages):
             break
     return link_href
 
+def search_sec(query, driver):
+    driver.get(query)
+    link_href = []
+    while True:
+        search_results = []
+        search_results = driver.find_elements_by_css_selector('a#viewFiling.filing')
+        for x in range(0, len(search_results)):
+            temp_list = search_results[x].get_attribute('text').split()
+            """
+                According to the EDGAR portal, <Anything> of 10-K,
+                the keyword 'of' is the second word. We remove these files.
+
+                Option 2: 10-K is the first word in the title
+            """
+            if temp_list[0] == '10-K':
+                link_href.append(search_results[x].get_attribute('href').split('\'')[2])
+    return link_href
+
 def setDriver():
+    path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chromedriver")
     options = Options()
     options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
@@ -48,7 +69,7 @@ def setDriver():
     options.add_argument('start-maximized') #
     options.add_argument('disable-infobars')
     options.add_argument("--disable-extensions")
-    driver = webdriver.Chrome('/home/alex/Documents/chromedriver', chrome_options=options)
+    driver = webdriver.Chrome(path_chromedriver, chrome_options=options)
     return driver
 
 def crawlerWrapper(search_query, engine):
@@ -83,12 +104,14 @@ def crawlerWrapper(search_query, engine):
          dateEnd: <STRING, '/' seperated date, MM/DD/YYYY>,}
         """
         #TODO: Module on hold, because of the errorneous results
-        name = search_query['name']
+        cik = search_query['cik']
+        # name = search_query['name']
         dateStart = search_query['dateStart']
         dateEnd = search_query['dateEnd']
-        name.replace(" ", "%20")
-        url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}}&numResults=100".format(name, dateStart, dateEnd)
-        driver.get(url)
+        # name.replace(" ", "%20")
+        url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text=*&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&queryCik={}&fromDate={}&toDate={}&numResults=100".format(cik, dateStart, dateEnd)
+        # url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}}&numResults=100".
+        search_sec(url, driver)
     elif engine == 'sec10kall':
         pass
     elif engine == 'bloomberg':
