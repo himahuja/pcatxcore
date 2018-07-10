@@ -126,7 +126,7 @@ def search_sec10k(url, driver):
 def setDriver():
     path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chromedriver")
     options = Options()
-    # options.add_argument("--headless") # Runs Chrome in headless mode.
+    options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
@@ -165,7 +165,7 @@ def crawlerWrapper(search_query, engine):
         url = "https://www.google.com/search?q=" + search_query['name']
         # change the number in the line below to limit the number of pages it parses
         links = search_google(url, driver, 2)
-        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['name'])), 'wb') as handle:
+        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
 
     # ███████ ███████  ██████    ██  ██████  ██   ██
@@ -260,7 +260,6 @@ def crawlerWrapper(search_query, engine):
         pass
     else:
         print("Engine hasn't been defined yet.")
-
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
     driver.quit()
 
