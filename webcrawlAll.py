@@ -91,28 +91,27 @@ def search_sec10k(url, driver):
         search_results = driver.find_elements_by_css_selector('a#viewFiling.filing')
             # timestamps = driver.find_elements_by_css_selector('i.blue')
         if (len(search_results)) <= 1:
-            print('No Results were found for the query')
-            break
-        for x in range(0, len(search_results)):
-            temp_list = search_results[x].get_attribute('text').split()
-            # print(temp_list[0])
-            """
-                According to the EDGAR portal, <Anything> of 10-K,
-                the keyword 'of' is the second word. We remove these files.
+            print('No Results were found for the query on this page')
+        else:
+            for x in range(0, len(search_results)):
+                temp_list = search_results[x].get_attribute('text').split()
+                # print(temp_list[0])
+                """
+                    According to the EDGAR portal, <Anything> of 10-K,
+                    the keyword 'of' is the second word. We remove these files.
 
-                Option 2: 10-K is the first word in the title
-            """
-            if temp_list[0] == '10-K': #option 2
-                # link_timestamps.append(timestamps[x].get_attribute('text'))
-                # print(timestamps[x].get_attribute('text'))
-                # print(search_results[x].get_attribute('href'))
-                link_href.append(search_results[x].get_attribute('href').split('\'')[1])
-                # print(search_results[x].get_attribute('href').split('\'')[1])
+                    Option 2: 10-K is the first word in the title
+                """
+                if temp_list[0] == '10-K': #option 2
+                    # link_timestamps.append(timestamps[x].get_attribute('text'))
+                    # print(timestamps[x].get_attribute('text'))
+                    # print(search_results[x].get_attribute('href'))
+                    link_href.append(search_results[x].get_attribute('href').split('\'')[1])
+                    # print(search_results[x].get_attribute('href').split('\'')[1])
+        # Go to the next page
+        pages = driver.find_elements_by_xpath("//*[@id='header']/tbody/tr[2]/td/a[text() = 'Next']")
         try:
-            next_page = driver.find_elements_by_css_selector('a.clsbluebg')
-            for x in next_page:
-                if x.get_attribute('text') == 'Next':
-                    x.click()
+            pages[0].click()
         except:
             print("There are no more pages to parse.")
             break
@@ -245,7 +244,7 @@ def crawlerWrapper(search_query, engine):
             search_query['sic'] = sic
             url = urlmaker_sec(search_query)
             links = search_sec10k(url, driver)
-            with open('data/parsedLinks/SiC_{}.pk'.format(search_query['sic']), 'wb') as handle:
+            with open('data/parsedLinks/SIC_{}.pk'.format(search_query['sic']), 'wb') as handle:
                 pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
 
     # ███████ ███████  ██████      ██████  ███████ ███    ██ ███████ ██████   █████  ██
