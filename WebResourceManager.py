@@ -5,15 +5,19 @@ Created on Sun Jul  8 15:27:52 2018
 
 @author: alex
 """
+from sklearn.feature_extraction.text import TfidfVectorizer
 from PCATParser import *
 import json, os, uuid
+import numpy as np
+import json, nltk, os, re, time, uuid
 
-class FileManager(object):
+class WebResourceManager(object):
     
     def __init__(self, rel_path=None):
         #read in the file
         self.rel_path = rel_path
         self.url_to_uuid = {}
+        self.classifier = TfidfVectorizer(stop_words='english')
         
     def __iter__(self):
         for elem in self.url_to_uuid.values():
@@ -75,7 +79,6 @@ class FileManager(object):
             score = total_score / count_keywords
         else:
             score = 0
-        print(score)
         return score
     
     def get_texts(self):
@@ -84,24 +87,14 @@ class FileManager(object):
             
     def get_uuid(self, url):
         return(self.url_to_uuid[url])
-    
-    #DOES NOT USE REL_PATH
-    def read_in_from_directory(self, directory):
-        for file in os.listdir(directory):
-            if not os.path.isdir(os.path.join(directory, file)):
-                try:
-                    doc = json.loads(file.read())
-                    self.url_to_uuid[doc['url']] = doc['id']
-                except:
-                    print("Error: File {} was not in the proper format to be tracked with FileManager".format(file))
-                    
+        
     def load(self, file_name=None):
         file = ""
         if file_name == None:
             if self.rel_path == None:
-                file = open("data/filemanager.json", "r")
+                file = open("data/webresourcemanager.json", "r")
             else:
-                file = open(os.path.join(self.rel_path, "data/filemanager.json"), "r")
+                file = open(os.path.join(self.rel_path, "data/webresourcemanager.json"), "r")
         else:
             file = open(file_name, "r")
         this = json.loads(file.read())
@@ -111,10 +104,29 @@ class FileManager(object):
             self.rel_path = this['rel_path']
         except:
             pass
+        
+    def rank_by_relevance(self):
+        for item in self:
+            item['relevance_score'] = self.get_relevance_score(item['text'])
+            file = open(os.path.join("data/docs", item['id']+".json"), "w")
+            file.write(json.dumps(item, sort_keys=True, indent=4))
+            file.close() 
+    
+    #DOES NOT USE REL_PATH
+    def read_in_from_directory(self, directory):
+        for file in os.listdir(directory):
+            if not os.path.isdir(os.path.join(directory, file)):
+                try:
+                    doc = json.loads(file.read())
+                    self.url_to_uuid[doc['url']] = doc['id']
+                except:
+                    print("Error: File {} was not in the proper format to be tracked with WebResourceManager".format(file))
     
     def read_in_from_iterator(self, iterator_of_docs):
         for item in iterator_of_docs:
             item['id'] = str(self.string_to_uuid(item['url'])) + "--" + re.sub('[^A-Za-z0-9]+', '', item['url'])
+            if len(item['id']) > 245:
+                item['id'] = item['id'][:245]
             self.url_to_uuid[item['url']] = item['id']
             try:
                 html = item['html']
@@ -139,9 +151,9 @@ class FileManager(object):
         this = { 'rel_path' : self.rel_path, 'url_to_uuid': self.url_to_uuid }
         if file_name == None:
             if self.rel_path == None:
-                file = open("data/filemanager.json", "w")
+                file = open("data/webresourcemanager.json", "w")
             else:
-                file = open(os.path.join(self.rel_path, "data/filemanager.json"), "w")
+                file = open(os.path.join(self.rel_path, "data/webresourcemanager.json"), "w")
         else:
             file = open(file_name, "w")
         file.write(json.dumps(this, sort_keys = True, indent = 4))
@@ -156,13 +168,11 @@ def main():
     with open("kpm/data/articles.txt") as f:
         content = f.readlines()
     content = [x.strip() for x in content]
-    fm = FileManager()
-    fm.load()
-    print(fm.url_to_uuid.values())
-    for elem in fm.get_texts():
-        print(elem)
-    fm.read_in_docs(parser_iter("test", content))
-    fm.save()
+    wrm = WebResourceManager()
+    wrm.load()
+    print(len(wrm))
+    wrm.train_classifier()
+    wrm.rank_by_relevance()
     
 if __name__ == "__main__" :
     main()
