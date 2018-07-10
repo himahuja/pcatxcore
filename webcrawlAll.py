@@ -228,7 +228,7 @@ def crawlerWrapper(search_query, engine):
     #      ██ ██      ██               ██ ██ ██
     # ███████ ███████  ██████     ███████ ██  ██████
 
-    elif engine == 'secsic10K':
+    elif engine == 'secsic10k':
         """
             uses the SIC codes to gather all the companies' 10K in that particular SIC
             DICT elements, dateStart, dateEnd
@@ -241,11 +241,11 @@ def crawlerWrapper(search_query, engine):
             print('Couldn\'t locate the file: siccodes2name.pk')
             return
 
-        for sec in siccodes2name.keys():
-            search_query['sec'] = sec
+        for sic in siccodes2name.keys():
+            search_query['sic'] = sic
             url = urlmaker_sec(search_query)
             links = search_sec10k(url, driver)
-            with open('data/parsedLinks/SEC_{}.pk'.format(search_query['sec']), 'wb') as handle:
+            with open('data/parsedLinks/SiC_{}.pk'.format(search_query['sic']), 'wb') as handle:
                 pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
 
     # ███████ ███████  ██████      ██████  ███████ ███    ██ ███████ ██████   █████  ██
@@ -281,16 +281,20 @@ if __name__ == "__main__":
     """ Using the google crawler"""
     # search_query['name'] = "whatever you want to query on google"
     # crawlerWrapper('Hello I am Himanshu Ahuja what is python we love code wtf', 'google')
-
     """ Using the SEC CIK 10k engine on one of the CIKs"""
-    search_query['name'] = '1000045_CIK'
-    search_query['cik'] = '1000045'
-    search_query['dateStart'] = '08/05/2016'
-    search_query['dateEnd'] = '08/05/2019'
-    crawlerWrapper(search_query, 'sec10k')
+    # search_query['name'] = '1000045_CIK'
+    # search_query['cik'] = '1000045'
+    # search_query['dateStart'] = '08/05/2016'
+    # search_query['dateEnd'] = '08/05/2019'
+    # crawlerWrapper(search_query, 'sec10k')
 
     """ Using the SEC CIK 10k engine on all of the CIK"""
     # search_query['name'] = "All"
     # search_query['dateStart'] = '08/05/2015'
     # search_query['dateEnd'] = '08/05/2019'
     # crawlerWrapper(search_query, 'sec10kall')
+
+    """ Using the SEC for an SIC"""
+    search_query['dateStart'] = '08/05/2015'
+    search_query['dateEnd'] = '08/05/2019'
+    crawlerWrapper(search_query, 'secsic10k')
