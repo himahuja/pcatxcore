@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
-import json, os, re
+import json, os, re, sys
 
 # ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████ ██████
 # ██    ██ ██   ██ ██          ████  ████ ██   ██ ██  ██  ██      ██   ██
@@ -18,14 +18,14 @@ import json, os, re
 #  ██████  ██   ██ ███████     ██      ██ ██   ██ ██   ██ ███████ ██   ██
 
 def urlmaker_sec(queryDic):
-    searchText = queryDic['searchText'] if 'searchText' in queryDic else searchText ='*'
-    formType = queryDic['formType'] if 'formType' in queryDic else formType = '1'
-    sic = queryDic['sic'] if 'sic' in queryDic else sic = '*'
-    cik = queryDic['cik'] if 'cik' in queryDic else cik = '*'
-    startDate = queryDic['startDate'] if 'startDate' in queryDic else startDate = '*'
-    endDate = queryDic['endDate'] if 'endDate' in queryDic else endDate = '*'
-    sortOrder = queryDic['sortOrder'] if 'sortOrder' in queryDic else sortOrder = 'Date'
-    url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort={}&formType=Form{}&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}&queryCik={}&querySic={}&numResults=100".format(searchText, formType, startDate, endDate, cik, sic)
+    searchText = queryDic['searchText'] if 'searchText' in queryDic else '*'
+    formType = queryDic['formType'] if 'formType' in queryDic else '1'
+    sic = queryDic['sic'] if 'sic' in queryDic else '*'
+    cik = queryDic['cik'] if 'cik' in queryDic else '*'
+    startDate = queryDic['startDate'] if 'startDate' in queryDic else '*'
+    endDate = queryDic['endDate'] if 'endDate' in queryDic else '*'
+    sortOrder = queryDic['sortOrder'] if 'sortOrder' in queryDic else 'Date'
+    url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort={}&formType=Form{}&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}&queryCik={}&querySic={}&numResults=100".format(searchText, sortOrder, formType, startDate, endDate, cik, sic)
     return url
 
 
@@ -91,7 +91,8 @@ def search_sec10k(url, driver):
         search_results = driver.find_elements_by_css_selector('a#viewFiling.filing')
             # timestamps = driver.find_elements_by_css_selector('i.blue')
         if (len(search_results)) <= 1:
-            print('NO Results were found for the query')
+            print('No Results were found for the query')
+            break
         for x in range(0, len(search_results)):
             temp_list = search_results[x].get_attribute('text').split()
             # print(temp_list[0])
@@ -124,9 +125,15 @@ def search_sec10k(url, driver):
 # ███████ ███████    ██        ██████  ██   ██ ██   ████   ███████ ██   ██
 
 def setDriver():
-    path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chromedriver")
+    if sys.platform == 'darwin':
+        type_chromedriver = "chromedriver_darwin"
+    elif sys.platform == 'linux':
+        type_chromedriver = "chromedriver_linux"
+    elif sys.platform == 'win32':
+        type_chromedriver = "chromedriver_win32.exe"
+    path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), type_chromedriver)
     options = Options()
-    options.add_argument("--headless") # Runs Chrome in headless mode.
+    # options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
@@ -182,9 +189,10 @@ def crawlerWrapper(search_query, engine):
          dateStart: <STRING, '/' seperated date, MM/DD/YYYY>,
          dateEnd: <STRING, '/' seperated date, MM/DD/YYYY>,}
         """
+        search_query['formType'] = "10K"
         url = urlmaker_sec(search_query)
         links = search_sec10k(url, driver)
-        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['name'])), 'wb') as handle:
+        with open('data/parsedLinks/{}.pk'.format(search_query['cik']), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
         # print(timestamps)
 
@@ -198,6 +206,7 @@ def crawlerWrapper(search_query, engine):
         """
             uses the sec10k engine and list of cik keywords to get the 10Ks of all the companies in the SEC list
         """
+        search_query['formType'] = "10K"
         try:
             with open('data/SEC_data/cikcodes2name.pk', 'rb') as f:
                 cikcodes2name = pk.load(f)
@@ -208,8 +217,9 @@ def crawlerWrapper(search_query, engine):
         for cik in cikcodes2name.keys():
             search_query['cik'] = cik
             url = urlmaker_sec(search_query)
+            print(url)
             links = search_sec10k(url, driver)
-            with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['cik'])), 'wb') as handle:
+            with open('data/parsedLinks/ALL_{}.pk'.format(search_query['cik']), 'wb') as handle:
                 pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
 
     # ███████ ███████  ██████     ███████ ██  ██████
@@ -223,6 +233,7 @@ def crawlerWrapper(search_query, engine):
             uses the SIC codes to gather all the companies' 10K in that particular SIC
             DICT elements, dateStart, dateEnd
         """
+        search_query['formType'] = "10K"
         try:
             with open('data/SEC_data/siccodes2name.pk', 'rb') as f:
                 siccodes2name = pk.load(f)
@@ -234,6 +245,8 @@ def crawlerWrapper(search_query, engine):
             search_query['sec'] = sec
             url = urlmaker_sec(search_query)
             links = search_sec10k(url, driver)
+            with open('data/parsedLinks/SEC_{}.pk'.format(search_query['sec']), 'wb') as handle:
+                pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
 
     # ███████ ███████  ██████      ██████  ███████ ███    ██ ███████ ██████   █████  ██
     # ██      ██      ██          ██       ██      ████   ██ ██      ██   ██ ██   ██ ██
@@ -270,14 +283,14 @@ if __name__ == "__main__":
     # crawlerWrapper('Hello I am Himanshu Ahuja what is python we love code wtf', 'google')
 
     """ Using the SEC CIK 10k engine on one of the CIKs"""
-    # search_query['name'] = '1000045_CIK'
-    # search_query['cik'] = '1000045'
-    # search_query['dateStart'] = '08/05/2016'
-    # search_query['dateEnd'] = '08/05/2019'
-    # crawlerWrapper(search_query, 'sec10k')
-
-    """ Using the SEC CIK 10k engine on all of the CIK"""
-    search_query['name'] = "All"
+    search_query['name'] = '1000045_CIK'
+    search_query['cik'] = '1000045'
     search_query['dateStart'] = '08/05/2016'
     search_query['dateEnd'] = '08/05/2019'
-    crawlerWrapper(search_query, 'sec10kall')
+    crawlerWrapper(search_query, 'sec10k')
+
+    """ Using the SEC CIK 10k engine on all of the CIK"""
+    # search_query['name'] = "All"
+    # search_query['dateStart'] = '08/05/2015'
+    # search_query['dateEnd'] = '08/05/2019'
+    # crawlerWrapper(search_query, 'sec10kall')
