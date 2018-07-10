@@ -16,7 +16,7 @@ def WC_to_KPM(query_string):
         url_list = pickle.load(handle)
     fm = FileManager()
     fm.read_in_from_iterator(parser_iter("test", url_list))
-    fm.save(file_name="data/filemanager/{}.json".format(re.sub('[^A-Za-z]+', '', query_string)))
+    fm.save(file_name="data/filemanager/{}.json".format(re.sub('[^A-Za-z0]+', '', query_string)))
 #    cb = corpusBuilder(file_manager=fm)
 #    cb.save()
 #    docs = cb.to_TaggedDocument()
@@ -38,6 +38,15 @@ def main():
             query = line + " " + elem
             print("Currently web crawling: {}".format(query))
             WC_to_KPM(query)
+    fm = FileManager()
+    for file in os.listdir("data/filemanager"):
+        tmp = FileManager()
+        tmp.load(os.path.join("data/filemanager", file))
+        fm.absorb_file_manager(tmp)
+    fm.save()
+    fm.train_classifier()
+    fm.rank_by_relevance()
+    fm.save()
     
 if __name__ == "__main__" :
     main()

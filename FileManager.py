@@ -114,7 +114,7 @@ class FileManager(object):
     
     def read_in_from_iterator(self, iterator_of_docs):
         for item in iterator_of_docs:
-            item['id'] = str(self.string_to_uuid(item['url']))
+            item['id'] = str(self.string_to_uuid(item['url']) + "--" + re.sub('[^A-Za-z0-9]+', '', file['url']))
             self.uuid_to_url[item['id']] = item['url']
             self.url_to_uuid[item['url']] = item['id']
             item['time'] = time.time()
@@ -132,7 +132,7 @@ class FileManager(object):
                 del item['pdf']
             file = open(os.path.join("data/sentences", item['id']+".json"), "w")
             file.write(json.dumps(item, sort_keys=True, indent=4))
-            file.close()    
+            file.close()
     
     def rank_by_relevance(self):
         for file in self:
@@ -168,7 +168,11 @@ def main():
         content = f.readlines()
     content = [x.strip() for x in content]
     fm = FileManager()
-    fm.load()
+    for file in os.listdir("data/filemanager"):
+        tmp = FileManager()
+        tmp.load(os.path.join("data/filemanager", file))
+        fm.absorb_file_manager(tmp)
+    fm.save()
     fm.train_classifier()
     fm.rank_by_relevance()
     fm.save()
