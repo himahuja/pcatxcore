@@ -13,13 +13,13 @@ def crawlCIKcodes(filename):
     lines = open(filename, 'r').readlines()
     try:
         with open('../data/SEC_data/cikcodes2name.pk', 'rb') as f:
-            cikcodes2name = pickle.load(f)
+            cikcodes2name = pk.load(f)
     except:
         cikcodes2name = {}
 
     try:
         with open('../data/SEC_data/ciknames2code.pk', 'rb') as f:
-            ciknames2code = pickle.load(f)
+            ciknames2code = pk.load(f)
     except:
         ciknames2code = {}
 
