@@ -31,13 +31,11 @@ def WC_to_KPM(query_string):
 def main():
     with open("data/praedicat_data/Companies.txt") as f:
         content = f.readlines()
-    descr = json.loads(open("data/praedicat_data/naics2017_to_naics2017_title.json", "r").read())
     
     for line in content:
-        for elem in descr.values():
-            query = line + " " + elem
-            print("Currently web crawling: {}".format(query))
-            WC_to_KPM(query)
+        query = line.strip()
+        print("Currently web crawling: {}".format(query))
+        WC_to_KPM(query)
     fm = FileManager()
     for file in os.listdir("data/filemanager"):
         tmp = FileManager()

@@ -15,65 +15,49 @@ class FileManager(object):
     def __init__(self, rel_path=None):
         #read in the file
         self.rel_path = rel_path
-        self.uuid_to_url = {}
         self.url_to_uuid = {}
         self.classifier = TfidfVectorizer(stop_words='english')
         
     def __iter__(self):
-        for elem in self.uuid_to_url.keys():
+        for elem in self.url_to_uuid.values():
             yield self.get(elem)
         
     #get the file with the UUID
     def __getitem__(self, key):
         try:
             if self.rel_path == None:
-                file = open("data/sentences/{}.json".format(key))
+                file = open("data/docs/{}.json".format(key))
             else:
-                file = open(os.path.join(self.rel_path, "data/sentences/{}.json").format(key))
+                file = open(os.path.join(self.rel_path, "data/docs/{}.json").format(key))
             return json.loads(file.read())
         except:
-            return {}
+            print("Error: Problem loading {}.json. Check that your rel_path is correct".format(key))
     
     def __len__(self):
-        return len(self.uuid_to_url.keys())
+        return len(self.url_to_uuid.values())
         
     def __repr__(self):
-        this = { 'uuid_to_url': self.uuid_to_url, 'url_to_uuid': self.url_to_uuid }
+        this = { 'url_to_uuid': self.url_to_uuid }
         return json.dumps(this, sort_keys = True, indent = 4)
         
     def __str__(self):
-        this = { 'uuid_to_url': self.uuid_to_url, 'url_to_uuid': self.url_to_uuid }
+        this = { 'url_to_uuid': self.url_to_uuid }
         return json.dumps(this, sort_keys = True, indent = 4)
         
     def absorb_file_manager(self, other_file_manager):
         for item in other_file_manager:
-            if item['id'] not in self.uuid_to_url.keys():
-                self.uuid_to_url[item['id']] = item['url']
+            if item['id'] not in self.url_to_uuid.values():
                 self.url_to_uuid[item['url']] = item['id']
         
     def get(self, key):
         try:
             if self.rel_path == None:
-                file = open("data/sentences/{}.json".format(key))
+                file = open("data/docs/{}.json".format(key))
             else:
-                file = open(os.path.join(self.rel_path, "data/sentences/{}.json").format(key))
+                file = open(os.path.join(self.rel_path, "data/docs/{}.json").format(key))
             return json.loads(file.read())
         except:
-            return {}
-        
-    def load(self, file_name=None):
-        file = ""
-        if file_name == None:
-            if self.rel_path == None:
-                file = open("data/filemanager.json", "r")
-            else:
-                file = open(os.path.join(self.rel_path, "data/filemanager.json"), "r")
-        else:
-            file = open(file_name, "r")
-        this = json.loads(file.read())
-        file.close()
-        self.uuid_to_url = this['uuid_to_url']
-        self.url_to_uuid = this['url_to_uuid']
+            pass
         
     def get_relevance_score(self, document):
         response = self.classifier.transform([document])
@@ -100,6 +84,9 @@ class FileManager(object):
     def get_texts(self):
         for file in self:
             yield file['text']
+            
+    def get_uuid(self, url):
+        return(self.url_to_uuid[url])
     
     #DOES NOT USE REL_PATH
     def read_in_from_directory(self, directory):
@@ -107,15 +94,30 @@ class FileManager(object):
             if not os.path.isdir(os.path.join(directory, file)):
                 try:
                     doc = json.loads(file.read())
-                    self.uuid_to_url[doc['id']] = doc['url']
                     self.url_to_uuid[doc['url']] = doc['id']
                 except:
-                    print("File {} was not in the proper format to be tracked with FileManager".format(file))
+                    print("Error: File {} was not in the proper format to be tracked with FileManager".format(file))
+                    
+    def load(self, file_name=None):
+        file = ""
+        if file_name == None:
+            if self.rel_path == None:
+                file = open("data/filemanager.json", "r")
+            else:
+                file = open(os.path.join(self.rel_path, "data/filemanager.json"), "r")
+        else:
+            file = open(file_name, "r")
+        this = json.loads(file.read())
+        file.close()
+        self.url_to_uuid = this['url_to_uuid']
+        try:
+            self.rel_path = this['rel_path']
+        except:
+            pass
     
     def read_in_from_iterator(self, iterator_of_docs):
         for item in iterator_of_docs:
             item['id'] = str(self.string_to_uuid(item['url'])) + "--" + re.sub('[^A-Za-z0-9]+', '', item['url'])
-            self.uuid_to_url[item['id']] = item['url']
             self.url_to_uuid[item['url']] = item['id']
             item['time'] = time.time()
             try:
@@ -130,7 +132,7 @@ class FileManager(object):
                 file.write(pdf.decode('utf-8', 'ignore'))
                 file.close()
                 del item['pdf']
-            file = open(os.path.join("data/sentences", item['id']+".json"), "w")
+            file = open(os.path.join("data/docs", item['id']+".json"), "w")
             file.write(json.dumps(item, sort_keys=True, indent=4))
             file.close()
     
@@ -142,7 +144,7 @@ class FileManager(object):
         return uuid.uuid5(uuid.NAMESPACE_DNS, string)
     
     def save(self, file_name=None):
-        this = { 'uuid_to_url': self.uuid_to_url, 'url_to_uuid': self.url_to_uuid }
+        this = { 'rel_path' : self.rel_path, 'url_to_uuid': self.url_to_uuid }
         if file_name == None:
             if self.rel_path == None:
                 file = open("data/filemanager.json", "w")
@@ -155,27 +157,17 @@ class FileManager(object):
         
     def train_classifier(self):
         self.classifier.fit_transform(self.get_texts())
-        
-    def url_to_uuid(self, url):
-        return self.url_to_uuid[url]
-    
-    def uuid_to_url(self, key):
-        return self.uuid_to_url[key]
             
-        
+            
 def main():
     with open("kpm/data/articles.txt") as f:
         content = f.readlines()
     content = [x.strip() for x in content]
     fm = FileManager()
-    for file in os.listdir("data/filemanager"):
-        tmp = FileManager()
-        tmp.load(os.path.join("data/filemanager", file))
-        fm.absorb_file_manager(tmp)
-    fm.save()
-    fm.train_classifier()
-    fm.rank_by_relevance()
-    fm.save()
+    fm.load()
+    print(fm.url_to_uuid.values())
+    for elem in fm.get_texts():
+        print(elem)
     
 if __name__ == "__main__" :
     main()
