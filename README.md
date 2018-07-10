@@ -7,19 +7,13 @@ A web crawling and artificial intelligence framework for Praedicat, Inc. develop
 ### Table of Contents
 ---------------------
 * Classifier
-* FileManager
 * Keyword Producing Module (KPM)
 * Parser
 * Query Formulator
+* WebResourceManager
 
 ### Classifier
 --------------
-
-### FileManager
-----------------
-
-* [FileManager.py](FileManager.py) --- [Documentation](kpm/docs/FileManager.md)
-FileManager is a class for helping manage a database of web resources. FileManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintains two dictionaries: UUID to URL and URL to UUID. Using this uniform data storage system and a simple API, FileManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.
 
 ### Keyword Producing Module (KPM)
 ---------------------------------
@@ -63,3 +57,10 @@ It can
 
 ### Query Formulator
 ------------------------------------
+
+
+### WebResourceManager
+----------------
+
+* [WebResourceManager.py](WebResourceManager.py) --- [Documentation](kpm/docs/WebResourceManager.md)
+WebResourceManager is a class for helping manage a database of web resources. WebResourceManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintain a dictionary from  URL to UUID. Using this uniform data storage system and a simple API, WebResourceManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.
