@@ -11,13 +11,46 @@ from selenium.webdriver.support import expected_conditions as EC
 import pickle as pk
 import json, os, re
 
+# ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████ ██████
+# ██    ██ ██   ██ ██          ████  ████ ██   ██ ██  ██  ██      ██   ██
+# ██    ██ ██████  ██          ██ ████ ██ ███████ █████   █████   ██████
+# ██    ██ ██   ██ ██          ██  ██  ██ ██   ██ ██  ██  ██      ██   ██
+#  ██████  ██   ██ ███████     ██      ██ ██   ██ ██   ██ ███████ ██   ██
+
+def urlmaker_sec(queryDic):
+    searchText = queryDic['searchText'] if 'searchText' in queryDic else searchText ='*'
+    formType = queryDic['formType'] if 'formType' in queryDic else formType = '1'
+    sic = queryDic['sic'] if 'sic' in queryDic else sic = '*'
+    cik = queryDic['cik'] if 'cik' in queryDic else cik = '*'
+    startDate = queryDic['startDate'] if 'startDate' in queryDic else startDate = '*'
+    endDate = queryDic['endDate'] if 'endDate' in queryDic else endDate = '*'
+    sortOrder = queryDic['sortOrder'] if 'sortOrder' in queryDic else sortOrder = 'Date'
+    url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort={}&formType=Form{}&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}&queryCik={}&querySic={}&numResults=100".format(searchText, formType, startDate, endDate, cik, sic)
+    return url
+
+
+# ██      ██ ███    ██ ██   ██     ███████ ██ ██   ████████ ███████ ██████
+# ██      ██ ████   ██ ██  ██      ██      ██ ██      ██    ██      ██   ██
+# ██      ██ ██ ██  ██ █████       █████   ██ ██      ██    █████   ██████
+# ██      ██ ██  ██ ██ ██  ██      ██      ██ ██      ██    ██      ██   ██
+# ███████ ██ ██   ████ ██   ██     ██      ██ ███████ ██    ███████ ██   ██
+
+
 def linkFilter_google(url):
-    filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone']
+    filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone', 'linkedin']
     urlList = url.split('.')
     if any(x in urlList for x in filterList):
         return 0
     else:
         return 1
+
+
+#  ██████   ██████  ██          ███████ ███████  █████  ██████   ██████ ██   ██
+# ██       ██       ██          ██      ██      ██   ██ ██   ██ ██      ██   ██
+# ██   ███ ██   ███ ██          ███████ █████   ███████ ██████  ██      ███████
+# ██    ██ ██    ██ ██               ██ ██      ██   ██ ██   ██ ██      ██   ██
+#  ██████   ██████  ███████     ███████ ███████ ██   ██ ██   ██  ██████ ██   ██
+
 
 def search_google(query, driver, number_of_pages):
     driver.get(query)
@@ -40,14 +73,16 @@ def search_google(query, driver, number_of_pages):
             break
     return link_href
 
-def search_sec(query, driver):
+# ███████ ███████  █████  ██████   ██████ ██   ██      ██  ██████  ██   ██
+# ██      ██      ██   ██ ██   ██ ██      ██   ██     ███ ██  ████ ██  ██
+# ███████ █████   ███████ ██████  ██      ███████      ██ ██ ██ ██ █████
+#      ██ ██      ██   ██ ██   ██ ██      ██   ██      ██ ████  ██ ██  ██
+# ███████ ███████ ██   ██ ██   ██  ██████ ██   ██      ██  ██████  ██   ██
+
+def search_sec10k(url, driver):
     """
         Add the functionality to return the time
     """
-    cik = search_query['cik']
-    dateStart = search_query['dateStart']
-    dateEnd = search_query['dateEnd']
-    url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text=*&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&queryCik={}&fromDate={}&toDate={}&numResults=100".format(cik, dateStart, dateEnd)
     driver.get(url)
     link_href = []
     link_timestamps = []
@@ -82,6 +117,12 @@ def search_sec(query, driver):
             break
     return link_href
 
+# ███████ ███████ ████████     ██████  ██████  ██ ██    ██ ███████ ██████
+# ██      ██         ██        ██   ██ ██   ██ ██ ██    ██ ██      ██   ██
+# ███████ █████      ██        ██   ██ ██████  ██ ██    ██ █████   ██████
+#      ██ ██         ██        ██   ██ ██   ██ ██  ██  ██  ██      ██   ██
+# ███████ ███████    ██        ██████  ██   ██ ██   ████   ███████ ██   ██
+
 def setDriver():
     path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chromedriver")
     options = Options()
@@ -113,13 +154,26 @@ def crawlerWrapper(search_query, engine):
     """
     driver = setDriver()
 
+    #  ██████   ██████   ██████   ██████  ██      ███████
+    # ██       ██    ██ ██    ██ ██       ██      ██
+    # ██   ███ ██    ██ ██    ██ ██   ███ ██      █████
+    # ██    ██ ██    ██ ██    ██ ██    ██ ██      ██
+    #  ██████   ██████   ██████   ██████  ███████ ███████
+
     if engine == 'google':
-        search_query.replace(" ", "+")
-        url = "https://www.google.com/search?q=" + search_query
+        search_query['name'].replace(" ", "+")
+        url = "https://www.google.com/search?q=" + search_query['name']
         # change the number in the line below to limit the number of pages it parses
         links = search_google(url, driver, 2)
         with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
+
+    # ███████ ███████  ██████    ██  ██████  ██   ██
+    # ██      ██      ██        ███ ██  ████ ██  ██
+    # ███████ █████   ██         ██ ██ ██ ██ █████
+    #      ██ ██      ██         ██ ████  ██ ██  ██
+    # ███████ ███████  ██████    ██  ██████  ██   ██
+
     elif engine == 'sec10k':
         """
         search query format:
@@ -128,11 +182,18 @@ def crawlerWrapper(search_query, engine):
          dateStart: <STRING, '/' seperated date, MM/DD/YYYY>,
          dateEnd: <STRING, '/' seperated date, MM/DD/YYYY>,}
         """
-        # url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}}&numResults=100".
-        links = search_sec(search_query, driver)
-        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
+        url = urlmaker_sec(search_query)
+        links = search_sec10k(url, driver)
+        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['name'])), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
         # print(timestamps)
+
+    #  █████  ██      ██           ██  ██████  ██   ██
+    # ██   ██ ██      ██          ███ ██  ████ ██  ██
+    # ███████ ██      ██           ██ ██ ██ ██ █████
+    # ██   ██ ██      ██           ██ ████  ██ ██  ██
+    # ██   ██ ███████ ███████      ██  ██████  ██   ██
+
     elif engine == 'sec10kall':
         """
             uses the sec10k engine and list of cik keywords to get the 10Ks of all the companies in the SEC list
@@ -143,16 +204,53 @@ def crawlerWrapper(search_query, engine):
         except:
             print('Couldn\'t locate the file: cikcodes2name.pk')
             return
+
         for cik in cikcodes2name.keys():
-            search_query = cik
-            links = search_sec(search_query, driver)
-            with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
+            search_query['cik'] = cik
+            url = urlmaker_sec(search_query)
+            links = search_sec10k(url, driver)
+            with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['cik'])), 'wb') as handle:
                 pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
+
+    # ███████ ███████  ██████     ███████ ██  ██████
+    # ██      ██      ██          ██      ██ ██
+    # ███████ █████   ██          ███████ ██ ██
+    #      ██ ██      ██               ██ ██ ██
+    # ███████ ███████  ██████     ███████ ██  ██████
+
     elif engine == 'secsic10K':
         """
-            uses the SIC codes to gather all the companies' 10K in that particular
+            uses the SIC codes to gather all the companies' 10K in that particular SIC
+            DICT elements, dateStart, dateEnd
         """
-        
+        try:
+            with open('data/SEC_data/siccodes2name.pk', 'rb') as f:
+                siccodes2name = pk.load(f)
+        except:
+            print('Couldn\'t locate the file: siccodes2name.pk')
+            return
+
+        for sec in siccodes2name.keys():
+            search_query['sec'] = sec
+            url = urlmaker_sec(search_query)
+            links = search_sec10k(url, driver)
+
+    # ███████ ███████  ██████      ██████  ███████ ███    ██ ███████ ██████   █████  ██
+    # ██      ██      ██          ██       ██      ████   ██ ██      ██   ██ ██   ██ ██
+    # ███████ █████   ██          ██   ███ █████   ██ ██  ██ █████   ██████  ███████ ██
+    #      ██ ██      ██          ██    ██ ██      ██  ██ ██ ██      ██   ██ ██   ██ ██
+    # ███████ ███████  ██████      ██████  ███████ ██   ████ ███████ ██   ██ ██   ██ ███████
+
+    elif engine == "generalSEC":
+        url = urlmaker_sec(search_query)
+        # links = search_sec(url, driver)
+
+    # ███████ ███████  ██████     ███████     ██████   ██
+    # ██      ██      ██          ██               ██ ███
+    # ███████ █████   ██          █████        █████   ██
+    #      ██ ██      ██          ██          ██       ██
+    # ███████ ███████  ██████     ███████     ███████  ██
+
     elif engine == 'secE21':
         """
             uses the company CIK to find if it has any subidaries from the E-21 form
@@ -179,7 +277,7 @@ if __name__ == "__main__":
     # crawlerWrapper(search_query, 'sec10k')
 
     """ Using the SEC CIK 10k engine on all of the CIK"""
-    # search_query['name'] = "All"
-    # search_query['dateStart'] = '08/05/2016'
-    # search_query['dateEnd'] = '08/05/2019'
-    # crawlerWrapper(search_query, 'sec10kall')
+    search_query['name'] = "All"
+    search_query['dateStart'] = '08/05/2016'
+    search_query['dateEnd'] = '08/05/2019'
+    crawlerWrapper(search_query, 'sec10kall')

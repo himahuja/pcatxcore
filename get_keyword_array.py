@@ -1,6 +1,5 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
-from FileManager import *
 
 # FileManager TODO: open, read documents in a folder and build a list
 # document_list = []
@@ -17,6 +16,8 @@ def get_keyword_array(document_list, n = 100):
     
     return top_keyword_array
 
+top_keyword_array = get_keyword_array(document_list)
+
 # FileManager TODO: iterate through all documents and call lable
 def label(document, top_keyword_array):
     for keyword in top_keyword_array:
@@ -24,15 +25,3 @@ def label(document, top_keyword_array):
             return '1'
         else:
             return '0' 
-
-def main():
-    fm = FileManager()
-    fm.load()
-    content = []
-    for file in fm:
-        content.append(file['text'])
-    content = [x.strip() for x in content]
-    print(get_keyword_array(content))
-    
-if __name__ == "__main__" :
-    main()

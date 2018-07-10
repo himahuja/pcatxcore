@@ -5,10 +5,8 @@ Created on Sun Jul  8 15:27:52 2018
 
 @author: alex
 """
-from sklearn.feature_extraction.text import TfidfVectorizer
 from PCATParser import *
-import numpy as np
-import json, nltk, os, re, time, uuid
+import json, os, uuid
 
 class FileManager(object):
     
@@ -16,7 +14,6 @@ class FileManager(object):
         #read in the file
         self.rel_path = rel_path
         self.url_to_uuid = {}
-        self.classifier = TfidfVectorizer(stop_words='english')
         
     def __iter__(self):
         for elem in self.url_to_uuid.values():
@@ -119,7 +116,6 @@ class FileManager(object):
         for item in iterator_of_docs:
             item['id'] = str(self.string_to_uuid(item['url'])) + "--" + re.sub('[^A-Za-z0-9]+', '', item['url'])
             self.url_to_uuid[item['url']] = item['id']
-            item['time'] = time.time()
             try:
                 html = item['html']
                 file = open(os.path.join("data/source", item['id'] +".html"), "w")
@@ -134,11 +130,7 @@ class FileManager(object):
                 del item['pdf']
             file = open(os.path.join("data/docs", item['id']+".json"), "w")
             file.write(json.dumps(item, sort_keys=True, indent=4))
-            file.close()
-    
-    def rank_by_relevance(self):
-        for file in self:
-            file['relevance_score'] = self.get_relevance_score(file['text'])
+            file.close()    
     
     def string_to_uuid(self, string):
         return uuid.uuid5(uuid.NAMESPACE_DNS, string)
@@ -154,9 +146,10 @@ class FileManager(object):
             file = open(file_name, "w")
         file.write(json.dumps(this, sort_keys = True, indent = 4))
         file.close
-        
+
     def train_classifier(self):
         self.classifier.fit_transform(self.get_texts())
+
             
             
 def main():
@@ -168,6 +161,8 @@ def main():
     print(fm.url_to_uuid.values())
     for elem in fm.get_texts():
         print(elem)
+    fm.read_in_docs(parser_iter("test", content))
+    fm.save()
     
 if __name__ == "__main__" :
     main()
