@@ -19,7 +19,6 @@ def linkFilter_google(url):
     else:
         return 1
 
-
 def search_google(query, driver, number_of_pages):
     driver.get(query)
     link_href = []
@@ -30,7 +29,7 @@ def search_google(query, driver, number_of_pages):
         for x in range(0,len(search_results)):
         # TODO: Associate each link with the rank it appeared on google
             link = search_results[x].find_element_by_tag_name('a')
-            if linkFilter(link.get_attribute('href')):
+            if linkFilter_google(link.get_attribute('href')):
                 link_href.append(link.get_attribute('href'))
         # Goes to the next page
         try:
@@ -44,25 +43,39 @@ def search_google(query, driver, number_of_pages):
 def search_sec(query, driver):
     driver.get(query)
     link_href = []
+    link_timestamps = []
     while True:
         search_results = []
         search_results = driver.find_elements_by_css_selector('a#viewFiling.filing')
+        timestamps = driver.find_elements_by_css_selector('i.blue')
         for x in range(0, len(search_results)):
             temp_list = search_results[x].get_attribute('text').split()
+            # print(temp_list[0])
             """
                 According to the EDGAR portal, <Anything> of 10-K,
                 the keyword 'of' is the second word. We remove these files.
 
                 Option 2: 10-K is the first word in the title
             """
-            if temp_list[0] == '10-K':
-                link_href.append(search_results[x].get_attribute('href').split('\'')[2])
+            if temp_list[0] == '10-K': #option 2
+                # link_timestamps.append(timestamps[x].get_attribute('text'))
+                # print(search_results[x].get_attribute('href'))
+                link_href.append(search_results[x].get_attribute('href').split('\'')[1])
+                # print(search_results[x].get_attribute('href').split('\'')[1])
+        try:
+            next_page = driver.find_elements_by_css_selector('a.clsbluebg')
+            for x in next_page:
+                if x.get_attribute('text') == 'Next':
+                    x.click()
+        except:
+            print("There are no more pages to parse.")
+            break
     return link_href
 
 def setDriver():
     path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chromedriver")
     options = Options()
-    options.add_argument("--headless") # Runs Chrome in headless mode.
+    # options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
@@ -81,7 +94,8 @@ def crawlerWrapper(search_query, engine):
             #TODO: add the dates for finding the 10Ks for all the companies
 
         INPUT:
-            search_query: ANY, check the specific engine for more details
+            search_query: ANY dictionary with 'name' as a fundamental component,
+                          check the specific engine for more details
             #TODO: engine: STRING, default: 'google', engine to be used for performing the query
         OUTPUT:
             Returns nothing
@@ -102,26 +116,28 @@ def crawlerWrapper(search_query, engine):
          dateStart: <STRING, '/' seperated date, MM/DD/YYYY>,
          dateEnd: <STRING, '/' seperated date, MM/DD/YYYY>,}
         """
-        #TODO: Module on hold, because of the errorneous results
         cik = search_query['cik']
-        # name = search_query['name']
         dateStart = search_query['dateStart']
         dateEnd = search_query['dateEnd']
-        # name.replace(" ", "%20")
         url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text=*&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&queryCik={}&fromDate={}&toDate={}&numResults=100".format(cik, dateStart, dateEnd)
         # url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}}&numResults=100".
-        search_sec(url, driver)
+        [timestamps, links] = search_sec(url, driver)
     elif engine == 'sec10kall':
         pass
     elif engine == 'bloomberg':
         pass
     else:
         print("Engine hasn't been defined yet.")
-
     with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
         pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
     driver.quit()
 
 if __name__ == "__main__":
-    crawlerWrapper('Hello I am Himanshu Ahuja what is python we love code wtf', 'google')
+    # crawlerWrapper('Hello I am Himanshu Ahuja what is python we love code wtf', 'google')
+    search_query = {}
+    search_query['name'] = '1000045_CIK'
+    search_query['cik'] = '1000045'
+    search_query['dateStart'] = '08/05/2016'
+    search_query['dateEnd'] = '08/05/2019'
+    crawlerWrapper(search_query, 'sec10k')
