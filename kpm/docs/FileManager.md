@@ -166,14 +166,14 @@ To access a specific attribute of the file, because document files are just dict
 Iterating over files is a very common task and FileManager has made that easy as well! You have a few options. First, you could iterate over FileManager's **url_to_uuid** dictionary by calling **values()** on it to get a list of UUIDs in the file.
 
 >for elem in fm.url_to_uuid.values(): \
-        print(elem)
+&nbsp;&nbsp;&nbsp;&nbsp;print(elem)
 
 This is not recommend and there is built in support for iterating! The `__iter__()` function is a generator which returns an iterator over the files. This means that when you make a "for x in FileManager" statement, it will give you the files you want. The following example prints the **id** attribute of the documents in the FileManager:
 
 > for elem in fm: \
-        print(elem['id'])
+&nbsp;&nbsp;&nbsp;&nbsp;print(elem['id'])
 
 We are of couse working with text documents however, so to save you the trouble of iterating and explicitly saying ['text'], there is the **get_texts()** generator which returns an iterator over the **text** attributes of the tracked files.
 
 > for elem in fm.get_texts(): \
-        print(elem)
+&nbsp;&nbsp;&nbsp;&nbsp;print(elem)
