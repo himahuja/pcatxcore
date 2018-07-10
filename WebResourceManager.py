@@ -170,9 +170,11 @@ def main():
     content = [x.strip() for x in content]
     wrm = WebResourceManager()
     wrm.load()
-    print(len(wrm))
-    wrm.train_classifier()
-    wrm.rank_by_relevance()
+    scores = []
+    for file in wrm:
+        scores.append(file['relevance_score'])
+    scores.sort()
+    print(scores)
     
 if __name__ == "__main__" :
     main()
