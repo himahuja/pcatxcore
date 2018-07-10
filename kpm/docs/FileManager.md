@@ -117,12 +117,12 @@ You create a FileManager object just like any other object, and the constructor 
 
 The only thing interesing in the constructor is the **rel_path** keyword argument which allows you set the relative path from your current working environment to the directory where your data is housed. For example, let's say your directory layout looks like this:
 
-project
-&nbsp;&nbsp;|----data
-&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|---docs
-&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|---source
-&nbsp;&nbsp;|----scripts
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|----my_file.py
+project\
+&nbsp;&nbsp;|----data\
+&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|---docs\
+&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|---source\
+&nbsp;&nbsp;|----scripts\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|----my_file.py\
 
 To use FileManager from **my_file.py** (for example with an import statement), you want to set the **rel_path** variable to ".." because FileManager always expects to have access to a "data" directory as well as "data/docs" and "data/source" subdirectories. However, you could also just put a "data" fold in "scripts" with both "docs" and "source" subdirectories as well.
 
