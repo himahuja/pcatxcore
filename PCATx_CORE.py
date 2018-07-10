@@ -15,7 +15,7 @@ def WC_to_KPM(query_string):
     with open("data/parsedLinks/{}.pk".format(re.sub('[^A-Za-z]+', '', query_string)), "rb") as handle:
         url_list = pickle.load(handle)
     fm = FileManager()
-    fm.read_in_docs(parser_iter("test", url_list))
+    fm.read_in_from_iterator(parser_iter("test", url_list))
     fm.save(file_name="data/filemanager/{}.json".format(re.sub('[^A-Za-z]+', '', query_string)))
 #    cb = corpusBuilder(file_manager=fm)
 #    cb.save()
@@ -31,11 +31,13 @@ def WC_to_KPM(query_string):
 def main():
     with open("data/praedicat_data/Companies.txt") as f:
         content = f.readlines()
-    content.reverse()
+    descr = json.loads(open("data/praedicat_data/naics2017_to_naics2017_title.json", "r").read())
+    
     for line in content:
-        print("Currently web crawling: {}".format(line))
-        line = line.strip()
-        WC_to_KPM(line)
+        for elem in descr.values():
+            query = line + " " + elem
+            print("Currently web crawling: {}".format(query))
+            WC_to_KPM(query)
     
 if __name__ == "__main__" :
     main()

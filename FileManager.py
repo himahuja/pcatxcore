@@ -74,10 +74,6 @@ class FileManager(object):
         file.close()
         self.uuid_to_url = this['uuid_to_url']
         self.url_to_uuid = this['url_to_uuid']
-        try:
-            self.classifier = this['classifier']
-        except:
-            pass
         
     def get_relevance_score(self, document):
         response = self.classifier.transform([document])
@@ -108,7 +104,7 @@ class FileManager(object):
     #DOES NOT USE REL_PATH
     def read_in_from_directory(self, directory):
         for file in os.listdir(directory):
-            if not os.path.isdir(os.path.join(directory, file):
+            if not os.path.isdir(os.path.join(directory, file)):
                 try:
                     doc = json.loads(file.read())
                     self.uuid_to_url[doc['id']] = doc['url']
@@ -146,7 +142,7 @@ class FileManager(object):
         return uuid.uuid5(uuid.NAMESPACE_DNS, string)
     
     def save(self, file_name=None):
-        this = { 'uuid_to_url': self.uuid_to_url, 'url_to_uuid': self.url_to_uuid, 'classifier' : self.classifier }
+        this = { 'uuid_to_url': self.uuid_to_url, 'url_to_uuid': self.url_to_uuid }
         if file_name == None:
             if self.rel_path == None:
                 file = open("data/filemanager.json", "w")

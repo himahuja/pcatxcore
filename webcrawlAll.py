@@ -118,7 +118,7 @@ def crawlerWrapper(search_query, engine):
         url = "https://www.google.com/search?q=" + search_query
         # change the number in the line below to limit the number of pages it parses
         links = search_google(url, driver, 2)
-        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['name'])), 'wb') as handle:
+        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
     elif engine == 'sec10k':
         """
@@ -130,7 +130,7 @@ def crawlerWrapper(search_query, engine):
         """
         # url = "https://searchwww.sec.gov/EDGARFSClient/jsp/EDGAR_MainAccess.jsp?search_text={}&sort=Date&formType=Form10K&isAdv=true&stemming=true&numResults=100&fromDate={}&toDate={}}&numResults=100".
         links = search_sec(search_query, driver)
-        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['name'])), 'wb') as handle:
+        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
         # print(timestamps)
     elif engine == 'sec10kall':
@@ -144,9 +144,9 @@ def crawlerWrapper(search_query, engine):
             print('Couldn\'t locate the file: cikcodes2name.pk')
             return
         for cik in cikcodes2name.keys():
-            search_query['cik'] = cik
+            search_query = cik
             links = search_sec(search_query, driver)
-            with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['cik'])), 'wb') as handle:
+            with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
                 pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
     elif engine == 'secsic10K':
         """
