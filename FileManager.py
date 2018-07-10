@@ -8,7 +8,7 @@ Created on Sun Jul  8 15:27:52 2018
 from sklearn.feature_extraction.text import TfidfVectorizer
 from PCATParser import *
 import numpy as np
-import json, nltk, os, time, uuid
+import json, nltk, os, re, time, uuid
 
 class FileManager(object):
     
@@ -114,7 +114,7 @@ class FileManager(object):
     
     def read_in_from_iterator(self, iterator_of_docs):
         for item in iterator_of_docs:
-            item['id'] = str(self.string_to_uuid(item['url']) + "--" + re.sub('[^A-Za-z0-9]+', '', file['url']))
+            item['id'] = str(self.string_to_uuid(item['url'])) + "--" + re.sub('[^A-Za-z0-9]+', '', item['url'])
             self.uuid_to_url[item['id']] = item['url']
             self.url_to_uuid[item['url']] = item['id']
             item['time'] = time.time()

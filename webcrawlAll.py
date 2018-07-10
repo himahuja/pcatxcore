@@ -85,7 +85,7 @@ def search_sec(query, driver):
 def setDriver():
     path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chromedriver")
     options = Options()
-    # options.add_argument("--headless") # Runs Chrome in headless mode.
+    options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
