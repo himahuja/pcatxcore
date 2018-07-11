@@ -10,7 +10,7 @@ sys.path.append("..")
 from gensim.models.doc2vec import TaggedDocument
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from nltk.corpus import stopwords
-from FileManager import *
+from WebResourceManager import *
 import codecs, json, pickle, os, re
 
 class corpusBuilder(object):
@@ -134,7 +134,7 @@ class corpusBuilder(object):
         return docs
 
 def main():
-    fm = FileManager(rel_path="../")
+    fm = WebResourceManager(rel_path="../")
     fm.load()
     docs = corpusBuilder(file_manager=fm)
     docs.save()
