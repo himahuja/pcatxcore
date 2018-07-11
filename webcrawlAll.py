@@ -132,7 +132,7 @@ def setDriver():
         type_chromedriver = "chromedriver_win32.exe"
     path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), type_chromedriver)
     options = Options()
-    # options.add_argument("--headless") # Runs Chrome in headless mode.
+    options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
@@ -171,7 +171,7 @@ def crawlerWrapper(search_query, engine):
         url = "https://www.google.com/search?q=" + search_query['name']
         # change the number in the line below to limit the number of pages it parses
         links = search_google(url, driver, 2)
-        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query)), 'wb') as handle:
+        with open('data/parsedLinks/{}.pk'.format(re.sub('[^A-Za-z]+', '', search_query['name'])), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
 
     # ███████ ███████  ██████    ██  ██████  ██   ██
@@ -255,6 +255,7 @@ def crawlerWrapper(search_query, engine):
 
     elif engine == "generalSEC":
         url = urlmaker_sec(search_query)
+        driver.get(url)
         # links = search_sec(url, driver)
 
     # ███████ ███████  ██████     ███████     ██████   ██
@@ -267,9 +268,12 @@ def crawlerWrapper(search_query, engine):
         """
             uses the company CIK to find if it has any subidaries from the E-21 form
         """
-        pass
+
     elif engine == 'bloomberg':
         pass
+    elif engine == 'sitespecific':
+        
+
     else:
         print("Engine hasn't been defined yet.")
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
@@ -288,12 +292,12 @@ if __name__ == "__main__":
     # crawlerWrapper(search_query, 'sec10k')
 
     """ Using the SEC CIK 10k engine on all of the CIK"""
-    # search_query['name'] = "All"
-    # search_query['dateStart'] = '08/05/2015'
-    # search_query['dateEnd'] = '08/05/2019'
-    # crawlerWrapper(search_query, 'sec10kall')
-
-    """ Using the SEC for an SIC"""
+    search_query['name'] = "All"
     search_query['dateStart'] = '08/05/2015'
     search_query['dateEnd'] = '08/05/2019'
-    crawlerWrapper(search_query, 'secsic10k')
+    crawlerWrapper(search_query, 'sec10kall')
+
+    """ Using the SEC for an SIC"""
+    # search_query['dateStart'] = '08/05/2015'
+    # search_query['dateEnd'] = '08/05/2019'
+    # crawlerWrapper(search_query, 'secsic10k')

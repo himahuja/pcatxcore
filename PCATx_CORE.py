@@ -10,13 +10,16 @@ from webcrawlAll import crawlerWrapper
 from gensim import models
 import logging, re
 
-def WC_to_KPM(query_string):
-    crawlerWrapper(query_string, "google")
-    with open("data/parsedLinks/{}.pk".format(re.sub('[^A-Za-z]+', '', query_string)), "rb") as handle:
+def WC_to_KPM(query):
+    crawlerWrapper(query, "google")
+    with open("data/parsedLinks/{}.pk".format(re.sub('[^A-Za-z]+', '', query['name'])), "rb") as handle:
         url_list = pickle.load(handle)
     wrm = WebResourceManager()
-    wrm.read_in_docs(parser_iter("test", url_list))
-    wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^A-Za-z]+', '', query_string)))
+    wrm.read_in_from_iterator(parser_iter("test", url_list))
+    if(len(wrm) > 0):
+        wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^A-Za-z]+', '', query['name'])))
+        wrm.train_classifier()
+        wrm.rank_by_relevance()
 #    cb = corpusBuilder(file_manager=wrm)
 #    cb.save()
 #    docs = cb.to_TaggedDocument()
@@ -32,8 +35,8 @@ def main():
     with open("data/praedicat_data/Companies.txt") as f:
         content = f.readlines()
     for line in content:
-        query = line.strip()
-        print("Currently web crawling: {}".format(query))
+        query = { 'name' : line.strip().replace(".json", "") }
+        print("Currently web crawling: {}".format(query['name']))
         WC_to_KPM(query)
     wrm = WebResourceManager()
     for file in os.listdir("data/webresourcemanagers"):
@@ -41,12 +44,7 @@ def main():
         tmp.load(os.path.join("data/webresourcemanagers", file))
         wrm.absorb_file_manager(tmp)
     wrm.save()
-    wrm.train_classifier()
-    wrm.rank_by_relevance()
     wrm.save()
-    for line in content:
-        line = line.strip()
-        WC_to_KPM(line)
     
 if __name__ == "__main__" :
     main()
