@@ -37,15 +37,13 @@ class WebResourceManager(object):
             print("Error: Problem loading {}.json. Check that your rel_path is correct".format(key))
     
     def __len__(self):
-        return len(self.url_to_uuid.values())
+        return len(self.url_to_uuid)
         
     def __repr__(self):
-        this = { 'url_to_uuid': self.url_to_uuid }
-        return json.dumps(this, sort_keys = True, indent = 4)
+        return json.dumps(self.url_to_uuid, sort_keys = True, indent = 4)
         
     def __str__(self):
-        this = { 'url_to_uuid': self.url_to_uuid }
-        return json.dumps(this, sort_keys = True, indent = 4)
+        return json.dumps(self.url_to_uuid, sort_keys = True, indent = 4)
         
     def absorb_file_manager(self, other_file_manager):
         for item in other_file_manager:

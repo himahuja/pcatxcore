@@ -45,9 +45,22 @@ def TxtToJson(file_in, file_out):
         dictionary[line.strip().lower()] = line.strip().lower()
     open(file_out, "w").write(json.dumps(dictionary, sort_keys = True, indent = 4))
 
+def read_in_dicts_from_txt():
+    sic_dict = json.loads(open(os.path.join("../..", "sic_dict.txt")))
+    file = open(os.path.join("../../data", "sic_to_description.json"), "w")
+    file.write(json.dumps(sic_dict, sort_keys = True, indent = 4))
+    file.close()
+    naics_dict = json.loads(open(os.path.join("../..", "naics_dict.txt")))
+    file = open(os.path.join("../../data", "naics_to_description.json"), "w")
+    file.write(json.dumps(naics_dict, sort_keys = True, indent = 4))
+    file.close()
+    sic_naics_dict = json.loads(open(os.path.join("../..", "sic_naics_dict.txt")))
+    file = open(os.path.join("../../data", "sic_to_description.json"), "w")
+    file.write(json.dumps(sic_dict, sort_keys = True, indent = 4))
+    file.close()
 
 def main():    
-    TxtToJson(os.path.join("../../data/praedicat_data/", "Companies.txt"), os.path.join("../data/", "companies_to_alias.json"))
+    read_in_dicts_from_txt()
     
 if __name__ == "__main__" :
     main()
