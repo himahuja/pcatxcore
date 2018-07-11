@@ -255,6 +255,7 @@ def crawlerWrapper(search_query, engine):
 
     elif engine == "generalSEC":
         url = urlmaker_sec(search_query)
+        driver.get(url)
         # links = search_sec(url, driver)
 
     # ███████ ███████  ██████     ███████     ██████   ██
@@ -267,9 +268,12 @@ def crawlerWrapper(search_query, engine):
         """
             uses the company CIK to find if it has any subidaries from the E-21 form
         """
-        pass
+
     elif engine == 'bloomberg':
         pass
+    elif engine == 'sitespecific':
+        
+
     else:
         print("Engine hasn't been defined yet.")
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
@@ -288,12 +292,12 @@ if __name__ == "__main__":
     # crawlerWrapper(search_query, 'sec10k')
 
     """ Using the SEC CIK 10k engine on all of the CIK"""
-    # search_query['name'] = "All"
-    # search_query['dateStart'] = '08/05/2015'
-    # search_query['dateEnd'] = '08/05/2019'
-    # crawlerWrapper(search_query, 'sec10kall')
-
-    """ Using the SEC for an SIC"""
+    search_query['name'] = "All"
     search_query['dateStart'] = '08/05/2015'
     search_query['dateEnd'] = '08/05/2019'
-    crawlerWrapper(search_query, 'secsic10k')
+    crawlerWrapper(search_query, 'sec10kall')
+
+    """ Using the SEC for an SIC"""
+    # search_query['dateStart'] = '08/05/2015'
+    # search_query['dateEnd'] = '08/05/2019'
+    # crawlerWrapper(search_query, 'secsic10k')
