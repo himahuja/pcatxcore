@@ -6,6 +6,8 @@ Created on Sun Jul  8 15:27:52 2018
 @author: alex
 """
 from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 from PCATParser import *
 import json, os, uuid
 import numpy as np
@@ -60,6 +62,68 @@ class WebResourceManager(object):
         except:
             pass
         
+    def get_corpus(self, process_all=False):
+        corpus_list = []
+        count = 0
+        stoplist = set(stopwords.words('english'))
+        ps = PorterStemmer()  
+        if not process_all:
+            for item in self:
+                try:
+                    corpus_list.append(item['corpus'])
+                except:
+                    text = re.sub('[^A-Za-z]+', ' ', re.sub('\S*@\S*\s?', "", item['text'])).lower().splitlines()
+                    doc_list = []
+                    for line in text:
+                        words = line.split()
+                        for word in words:
+                            doc_list.append(word.strip())
+                    doc_list = [word for word in doc_list if word not in stoplist]
+                    sent_set = set(doc_list)
+                    for word in sent_set:
+                        if len(word) < 3:
+                            while word in doc_list:
+                                try:
+                                    doc_list.remove(word)
+                                except:
+                                    pass
+                    corpus_list.append(doc_list)
+                    item['corpus'] = doc_list
+                    file = open(os.path.join("data/docs", item['id']+".json"), "w")
+                    file.write(json.dumps(item, sort_keys=True, indent=4))
+                    file.close()
+                    if (count % 100 == 99):
+                        if (count+1 != len(self)):
+                            print("...{:2.2f}% done, processing document {} of {}".format(((count+1)/len(self))*100,count+1,len(self)))
+                    count+=1
+        else:
+            for item in self:
+                    text = re.sub('[^A-Za-z]+', ' ', re.sub('\S*@\S*\s?', "", item['text'])).lower().splitlines()
+                    for line in text:
+                        words = line.split()
+                        for word in words:
+                            doc_list.append(word.strip())
+                    doc_list = [word for word in doc_list if word not in stoplist]
+                    sent_set = set(doc_list)
+                    for word in sent_set:
+                        if len(word) < 3:
+                            while word in doc_list:
+                                try:
+                                    doc_list.remove(word)
+                                except:
+                                    pass
+                    corpus_list.append(doc_list)
+                    item['corpus'] = doc_list
+                    file = open(os.path.join("data/docs", item['id']+".json"), "w")
+                    file.write(json.dumps(item, sort_keys=True, indent=4))
+                    file.close()
+                    if (count % 100 == 99):
+                        if (count+1 != len(self)):
+                            print("...{:2.2f}% done, processing document {} of {}".format(((count+1)/len(self))*100,count+1,len(self)))
+                    count+=1
+        print("...100.00% done, processing document {} of {}".format(len(self),len(self)))
+        return corpus_list
+        
     def get_relevance_score(self, document):
         response = self.classifier.transform([document])
         feature_names = self.classifier.get_feature_names()
@@ -79,7 +143,13 @@ class WebResourceManager(object):
             score = total_score / count_keywords
         else:
             score = 0
+        print(score)
         return score
+    
+    def get_TaggedDocuments(self):
+        for file in self:
+            #if query is a list this will throw errors, keep that in mind if the future
+            yield TaggedDocument(words=file['corpus'], tags=list({file['id'], file['query']}))
     
     def get_texts(self):
         for file in self:
@@ -110,7 +180,7 @@ class WebResourceManager(object):
             item['relevance_score'] = self.get_relevance_score(item['text'])
             file = open(os.path.join("data/docs", item['id']+".json"), "w")
             file.write(json.dumps(item, sort_keys=True, indent=4))
-            file.close() 
+            file.close()
     
     #DOES NOT USE REL_PATH
     def read_in_from_directory(self, directory):
@@ -163,6 +233,22 @@ class WebResourceManager(object):
         self.classifier.fit_transform(self.get_texts())
 
             
+def insertionSort(arr):
+ 
+    # Traverse through 1 to len(arr)
+    for i in range(1, len(arr)):
+ 
+        key = arr[i]['relevance_score']
+ 
+        # Move elements of arr[0..i-1], that are
+        # greater than key, to one position ahead
+        # of their current position
+        j = i-1
+        while j >=0 and key < arr[j]['relevance_score'] :
+                arr[j+1]['relevance_score'] = arr[j]['relevance_score']
+                j -= 1
+        arr[j+1]['relevance_score'] = key
+    return arr
             
 def main():
     with open("kpm/data/articles.txt") as f:
@@ -170,11 +256,7 @@ def main():
     content = [x.strip() for x in content]
     wrm = WebResourceManager()
     wrm.load()
-    scores = []
-    for file in wrm:
-        scores.append(file['relevance_score'])
-    scores.sort()
-    print(scores)
+    corpus = wrm.get_corpus()
     
 if __name__ == "__main__" :
     main()
