@@ -312,10 +312,19 @@ def crawlerWrapper(search_query, engine):
         name = search_query['name']
         filename = 'sitespecific.sh'
         path_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", filename)
-        caller_statement = "httrack {} -O data/temp/{} -r5 -n '%P0' -%I '-* +*htm +*html +*pdf'".format(url, name)
+        """
+            Current settings:
+            1. -p0: only parse URLS, don't download anything
+            2. -%I : make an index of links
+            3. set depth of 5
+            4. language preference: en
+            5. -n: get non-html files near an html
+        """
+        caller_statement = "httrack {} -O data/temp/{} -r5 -n '%P0' -%I -p0 -%l \"en\" '-* +*htm +*html +*pdf'".format(url, name)
         with open(path_file, 'w') as handle:
             # makes sure that it runs a bash script
             handle.write('#!/bin/sh' + '\n')
+            # adds the line for the
             handle.write(caller_statement)
         # os.chmod(path_file, stat.S_IREAD | stat.S_IRGRP | stat.S_IROTH | stat.S_IXOTH | stat.S_IXUSR | stat.S_IXGRP)
         subprocess.call(['chmod', '777', 'data/{}'.format(filename)])
@@ -352,7 +361,7 @@ if __name__ == "__main__":
     # crawlerWrapper(search_query, 'secsic10k')
 
     """ site specific search for each company """
-    search_query['url'] = 'https://babahooja.github.io'
-    # search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
-    search_query['name'] = 'trial2'
+    # search_query['url'] = 'https://babahooja.github.io'
+    search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
+    search_query['name'] = 'dow-products'
     crawlerWrapper(search_query, 'sitespecific')
