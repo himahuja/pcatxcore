@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
 import json, os, re, sys, subprocess
+from os import stat
 
 # ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████ ██████
 # ██    ██ ██   ██ ██          ████  ████ ██   ██ ██  ██  ██      ██   ██
@@ -313,7 +314,11 @@ def crawlerWrapper(search_query, engine):
         path_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", filename)
         caller_statement = "httrack {} -O data/temp/{} -r5 -n '%P0' -%I '-* +*htm +*html +*pdf'".format(url, name)
         with open(path_file, 'w') as handle:
+            # makes sure that it runs a bash script
+            handle.write('#!/bin/sh' + '\n')
             handle.write(caller_statement)
+        # os.chmod(path_file, stat.S_IREAD | stat.S_IRGRP | stat.S_IROTH | stat.S_IXOTH | stat.S_IXUSR | stat.S_IXGRP)
+        subprocess.call(['chmod', '777', 'data/{}'.format(filename)])
         subprocess.call(['./data/{}'.format(filename)])
         links = []
 
@@ -347,6 +352,7 @@ if __name__ == "__main__":
     # crawlerWrapper(search_query, 'secsic10k')
 
     """ site specific search for each company """
-    search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
-    search_query['name'] = 'dow_products'
+    search_query['url'] = 'https://babahooja.github.io'
+    # search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
+    search_query['name'] = 'trial2'
     crawlerWrapper(search_query, 'sitespecific')
