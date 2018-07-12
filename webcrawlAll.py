@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
-import json, os, re, sys
+import json, os, re, sys, subprocess
 
 # ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████ ██████
 # ██    ██ ██   ██ ██          ████  ████ ██   ██ ██  ██  ██      ██   ██
@@ -141,6 +141,14 @@ def setDriver():
     driver = webdriver.Chrome(path_chromedriver, chrome_options=options)
     return driver
 
+
+    #  ██████ ██████   █████  ██     ██ ██      ███████ ██████      ██     ██ ██████   █████  ██████
+    # ██      ██   ██ ██   ██ ██     ██ ██      ██      ██   ██     ██     ██ ██   ██ ██   ██ ██   ██
+    # ██      ██████  ███████ ██  █  ██ ██      █████   ██████      ██  █  ██ ██████  ███████ ██████
+    # ██      ██   ██ ██   ██ ██ ███ ██ ██      ██      ██   ██     ██ ███ ██ ██   ██ ██   ██ ██
+    #  ██████ ██   ██ ██   ██  ███ ███  ███████ ███████ ██   ██      ███ ███  ██   ██ ██   ██ ██
+
+
 def crawlerWrapper(search_query, engine):
     """
         Takes in the query to search for on a portal
@@ -268,16 +276,52 @@ def crawlerWrapper(search_query, engine):
         """
             uses the company CIK to find if it has any subidaries from the E-21 form
         """
+        pass
 
     elif engine == 'bloomberg':
         pass
+
+    # ███████ ██ ████████ ███████     ███████ ███████  █████  ██████   ██████ ██   ██
+    # ██      ██    ██    ██          ██      ██      ██   ██ ██   ██ ██      ██   ██
+    # ███████ ██    ██    █████       ███████ █████   ███████ ██████  ██      ███████
+    #      ██ ██    ██    ██               ██ ██      ██   ██ ██   ██ ██      ██   ██
+    # ███████ ██    ██    ███████     ███████ ███████ ██   ██ ██   ██  ██████ ██   ██
+
     elif engine == 'sitespecific':
-        
+        """
+            search_query['name']: url of the website we need to download
+            -O output directory
+            -r<number> set the depth limit
+            -m<number>,<number> nonhtml,html file size limit in bytes
+            %e<number>, number of external links from the targetted website
+            '%P0' don't attempt to pase link in Javascript or in unknown tags
+            -n get non-html files near an html-files (images on web-pages)
+            t test all urls
+            -%L <filename>, loads all the links to be tracked by the function
+            K0 Keep relative links
+            K keep original links
+            -%l "en, fr, *" language preferences for the documents
+            -Z debug log
+            -v verbose screen mode
+            I make an index
+            %I make a searchable index
+            -pN priority mode (0): just scan (1): just get html (2): just get non-html (3): save all files (7): get html files first, then treat other files
+        """
+        url = search_query['url']
+        name = search_query['name']
+        filename = 'sitespecific.sh'
+        path_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", filename)
+        caller_statement = "httrack {} -O data/temp/{} -r5 -n '%P0' -%I '-* +*htm +*html +*pdf'".format(url, name)
+        with open(path_file, 'w') as handle:
+            handle.write(caller_statement)
+        subprocess.call(['./data/{}'.format(filename)])
+        links = []
 
     else:
         print("Engine hasn't been defined yet.")
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
     driver.quit()
+    return links
 
 if __name__ == "__main__":
     search_query = {}
@@ -292,12 +336,17 @@ if __name__ == "__main__":
     # crawlerWrapper(search_query, 'sec10k')
 
     """ Using the SEC CIK 10k engine on all of the CIK"""
-    search_query['name'] = "All"
-    search_query['dateStart'] = '08/05/2015'
-    search_query['dateEnd'] = '08/05/2019'
-    crawlerWrapper(search_query, 'sec10kall')
+    # search_query['name'] = "All"
+    # search_query['dateStart'] = '08/05/2015'
+    # search_query['dateEnd'] = '08/05/2019'
+    # crawlerWrapper(search_query, 'sec10kall')
 
     """ Using the SEC for an SIC"""
     # search_query['dateStart'] = '08/05/2015'
     # search_query['dateEnd'] = '08/05/2019'
     # crawlerWrapper(search_query, 'secsic10k')
+
+    """ site specific search for each company """
+    search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
+    search_query['name'] = 'dow_products'
+    crawlerWrapper(search_query, 'sitespecific')
