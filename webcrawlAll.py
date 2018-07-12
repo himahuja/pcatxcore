@@ -10,7 +10,6 @@ from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
 import json, os, re, sys, subprocess
-from os import stat
 
 # ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████ ██████
 # ██    ██ ██   ██ ██          ████  ████ ██   ██ ██  ██  ██      ██   ██
@@ -39,6 +38,7 @@ def urlmaker_sec(queryDic):
 
 def linkFilter_google(url):
     filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone', 'linkedin']
+    [ 'https://'+ k for k in filterList]
     urlList = url.split('.')
     if any(x in urlList for x in filterList):
         return 0
@@ -202,6 +202,7 @@ def crawlerWrapper(search_query, engine):
         links = search_sec10k(url, driver)
         with open('data/parsedLinks/{}.pk'.format(search_query['cik']), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
+        print(links)
         # print(timestamps)
 
     #  █████  ██      ██           ██  ██████  ██   ██
@@ -265,6 +266,7 @@ def crawlerWrapper(search_query, engine):
     elif engine == "generalSEC":
         url = urlmaker_sec(search_query)
         driver.get(url)
+        links = []
         # links = search_sec(url, driver)
 
     # ███████ ███████  ██████     ███████     ██████   ██
@@ -278,7 +280,6 @@ def crawlerWrapper(search_query, engine):
             uses the company CIK to find if it has any subidaries from the E-21 form
         """
         pass
-
     elif engine == 'bloomberg':
         pass
 
@@ -342,12 +343,14 @@ if __name__ == "__main__":
     """ Using the google crawler"""
     # search_query['name'] = "whatever you want to query on google"
     # crawlerWrapper('Hello I am Himanshu Ahuja what is python we love code wtf', 'google')
-    """ Using the SEC CIK 10k engine on one of the CIKs"""
-    # search_query['name'] = '1000045_CIK'
-    # search_query['cik'] = '1000045'
-    # search_query['dateStart'] = '08/05/2016'
-    # search_query['dateEnd'] = '08/05/2019'
-    # crawlerWrapper(search_query, 'sec10k')
+    """
+    Using the SEC CIK 10k engine on one of the CIKs
+    """
+    search_query['name'] = '1002910_CIK'
+    search_query['cik'] = '1002910'
+    search_query['dateStart'] = '08/05/2016'
+    search_query['dateEnd'] = '08/05/2019'
+    crawlerWrapper(search_query, 'sec10k')
 
     """ Using the SEC CIK 10k engine on all of the CIK"""
     # search_query['name'] = "All"
@@ -362,6 +365,10 @@ if __name__ == "__main__":
 
     """ site specific search for each company """
     # search_query['url'] = 'https://babahooja.github.io'
-    search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
-    search_query['name'] = 'dow-products'
-    crawlerWrapper(search_query, 'sitespecific')
+    # search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
+    # search_query['name'] = 'dow-products'
+    # crawlerWrapper(search_query, 'sitespecific')
+
+    """ using the cik to get the E-21 of the company / subsidary structure, ultimate parent [top node] """
+
+    """ Mergers and acquisition """
