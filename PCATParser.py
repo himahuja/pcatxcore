@@ -4,6 +4,7 @@
 from bs4 import BeautifulSoup
 from bs4.element import Comment
 import urllib.request, os, webbrowser, PyPDF2, nltk, os, pdfkit
+import wikipedia
 
 def tag_visible(element):
     if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:
@@ -104,6 +105,23 @@ def parser_iter(query_string, linkList):
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
+
+def wiki_parser(company):
+    link = wikipedia.page(company).url
+    body = urllib.request.urlopen(link).read()
+    soup = BeautifulSoup(body, 'lxml')
+    table = soup.findAll('table',{'class':'infobox vcard'})
+    info_dict = {}
+    for t in table:
+        row = t.findAll('tr')
+        for r in row:
+            head = r.findAll('th')
+            division = r.findAll('td')
+            for h,d in zip(head,division):
+                desc = h.get_text().strip('\n')
+                detail = d.get_text().strip('\n')
+                info_dict[desc] = detail
+    return info_dict
 
 def main():
     with open("kpm/data/articles.txt") as f:
