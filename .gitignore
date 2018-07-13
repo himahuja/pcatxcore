@@ -124,6 +124,7 @@ venv.bak/
 *.exe
 *.o
 *.so
+!chromedriver_win32.exe
 
 # Packages #
 ############
