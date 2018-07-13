@@ -40,37 +40,36 @@ def sic2cikCrawler(driver, siccodes2name):
         start = 0
         while True:
             url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&SIC={}&owner=include&match=&start={}&count=100&hidefilings=0".format(sic.zfill(4), start)
-            print(url)
-        #     driver.get(url)
-        #     rows = driver.find_elements_by_xpath('//*[@id="seriesDiv"]/table/tbody/tr[position() >= 2 and position() <= last()]')
-        #     for row in rows:
-        #         col = row.find_elements_by_tag_name("td")
-        #         cikcodes2name[col[0].text] = col[1].text
-        #         ciknames2code[col[1].text] = col[0].text
-        #         list_of_cik.append(col[0].text)
-        #     sic2cik[sic] = list_of_cik
-        #     buttons = driver.find_elements_by_xpath('//*[@id="contentDiv"]/form/input')
-        #
-        #     flag = 0
-        #
-        #     for button in buttons:
-        #         if button.get_attribute('value') == 'Next 100':
-        #             start = start + 100
-        #             flag = 1
-        #             break
-        #     if flag == 0:
-        #         print("There are no more pages for SIC: {}".format(sic))
-        #         break
-        # if count%100 == 0:
-        #     print('Saving the first {} items'.format(count))
-        #     with open('../data/SEC_data/sic2cik.pk', 'wb') as handle:
-        #         pk.dump(sic2cik, handle, protocol=pk.HIGHEST_PROTOCOL)
-        #
-        #     with open('../data/SEC_data/cikcodes2name.pk', 'wb') as handle:
-        #         pk.dump(cikcodes2name, handle, protocol=pk.HIGHEST_PROTOCOL)
-        #
-        #     with open('../data/SEC_data/ciknames2code.pk', 'wb') as handle:
-        #         pk.dump(ciknames2code, handle, protocol=pk.HIGHEST_PROTOCOL)
+            driver.get(url)
+            rows = driver.find_elements_by_xpath('//*[@id="seriesDiv"]/table/tbody/tr[position() >= 2 and position() <= last()]')
+            for row in rows:
+                col = row.find_elements_by_tag_name("td")
+                cikcodes2name[col[0].text] = col[1].text
+                ciknames2code[col[1].text] = col[0].text
+                list_of_cik.append(col[0].text)
+            sic2cik[sic] = list_of_cik
+            buttons = driver.find_elements_by_xpath('//*[@id="contentDiv"]/form/input')
+
+            flag = 0
+
+            for button in buttons:
+                if button.get_attribute('value') == 'Next 100':
+                    start = start + 100
+                    flag = 1
+                    break
+            if flag == 0:
+                print("There are no more pages for SIC: {}".format(sic))
+                break
+        if count%100 == 0:
+            print('Saving the first {} items'.format(count))
+            with open('../data/SEC_data/sic2cik.pk', 'wb') as handle:
+                pk.dump(sic2cik, handle, protocol=pk.HIGHEST_PROTOCOL)
+
+            with open('../data/SEC_data/cikcodes2name.pk', 'wb') as handle:
+                pk.dump(cikcodes2name, handle, protocol=pk.HIGHEST_PROTOCOL)
+
+            with open('../data/SEC_data/ciknames2code.pk', 'wb') as handle:
+                pk.dump(ciknames2code, handle, protocol=pk.HIGHEST_PROTOCOL)
 
 if __name__ == '__main__':
     driver = setDriver()
