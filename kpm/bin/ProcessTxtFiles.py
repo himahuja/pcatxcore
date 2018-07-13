@@ -4,7 +4,7 @@ Created on Wed Jul  4 18:56:05 2018
 
 @author: alex
 """
-import codecs, json, os, re
+import codecs, json, os, pickle, re
 
 def ProcessAbstracts(dirname):
     for fname in os.listdir(dirname):
@@ -45,31 +45,23 @@ def TxtToJson(file_in, file_out):
         dictionary[line.strip().lower()] = line.strip().lower()
     open(file_out, "w").write(json.dumps(dictionary, sort_keys = True, indent = 4))
 
-def read_in_dicts_from_txt():
-    open(os.path.join("../..", "sic_dict.txt"), "w").write(open(os.path.join("../..", "sic_dict.txt")).read().replace(" '", '"').replace("':", '":').replace("{'", '{"').replace("'}", '"}').replace("',", '",'))
-    sic_dict = json.loads(open(os.path.join("../..", "sic_dict.txt"), "r").read())
-    file = open(os.path.join("../../data", "sic_to_description.json"), "w")
-    file.write(json.dumps(sic_dict, sort_keys = True, indent = 4))
-    file.close()
-    open(os.path.join("../..", "naics_dict.txt"), "w").write(open(os.path.join("../..", "naics_dict.txt")).read().replace(" '", '"').replace("':", '":').replace("{'", '{"').replace("'}", '"}').replace("',", '",'))
-    sic_dict = json.loads(open(os.path.join("../..", "naics_dict.txt"), "r").read())
-    file = open(os.path.join("../../data", "naics_to_description.json"), "w")
-    file.write(json.dumps(naics_dict, sort_keys = True, indent = 4))
-    file.close()
-    open(os.path.join("../..", "sic_naics_dict.txt"), "w").write(open(os.path.join("../..", "sic_naics_dict.txt")).read().replace(" '", '"').replace("':", '":').replace("{'", '{"').replace("'}", '"}').replace("',", '",'))
-    sic_dict = json.loads(open(os.path.join("../..", "sic_naics_dict.txt"), "r").read())
-    file = open(os.path.join("../../data", "sic_to_naics.json"), "w")
-    file.write(json.dumps(sic_dict, sort_keys = True, indent = 4))
-    file.close()
-    open(os.path.join("../..", "naics_sic_dict.txt"), "w").write(open(os.path.join("../..", "naics_sic_dict.txt")).read().replace(" '", '"').replace("':", '":').replace("{'", '{"').replace("'}", '"}').replace("',", '",'))
-    sic_dict = json.loads(open(os.path.join("../..", "naics_sic_dict.txt"), "r").read())
-    file = open(os.path.join("../../data", "naics_to_sic.json"), "w")
-    file.write(json.dumps(naics_sic_dict, sort_keys = True, indent = 4))
-    file.close()
+def pickle_to_JSON():
+    with open(os.path.join("../../Dictionaries", "naics_dict.pk"), "rb") as handle:
+        file = pickle.load(handle)
+    open(os.path.join("../../data/profilemanager/data", "naics_to_description.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))
+    with open(os.path.join("../../Dictionaries", "naics_sic_dict.pk"), "rb") as handle:
+        file = pickle.load(handle)
+    open(os.path.join("../../data/profilemanager/data", "naics_to_sic.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))    
+    with open(os.path.join("../../Dictionaries", "sic_dict.pk"), "rb") as handle:
+        file = pickle.load(handle)
+    open(os.path.join("../../data/profilemanager/data", "sic_to_description.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))    
+    with open(os.path.join("../../Dictionaries", "sic_naics_dict.pk"), "rb") as handle:
+        file = pickle.load(handle)
+    open(os.path.join("../../data/profilemanager/data", "sic_to_naics.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))    
 
-def main():    
-    read_in_dicts_from_txt()
     
+def main():    
+    pickle_to_JSON()
 if __name__ == "__main__" :
     main()
     

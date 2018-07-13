@@ -5,8 +5,8 @@ Created on Fri Jul  6 14:10:12 2018
 @author: alex
 """
 import parser, pickle
-from kpm.corpusBuilder import *
 from webcrawlAll import crawlerWrapper
+from WebResourceManager import *
 from gensim import models
 import logging, re
 

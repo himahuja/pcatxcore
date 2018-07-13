@@ -272,7 +272,7 @@ def crawlerWrapper(search_query, engine):
     elif engine == 'bloomberg':
         pass
     elif engine == 'sitespecific':
-        
+        pass
 
     else:
         print("Engine hasn't been defined yet.")
