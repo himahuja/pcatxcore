@@ -20,17 +20,7 @@ def WC_to_KPM(query):
         wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^A-Za-z]+', '', query['name'])))
         wrm.train_classifier()
         wrm.rank_by_relevance()
-#    cb = corpusBuilder(file_manager=wrm)
-#    cb.save()
-#    docs = cb.to_TaggedDocument()
-#    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-#    model = models.Doc2Vec(docs, workers=3, min_count=20)
-#    print("Start training process...")
-#    model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
-#    print(model.wv.most_similar(positive=['woman', 'king'], negative=['man']))
-#    print(model.wv.doesnt_match("breakfast cereal dinner lunch".split()))
-#    print(model.wv.similarity('woman', 'man'))
-
+        
 def main():
     with open("data/praedicat_data/Companies.txt") as f:
         content = f.readlines()
