@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 # to save python objects
 import pickle as pk
 import json, os, re, sys, subprocess
+from collections import OrderedDict
 
 # ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████ ██████
 # ██    ██ ██   ██ ██          ████  ████ ██   ██ ██  ██  ██      ██   ██
@@ -21,7 +22,7 @@ def urlmaker_sec(queryDic):
     searchText = queryDic['searchText'] if 'searchText' in queryDic else '*'
     formType = queryDic['formType'] if 'formType' in queryDic else '1'
     sic = queryDic['sic'] if 'sic' in queryDic else '*'
-    cik = queryDic['cik'] if 'cik' in queryDic else '*'
+    cik = queryDic['cik'].lstrip('0') if 'cik' in queryDic else '*'
     startDate = queryDic['startDate'] if 'startDate' in queryDic else '*'
     endDate = queryDic['endDate'] if 'endDate' in queryDic else '*'
     sortOrder = queryDic['sortOrder'] if 'sortOrder' in queryDic else 'Date'
@@ -92,7 +93,7 @@ def search_sec10k(url, driver):
         search_results = driver.find_elements_by_css_selector('a#viewFiling.filing')
             # timestamps = driver.find_elements_by_css_selector('i.blue')
         if (len(search_results)) <= 1:
-            print('No Results were found for the query on this page')
+            print('No Results were found for the query: {}'.format(search_query['cik']))
         else:
             for x in range(0, len(search_results)):
                 temp_list = search_results[x].get_attribute('text').split()
@@ -114,7 +115,7 @@ def search_sec10k(url, driver):
         try:
             pages[0].click()
         except:
-            print("There are no more pages to parse.")
+            print("There are no more pages to parse. {}".format(search_query['cik']))
             break
     return link_href
 
@@ -220,16 +221,26 @@ def crawlerWrapper(search_query, engine):
             with open('data/SEC_data/cikcodes2name.pk', 'rb') as f:
                 cikcodes2name = pk.load(f)
         except:
-            print('Couldn\'t locate the file: cikcodes2name.pk')
+            print('Couldn\'t locate the file: cik10k.pk')
             return
-
+        try:
+            with open('data/SEC_data/cik10k.pk', 'rb') as f:
+                cik10k = pk.load(f)
+        except:
+            cik10k = {}
+        count = 0
+        cikcodes2name = OrderedDict(sorted(cikcodes2name.items(), key=lambda t: t[0]))
         for cik in cikcodes2name.keys():
+            count = count + 1
             search_query['cik'] = cik
             url = urlmaker_sec(search_query)
-            print(url)
+            # print(url)
             links = search_sec10k(url, driver)
-            with open('data/parsedLinks/ALL_{}.pk'.format(search_query['cik']), 'wb') as handle:
-                pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
+            cik10k[search_query['cik']] = links
+            if count%1000 == 0:
+                print('Saing the first {} CIKs'.format(count))
+                with open('data/SEC_data/cik10Kall.pk', 'wb') as handle:
+                    pk.dump(cik10k, handle, protocol=pk.HIGHEST_PROTOCOL)
 
     # ███████ ███████  ██████     ███████ ██  ██████
     # ██      ██      ██          ██      ██ ██
@@ -346,17 +357,17 @@ if __name__ == "__main__":
     """
     Using the SEC CIK 10k engine on one of the CIKs
     """
-    search_query['name'] = '1002910_CIK'
-    search_query['cik'] = '1002910'
-    search_query['dateStart'] = '08/05/2016'
-    search_query['dateEnd'] = '08/05/2019'
-    crawlerWrapper(search_query, 'sec10k')
+    # search_query['name'] = '1002910_CIK'
+    # search_query['cik'] = '1002910'
+    # search_query['dateStart'] = '08/05/2016'
+    # search_query['dateEnd'] = '08/05/2019'
+    # crawlerWrapper(search_query, 'sec10k')
 
     """ Using the SEC CIK 10k engine on all of the CIK"""
-    # search_query['name'] = "All"
-    # search_query['dateStart'] = '08/05/2015'
-    # search_query['dateEnd'] = '08/05/2019'
-    # crawlerWrapper(search_query, 'sec10kall')
+    search_query['name'] = "All"
+    search_query['dateStart'] = '08/05/2012'
+    search_query['dateEnd'] = '08/05/2019'
+    crawlerWrapper(search_query, 'sec10kall')
 
     """ Using the SEC for an SIC"""
     # search_query['dateStart'] = '08/05/2015'
