@@ -5,27 +5,18 @@ Created on Wed Jul 11 12:47:13 2018
 
 @author: alex
 """
-import json
-
-class Profile(object):
-    
-    def __init__(self, file_name):
-        this = json.loads(open(file_name, "r").read())
-        self.name = this['name']
-        self.tenk = this['tenk']
-        self.cik = this['cik']
-        self.naics = this['naics']
-        self.sic = this['sic']
-        self.subsidiaries = this['subsidiaries']
-        self.website = this['website']
+import json, os
 
 class ProfileManager(object):
     
     def __init__(self):
         #identify the Profile
-        self.cik_name = {}
-        self.name_cik = {}
-        self.name_alias = {}
+        try:
+            self.cik_name = json.loads(open("data/profilemanager/data/cik_to_name.json", "r").read())
+            self.name_cik = json.loads(open("data/profilemanager/data/name_to_cik.json", "r").read())
+            self.name_alias = {}
+        except Exception as e:
+            print("Error reading in one of the profile indentifier files " + str(e))
         #sic <---> naics transforms
         try:
             self.naics_description = json.loads(open("data/profilemanager/data/naics2017_to_naics2017_title.json", "r").read())
@@ -48,22 +39,20 @@ class ProfileManager(object):
     
     def __getitem(self, key):
         if key in self.cik_name:
-            pass
-            #open this file, we have cik
+            return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(key)), "r").read())
         elif key in self.name_cik:
-            pass
+            return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(self.name_cik[key])), "r").read())
             #open name_cik[key]
         else:
             for i in range(len(self.name_aliases.values())):
                 for alias in self.name_aliases.values()[i]:
                     if key == alias:
-                        pass
+                        return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
         
     def __iter__(self):
         for cik in self.cik_name.keys():
-            pass
-            #open the profile
+            yield self.get(cik)
         
     def __len__(self):
         return len(self.cik_name)
@@ -81,6 +70,9 @@ class ProfileManager(object):
         
     def cik_to_naics(self, cik):
         return self.get(cik).naics
+        
+    def cik_to_name(self, cik):
+        return self.cik_name(cik)
     
     def cik_to_sic(self, cik):
         return self.cik_sic[cik]
@@ -91,18 +83,38 @@ class ProfileManager(object):
     def cik_to_name(self, cik):
         return self.cik_name[cik]
         
+    def generate_profiles(self):
+        cik_to_sic = json.loads(open(os.path.join("data/profilemanager/data", "cik_to_sic.json"), "r").read())
+        sic_to_naics = json.loads(open(os.path.join("data/profilemanager/data", "sic_to_naics.json"), "r").read())
+        cik_to_10k = json.loads(open(os.path.join("data/profilemanager/data", "cik_to_10k.json"), "r").read())
+        for cik in self.cik_name:
+            this = {}
+            this['cik'] = cik
+            this['name'] = self.cik_to_name(cik)
+            this['sic'] = cik_to_sic[cik]
+            try:
+                this['naics'] = sic_to_naics[this['sic'].pop()]
+            except:
+                this['naics'] = None
+            this['subsidiaries'] = None
+            try:
+                this['tenks'] = cik_to_10k[cik]
+            except:
+                this['tenks'] = None
+            this['website'] = None
+            open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
+        
     def get(self, key):
         if key in self.cik_name:
-            pass
-            #open this file, we have cik
+            return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(key)), "r").read())
         elif key in self.name_cik:
-            pass
+            return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(self.name_cik[key])), "r").read())
             #open name_cik[key]
         else:
             for i in range(len(self.name_aliases.values())):
                 for alias in self.name_aliases.values()[i]:
                     if key == alias:
-                        pass
+                        return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
     
     def naics_to_description(self, naics):
@@ -122,10 +134,7 @@ class ProfileManager(object):
         
 def main():
     pm = ProfileManager()
-    print(pm.naics_description)
-    print(pm.sic_description)
-    print(pm.naics_sic)
-    print(pm.sic_naics)
+    pm.generate_profiles()
     
 if __name__ == "__main__" :
     main()
