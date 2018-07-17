@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 # to set the browser options
@@ -30,16 +29,28 @@ def urlmaker_sec(queryDic):
     return url
 
 
+# ███████ ██  ██████     ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████
+# ██      ██ ██          ██    ██ ██   ██ ██          ████  ████ ██   ██ ██  ██  ██
+# ███████ ██ ██          ██    ██ ██████  ██          ██ ████ ██ ███████ █████   █████
+#      ██ ██ ██          ██    ██ ██   ██ ██          ██  ██  ██ ██   ██ ██  ██  ██
+# ███████ ██  ██████      ██████  ██   ██ ███████     ██      ██ ██   ██ ██   ██ ███████
+
+def urlmaker_sic_sec(queryDic):
+    formType = queryDic['formType'] if 'formType' in queryDic else ""
+    cik = queryDic['cik'] if 'cik' in queryDic else '*'
+    return url
+
+
 # ██      ██ ███    ██ ██   ██     ███████ ██ ██   ████████ ███████ ██████
 # ██      ██ ████   ██ ██  ██      ██      ██ ██      ██    ██      ██   ██
 # ██      ██ ██ ██  ██ █████       █████   ██ ██      ██    █████   ██████
 # ██      ██ ██  ██ ██ ██  ██      ██      ██ ██      ██    ██      ██   ██
 # ███████ ██ ██   ████ ██   ██     ██      ██ ███████ ██    ███████ ██   ██
 
-
 def linkFilter_google(url):
     filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone', 'linkedin']
-    [ 'https://'+ k for k in filterList]
+    filterList.extend(['https://'+ k for k in filterList])
+    filterList.extend(['http://'+ k for k in filterList])
     urlList = url.split('.')
     if any(x in urlList for x in filterList):
         return 0
@@ -224,13 +235,15 @@ def crawlerWrapper(search_query, engine):
             print('Couldn\'t locate the file: cik10k.pk')
             return
         try:
-            with open('data/SEC_data/cik10k.pk', 'rb') as f:
+            with open('data/SEC_data/cik10Kall.pk', 'rb') as f:
                 cik10k = pk.load(f)
+                print('Loaded Old file!')
         except:
             cik10k = {}
         count = 0
         cikcodes2name = OrderedDict(sorted(cikcodes2name.items(), key=lambda t: t[0]))
-        for cik in cikcodes2name.keys():
+
+        for cik in list(cikcodes2name.keys())[len(cik10k)+1:]:
             count = count + 1
             search_query['cik'] = cik
             url = urlmaker_sec(search_query)
@@ -343,6 +356,112 @@ def crawlerWrapper(search_query, engine):
         subprocess.call(['./data/{}'.format(filename)])
         links = []
 
+    # ████████ ██████  ██
+    #    ██    ██   ██ ██
+    #    ██    ██████  ██
+    #    ██    ██   ██ ██
+    #    ██    ██   ██ ██
+
+    elif engine == 'tri':
+        # put code here
+        pass
+        # return links
+
+    #  ██████   ██████   ██████  ██          ███████ ██    ██ ██████  ███████
+    # ██       ██    ██ ██       ██          ██      ██    ██ ██   ██ ██
+    # ██   ███ ██    ██ ██   ███ ██          ███████ ██    ██ ██████  ███████
+    # ██    ██ ██    ██ ██    ██ ██               ██ ██    ██ ██   ██      ██
+    #  ██████   ██████   ██████  ███████     ███████  ██████  ██████  ███████
+
+    elif engine == 'google-subs':
+        pass
+
+    #  █████  ██   ██      ██  ██████  ██   ██     ███████ ██████   ██
+    # ██   ██ ██  ██      ███ ██  ████ ██  ██      ██           ██ ███
+    #  █████  █████        ██ ██ ██ ██ █████       █████    █████   ██
+    # ██   ██ ██  ██       ██ ████  ██ ██  ██      ██      ██       ██
+    #  █████  ██   ██      ██  ██████  ██   ██     ███████ ███████  ██
+
+    elif engine == 'everything-all':
+        try:
+            with open('data/SEC_data/cikcodes2name.pk', 'rb') as f:
+                cikcodes2name = pk.load(f)
+        except:
+            print('Couldn\'t locate the file: cikcodes2name.pk')
+            return
+        try:
+            with open('data/SEC_data/bigedgar.pk', 'rb') as f:
+                bigedgar = pk.load(f)
+                print('Loaded Old file!')
+        except:
+            bigedgar = {}
+        count = 0
+        cikcodes2name = OrderedDict(sorted(cikcodes2name.items(), key=lambda t: t[0]))
+        for cik in list(cikcodes2name.keys())[len(bigedgar)+1:]:
+            count = count + 1
+            start = 0
+            k8_info = []
+            k10_info = []
+            per_cik_forms = {}
+            while True:
+                url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={}&type=8-K&dateb=&owner=include&start={}&count=100'.format(cik, start)
+                driver.get(url)
+                if start == 0:
+                    mails = driver.find_elements_by_css_selector('span.mailerAddress')
+                    for mail in mails:
+                        bigedgar[cik]['edgar_mailing_address'] += mail.get_attribute('text')
+                rows = driver.find_elements_by_xpath('//*[@id="seriesDiv"]/table/tbody/tr[position() >= 2 and position() <= last()]')
+                for row in rows:
+                    col = row.find_elements_by_tag_name("td")
+                    if col[0].text == '8-K':
+                        per_k8_info = {}
+                        per_k8_info['time_of_filing'] = col[3].text
+                        per_k8_info['url'] = get_attribute('href')
+                        k8_info.append(per_k8_info)
+                        # driver.execute_script("window.history.go(-1)")
+
+                    elif col[0].text = '10-K':
+                        per_k10_info = {}
+                        per_k10_info['time_of_filing'] = col[3].text
+                        per_k10_info['url'] = get_attribute('href')
+                        k10_info.append(per_k10_info)
+
+                buttons = driver.find_elements_by_xpath('//*[@id="contentDiv"]/form/input')
+
+                flag = 0
+
+                for button in buttons:
+                    if button.get_attribute('value') == 'Next 100':
+                        start = start + 100
+                        flag = 1
+                        break
+                if flag == 0:
+                    print("There are no more pages for CIK: {}".format(cik))
+                    break
+
+            for per_k8_info in k8_info:
+                driver.get(per_k8_info['url'])
+                rows_in = driver.find_elements_by_xpath('//*[@id="formDiv"]/div/table/tbody/tr[position()>=2 and position <= last()]')
+
+                for row_in in rows_in:
+                    col_in = row.find_elements_by_tag_name("td")
+                    if col_in[3].text == '8-K':
+                        per_8k_info['url'] = col_in[2].get_attribute('href')
+                        break
+
+            for per_k10_info in k10k10_info:
+                driver.get(per_k10_info['url'])
+                rows_in = driver.find_elements_by_xpath('//*[@id="formDiv"]/div/table/tbody/tr[position()>=2 and position <= last()]')
+
+                for row_in in rows_in:
+                    col_in = row.find_elements_by_tag_name("td")
+                    if col_in[3].text == '8-K':
+                        per_8k_info['url'] = col_in[2].get_attribute('href')
+                        break
+            if count%200 == 0:
+                print('Saving the first {} items'.format(count))
+                with open('../data/SEC_data/bigedgar.pk', 'wb') as handle:
+                    pk.dump(bigedgar, handle, protocol=pk.HIGHEST_PROTOCOL)
     else:
         print("Engine hasn't been defined yet.")
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
