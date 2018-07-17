@@ -29,18 +29,6 @@ def urlmaker_sec(queryDic):
     return url
 
 
-# ███████ ██  ██████     ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████
-# ██      ██ ██          ██    ██ ██   ██ ██          ████  ████ ██   ██ ██  ██  ██
-# ███████ ██ ██          ██    ██ ██████  ██          ██ ████ ██ ███████ █████   █████
-#      ██ ██ ██          ██    ██ ██   ██ ██          ██  ██  ██ ██   ██ ██  ██  ██
-# ███████ ██  ██████      ██████  ██   ██ ███████     ██      ██ ██   ██ ██   ██ ███████
-
-def urlmaker_sic_sec(queryDic):
-    formType = queryDic['formType'] if 'formType' in queryDic else ""
-    cik = queryDic['cik'] if 'cik' in queryDic else '*'
-    return url
-
-
 # ██      ██ ███    ██ ██   ██     ███████ ██ ██   ████████ ███████ ██████
 # ██      ██ ████   ██ ██  ██      ██      ██ ██      ██    ██      ██   ██
 # ██      ██ ██ ██  ██ █████       █████   ██ ██      ██    █████   ██████
@@ -400,21 +388,23 @@ def crawlerWrapper(search_query, engine):
         cikcodes2name = OrderedDict(sorted(cikcodes2name.items(), key=lambda t: t[0]))
         for cik in list(cikcodes2name.keys())[len(bigedgar)+1:]:
             count = count + 1
-            start = 0
             k8_info = []
             k10_info = []
             per_cik_forms = {}
+            start = 0
             while True:
+                ## GET the 8-Ks
                 url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={}&type=8-K&dateb=&owner=include&start={}&count=100'.format(cik, start)
                 driver.get(url)
-                if start == 0:
-                    mails = driver.find_elements_by_css_selector('span.mailerAddress')
-                    for mail in mails:
-                        bigedgar[cik]['edgar_mailing_address'] += mail.get_attribute('text')
+                # if start == 0:
+                #     mails = driver.find_elements_by_css_selector('span.mailerAddress')
+                #     for mail in mails:
+                #         bigedgar[cik]['edgar_mailing_address'] += mail.get_attribute('text')
                 rows = driver.find_elements_by_xpath('//*[@id="seriesDiv"]/table/tbody/tr[position() >= 2 and position() <= last()]')
                 for row in rows:
                     col = row.find_elements_by_tag_name("td")
                     if col[0].text == '8-K':
+                        ## The if condition skips the amendment in 8-K
                         per_k8_info = {}
                         per_k8_info['time_of_filing'] = col[3].text
                         per_k8_info['url'] = get_attribute('href')
@@ -426,6 +416,16 @@ def crawlerWrapper(search_query, engine):
                         per_k10_info['time_of_filing'] = col[3].text
                         per_k10_info['url'] = get_attribute('href')
                         k10_info.append(per_k10_info)
+
+                for per_k8_info in k8_info:
+                    driver.get(per_k8_info['url'])
+                    rows_in = driver.find_elements_by_xpath('//*[@id="formDiv"]/div/table/tbody/tr[position()>=2 and position <= last()]')
+
+                    for row_in in rows_in:
+                        col_in = row.find_elements_by_tag_name("td")
+                        if col_in[3].text == '8-K':
+                            per_8k_info['url'] = col_in[2].get_attribute('href')
+                            break
 
                 buttons = driver.find_elements_by_xpath('//*[@id="contentDiv"]/form/input')
 
@@ -440,15 +440,7 @@ def crawlerWrapper(search_query, engine):
                     print("There are no more pages for CIK: {}".format(cik))
                     break
 
-            for per_k8_info in k8_info:
-                driver.get(per_k8_info['url'])
-                rows_in = driver.find_elements_by_xpath('//*[@id="formDiv"]/div/table/tbody/tr[position()>=2 and position <= last()]')
 
-                for row_in in rows_in:
-                    col_in = row.find_elements_by_tag_name("td")
-                    if col_in[3].text == '8-K':
-                        per_8k_info['url'] = col_in[2].get_attribute('href')
-                        break
 
             for per_k10_info in k10k10_info:
                 driver.get(per_k10_info['url'])
