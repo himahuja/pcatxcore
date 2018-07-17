@@ -226,6 +226,31 @@ def ten_k_parser(url):
     visible_texts = " ".join(t.strip() for t in visible_texts)
     print(visible_texts)
 
+def contain(sent,word):
+    if word in sent:
+        return True
+    return False
+
+def tenk_parser(link):       
+    try:
+        html = urllib.request.urlopen(link).read()
+        text_list = nltk.sent_tokenize(text_from_html(html))
+        start = False
+        stop = False
+        info = ''
+        for sent in text:
+            if contain(sent,'PART I') and contain(sent,'Item 1'):
+                start = True
+            if contain(sent,'Item 1A') and contain(sent,'PART I'):
+                stop = True
+            if stop:
+                return info
+            if start:
+                info += sent
+    except:
+        print('exception when parsing 10k, returning an empty string')
+        return ''
+    
 def main():
     pm = ProfileManager()
 #    for company in pm:
