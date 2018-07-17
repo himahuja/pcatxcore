@@ -149,6 +149,14 @@ def setDriver():
     # ██      ██   ██ ██   ██ ██ ███ ██ ██      ██      ██   ██     ██ ███ ██ ██   ██ ██   ██ ██
     #  ██████ ██   ██ ██   ██  ███ ███  ███████ ███████ ██   ██      ███ ███  ██   ██ ██   ██ ██
 
+# find google subsidiaries
+def render_page(url):
+    driver = webdriver.Chrome()
+    driver.get(url)
+    time.sleep(3)
+    r = driver.page_source
+    #driver.quit()
+    return r
 
 def crawlerWrapper(search_query, engine):
     """
@@ -364,6 +372,19 @@ def crawlerWrapper(search_query, engine):
     elif engine == 'google-subs':
         search_query['name'].replace(" ", "+")
         url = "https://www.google.com/search?q=" + search_query['name']
+        try:
+            r = render_page(url)
+            soup = BeautifulSoup(r, "lxml")
+            sub_dict = {}
+            sub = soup.findAll('div',{'class':'kltat'})           
+            sub_link = soup.findAll('a',{'class':'klitem'})           
+            for item,link in zip(sub,sub_link):
+                sub_dict[item.get_text()] = link.get('href')
+
+            return sub_dict
+        except:
+            print("Couldn\'t find subsidiaries")
+            return
 
     #  █████  ██   ██      ██  ██████  ██   ██     ███████ ██████   ██
     # ██   ██ ██  ██      ███ ██  ████ ██  ██      ██           ██ ███
