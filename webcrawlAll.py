@@ -374,7 +374,8 @@ def crawlerWrapper(search_query, engine):
     #  ██████   ██████   ██████  ███████     ███████  ██████  ██████  ███████
 
     elif engine == 'google-subs':
-        pass
+        search_query['name'].replace(" ", "+")
+        url = "https://www.google.com/search?q=" + search_query['name']
 
     #  █████  ██   ██      ██  ██████  ██   ██     ███████ ██████   ██
     # ██   ██ ██  ██      ███ ██  ████ ██  ██      ██           ██ ███
@@ -502,3 +503,5 @@ if __name__ == "__main__":
     """ using the cik to get the E-21 of the company / subsidary structure, ultimate parent [top node] """
 
     """ Mergers and acquisition """
+    search_query['name'] = "3M Subsidaries"
+    crawlerWrapper(search_query, 'google-subs')
