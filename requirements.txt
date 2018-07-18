@@ -3,6 +3,8 @@ backcall==0.1.0
 beautifulsoup4==4.6.0
 bs4==0.0.1
 certifi==2018.4.16
+chardet==3.0.4
+cssselect==1.0.3
 decorator==4.3.0
 google==2.0.1
 ipykernel==4.8.2
@@ -11,6 +13,7 @@ ipython-genutils==0.2.0
 jedi==0.12.1
 jupyter-client==5.2.3
 jupyter-core==4.4.0
+lxml==4.2.3
 nltk==3.3
 numpy==1.14.5
 pandas==0.23.1
@@ -23,6 +26,7 @@ Pygments==2.2.0
 python-dateutil==2.7.3
 pytz==2018.4
 pyzmq==17.0.0
+readability-lxml==0.7
 selenium==3.13.0
 simplegeneric==0.8.1
 six==1.11.0

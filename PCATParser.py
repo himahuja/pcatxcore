@@ -226,12 +226,66 @@ def ten_k_parser(url):
     visible_texts = " ".join(t.strip() for t in visible_texts)
     print(visible_texts)
 
-def contain(sent,word):
-    if word in sent:
-        return True
+def contain(sent,word_list):
+    for i in range(len(word_list)):
+        if word_list[i] in sent:
+            return True
     return False
 
-def tenk_parser(link):       
+def eightk_parser(link):       
+    try:
+        html = urllib.request.urlopen(link).read()
+        text_list = nltk.sent_tokenize(text_from_html(html))
+        #print(text_list)
+        start = False
+        stop = False
+        info = ''
+        for sent in text_list:
+            if contain(sent,['Item','ITEM']):
+                #print('start')
+                start = True
+            if contain(sent,['SIGNATURE']):
+                #print('end')
+                stop = True
+            if stop:
+                return info
+            if start:
+                info += sent
+    except:
+        print('exception when parsing 8k, returning an empty string')
+        return ''
+    
+def ex21_parser(link):
+    try:
+        body = urllib.request.urlopen(link).read()
+        soup = BeautifulSoup(body, 'lxml')
+        table = soup.findAll('table')
+        if table != []:
+            sub_list = []
+            for t in table:
+                row = t.findAll('tr')
+                for r in row[1:]:
+                    division = r.findAll('td')
+                    #for d in division[0]:
+                    d = division[0]
+                    desc = d.get_text().strip('\n')
+                    sub_list.append(desc)
+            if sub_list != []:
+                return sub_list
+            else:
+                html = urllib.request.urlopen(link).read()
+                text_list = nltk.sent_tokenize(text_from_html(html))
+                return text_list
+        else:
+            html = urllib.request.urlopen(link).read()
+            text_list = nltk.sent_tokenize(text_from_html(html))
+            return text_list
+            
+    except:
+        print("exception when parsing ex21, returning an empty list")
+        return []
+
+def tenk_parser(link): # not working      
     try:
         html = urllib.request.urlopen(link).read()
         text_list = nltk.sent_tokenize(text_from_html(html))
