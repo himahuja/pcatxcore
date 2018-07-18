@@ -46,22 +46,43 @@ def TxtToJson(file_in, file_out):
     open(file_out, "w").write(json.dumps(dictionary, sort_keys = True, indent = 4))
 
 def pickle_to_JSON():
-    with open(os.path.join("../../Dictionaries", "naics_dict.pk"), "rb") as handle:
-        file = pickle.load(handle)
-    open(os.path.join("../../data/profilemanager/data", "naics_to_description.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))
-    with open(os.path.join("../../Dictionaries", "naics_sic_dict.pk"), "rb") as handle:
-        file = pickle.load(handle)
-    open(os.path.join("../../data/profilemanager/data", "naics_to_sic.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))    
-    with open(os.path.join("../../Dictionaries", "sic_dict.pk"), "rb") as handle:
-        file = pickle.load(handle)
-    open(os.path.join("../../data/profilemanager/data", "sic_to_description.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))    
-    with open(os.path.join("../../Dictionaries", "sic_naics_dict.pk"), "rb") as handle:
-        file = pickle.load(handle)
-    open(os.path.join("../../data/profilemanager/data", "sic_to_naics.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))    
+#    with open(os.path.join("../../Dictionaries", "naics_dict.pk"), "rb") as handle:
+#        file = pickle.load(handle)
+#    open(os.path.join("../../data/profilemanager/data", "naics_to_description.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))
+#    with open(os.path.join("../../Dictionaries", "naics_sic_dict.pk"), "rb") as handle:
+#        file = pickle.load(handle)
+#    open(os.path.join("../../data/profilemanager/data", "naics_to_sic.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))    
+#    with open(os.path.join("../../Dictionaries", "sic_dict.pk"), "rb") as handle:
+#        file = pickle.load(handle)
+#    open(os.path.join("../../data/profilemanager/data", "sic_to_description.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))    
+#    with open(os.path.join("../../Dictionaries", "sic_naics_dict.pk"), "rb") as handle:
+#        file = pickle.load(handle)
+#    open(os.path.join("../../data/profilemanager/data", "sic_to_naics.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))
+#     with open(os.path.join("../../data/profilemanager/data", "cikcodes2name.pk"), "rb") as handle:
+#         file = pickle.load(handle)
+#     open(os.path.join("../../data/profilemanager/data", "cik_to_name.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
+#     with open(os.path.join("../../data/profilemanager/data", "ciknames2code.pk"), "rb") as handle:
+#         file = pickle.load(handle)
+#     open(os.path.join("../../data/profilemanager/data", "name_to_code.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
+     with open(os.path.join("../../data/profilemanager/data", "cik10Kall.pk"), "rb") as handle:
+         file = pickle.load(handle)
+     open(os.path.join("../../data/profilemanager/data", "cik_to_10k.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
 
+def inverse_dictionary():
+    this = json.loads(open(os.path.join("../../data/profilemanager/data", "sic_to_cik.json"), "r").read())
+    cik_to_sic = {}
+    for sic in this:
+        for cik in this[sic]:
+            try:
+                cik_to_sic[cik] = cik_to_sic[cik].append(sic)
+            except:
+                cik_to_sic[cik] = [sic]
+    open(os.path.join("../../data/profilemanager/data", "cik_to_sic.json"), "w").write(json.dumps(cik_to_sic, sort_keys = True, indent = 4))
+        
     
 def main():    
     pickle_to_JSON()
+    
 if __name__ == "__main__" :
     main()
     

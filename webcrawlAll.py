@@ -390,7 +390,7 @@ def crawlerWrapper(search_query, engine):
             print('Couldn\'t locate the file: cikcodes2name.pk')
             return
         try:
-            with open('data/SEC_Data/bigedgar.pk', 'rb') as f:
+            with open('data/SEC_Data/bigedgar_part{}.pk'.format(search_query['part']), 'rb') as f:
                 bigedgar = pk.load(f)
                 print('Loaded Old file!')
         except:
@@ -398,8 +398,7 @@ def crawlerWrapper(search_query, engine):
         count = 0
         cikcodes2name = OrderedDict(sorted(cikcodes2name.items(), key=lambda t: t[0]))
         starting_length = len(bigedgar)
-        error_cik = []
-        for cik in list(cikcodes2name.keys())[len(bigedgar):]:
+        for cik in list(cikcodes2name.keys())[search_query['starting_point']+len(bigedgar):search_query['ending_point']]:
             count = count + 1
             k8_info = []
             k10_info = []
@@ -452,16 +451,17 @@ def crawlerWrapper(search_query, engine):
                     for row_in in rows_in:
                         try:
                             col_in = row_in.find_elements_by_tag_name("td")
+                            if len(col_in) != 0:
                         # print(col_in[3])
-                            if col_in[3].text == '8-K':
-                            # print(col_in[2])
-                                if col_in[2].text != '':
-                                    per_k8_info['url'] = col_in[2].find_element_by_tag_name('a').get_attribute('href')
-                                else:
-                                    per_k8_info['url'] = ""
-                            # print(col_in[2].find_element_by_tag_name('a').get_attribute('href'))
-                            # print(per_k8_info['url'])
-                            break
+                                if col_in[3].text == '8-K':
+                                # print(col_in[2])
+                                    if col_in[2].text != '':
+                                        per_k8_info['url'] = col_in[2].find_element_by_tag_name('a').get_attribute('href')
+                                    else:
+                                        per_k8_info['url'] = ""
+                                # print(col_in[2].find_element_by_tag_name('a').get_attribute('href'))
+                                # print(per_k8_info['url'])
+                                break
                         except:
                             pass
 
@@ -505,35 +505,44 @@ def crawlerWrapper(search_query, engine):
                     for row_in in rows_in:
                         try:
                             col_in = row_in.find_elements_by_tag_name("td")
-                            if col_in[3].text == '10-K':
-                                if col_in[2].text != '':
-                                    per_k10_info['url'] = col_in[2].find_element_by_tag_name('a').get_attribute('href')
-                                else:
-                                    per_k10_info['url'] = ""
-                            elif col_in[3].text == 'EX-21':
-                                per_ex21_info = {}
-                                per_ex21_info['time_of_filing'] = per_k10_info['time_of_filing']
-                                if col_in[2].text != '':
-                                    per_ex21_info['url'] = col_in[2].find_element_by_tag_name('a').get_attribute('href')
-                                else:
-                                    per_ex21_info['url'] = ""
-                                ex21_info.append(per_ex21_info)
+                            if len(col_in) != 0:
+                                if col_in[3].text == '10-K':
+                                    if col_in[2].text != '':
+                                        per_k10_info['url'] = col_in[2].find_element_by_tag_name('a').get_attribute('href')
+                                    else:
+                                        per_k10_info['url'] = ""
+                                elif col_in[3].text == 'EX-21':
+                                    per_ex21_info = {}
+                                    per_ex21_info['time_of_filing'] = per_k10_info['time_of_filing']
+                                    if col_in[2].text != '':
+                                        per_ex21_info['url'] = col_in[2].find_element_by_tag_name('a').get_attribute('href')
+                                    else:
+                                        per_ex21_info['url'] = ""
+                                    ex21_info.append(per_ex21_info)
                         except:
+                            print('10K Problem in pages inside, CIK: {}'.format(cik))
                             pass
 
                 bigedgar[cik] = {'8K': k8_info, '10K': k10_info, 'EX21': ex21_info}
                 # Save every 200 files
                 if count%100 == 0:
-                    print("Completed {}/{}.".format(starting_length+count, len(cikcodes2name)))
+                    print("Completed {}/{}.".format(len(bigedgar)+count, search_query['ending_point']-search_query['starting_point']))
                     # print('Saving the first {} items'.format(count))
-                    with open('data/SEC_Data/bigedgar.pk', 'wb') as handle:
+                    with open('data/SEC_Data/bigedgar_part{}.pk', 'wb') as handle:
                         pk.dump(bigedgar, handle, protocol=pk.HIGHEST_PROTOCOL)
                     with open('data/SEC_Data/error_cik.pk', 'wb') as handle:
                         pk.dump(error_cik, handle, protocol=pk.HIGHEST_PROTOCOL)
-                print('Completed CIK {}'.format(cik))
+                    print('Completed 1000 CIK from script {}'.format(search_query['part']))
             except:
+                try:
+                    with open('data/SEC_Data/error_cik.pk', 'rb') as f:
+                        error_cik = pk.load(f)
+                except:
+                    error_cik = []
                 print('Error in CIK: {}'.format(cik))
                 error_cik.append(cik)
+                with open('data/SEC_Data/error_cik.pk', 'wb') as handle:
+                    pk.dump(error_cik, handle, protocol=pk.HIGHEST_PROTOCOL)
                 pass
 
         links = []
@@ -543,7 +552,8 @@ def crawlerWrapper(search_query, engine):
     driver.quit()
     return links
 
-if __name__ == "__main__":
+
+def main(part_number):
     search_query = {}
     """ Using the google crawler"""
     # search_query['name'] = "whatever you want to query on google"
@@ -579,5 +589,11 @@ if __name__ == "__main__":
     # """ Mergers and acquisition """
     # search_query['name'] = "3M Subsidaries"
     # crawlerWrapper(search_query, 'google-subs')
-
+    search_query['part'] = part_number
+    # starting_point = 1000
+    search_query['starting_point'] = 1000 * (search_query['part'])
+    search_query['ending_point'] = search_query['starting_point'] + 999
     crawlerWrapper(search_query, 'everything-all')
+if __name__ == "__main__":
+    part_number = int(sys.argv[1])
+    main(part_number)
