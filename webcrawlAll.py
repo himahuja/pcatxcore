@@ -398,7 +398,7 @@ def crawlerWrapper(search_query, engine):
         count = 0
         cikcodes2name = OrderedDict(sorted(cikcodes2name.items(), key=lambda t: t[0]))
         starting_length = len(bigedgar)
-        for cik in list(cikcodes2name.keys())[search_query['starting_point']+len(bigedgar):search_query['ending_point']]:
+        for cik in list(cikcodes2name.keys())[search_query['starting_point']:search_query['ending_point']]:
             count = count + 1
             k8_info = []
             k10_info = []
@@ -439,7 +439,7 @@ def crawlerWrapper(search_query, engine):
                             flag = 1
                             break
                     if flag == 0:
-                        # print("There are no more 8-K pages for CIK: {}".format(cik))
+                        # print("There are no more 8-K pages for CIK: {}+len(bigedgar)".format(cik))
                         break
 
                 for per_k8_info in k8_info:
@@ -463,6 +463,7 @@ def crawlerWrapper(search_query, engine):
                                 # print(per_k8_info['url'])
                                 break
                         except:
+                            print("Problems inside the 8-k parser, CIK: {}".format(cik))
                             pass
 
                 # Get the 10K and the E-21s
@@ -483,7 +484,6 @@ def crawlerWrapper(search_query, engine):
                                     per_k10_info['url'] = documentButton.get_attribute('href')
                                     break
                             k10_info.append(per_k10_info)
-
                     buttons = driver.find_elements_by_xpath('//*[@id="contentDiv"]/div[3]/form/table/tbody/tr/td[2]/input')
 
 
@@ -526,13 +526,12 @@ def crawlerWrapper(search_query, engine):
                 bigedgar[cik] = {'8K': k8_info, '10K': k10_info, 'EX21': ex21_info}
                 # Save every 200 files
                 if count%100 == 0:
-                    print("Completed {}/{}.".format(len(bigedgar)+count, search_query['ending_point']-search_query['starting_point']))
+                    print("Completed {}/{}.".format(count, search_query['ending_point']-search_query['starting_point']))
                     # print('Saving the first {} items'.format(count))
-                    with open('data/SEC_Data/bigedgar_part{}.pk', 'wb') as handle:
+                    with open('data/SEC_Data/bigedgar_part{}.pk'.format(search_query['part']), 'wb') as handle:
                         pk.dump(bigedgar, handle, protocol=pk.HIGHEST_PROTOCOL)
                     with open('data/SEC_Data/error_cik.pk', 'wb') as handle:
                         pk.dump(error_cik, handle, protocol=pk.HIGHEST_PROTOCOL)
-                    print('Completed 1000 CIK from script {}'.format(search_query['part']))
             except:
                 try:
                     with open('data/SEC_Data/error_cik.pk', 'rb') as f:
@@ -544,7 +543,7 @@ def crawlerWrapper(search_query, engine):
                 with open('data/SEC_Data/error_cik.pk', 'wb') as handle:
                     pk.dump(error_cik, handle, protocol=pk.HIGHEST_PROTOCOL)
                 pass
-
+        print('Completed 1000 CIK from script {}'.format(search_query['part']))
         links = []
     else:
         print("Engine hasn't been defined yet.")
@@ -592,7 +591,7 @@ def main(part_number):
     search_query['part'] = part_number
     # starting_point = 1000
     search_query['starting_point'] = 1000 * (search_query['part'])
-    search_query['ending_point'] = search_query['starting_point'] + 999
+    search_query['ending_point'] = search_query['starting_point'] + 1999
     crawlerWrapper(search_query, 'everything-all')
 if __name__ == "__main__":
     part_number = int(sys.argv[1])
