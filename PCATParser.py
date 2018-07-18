@@ -123,10 +123,34 @@ def wiki_parser(company):
                 info_dict[desc] = detail
     return info_dict
 
-def contain(sent,word):
-    if word in sent:
-        return True
+def contain(sent,word_list):
+    for i in range(len(word_list)):
+        if word_list[i] in sent:
+            return True
     return False
+
+def eightk_parser(link):       
+    try:
+        html = urllib.request.urlopen(link).read()
+        text_list = nltk.sent_tokenize(text_from_html(html))
+        #print(text_list)
+        start = False
+        stop = False
+        info = ''
+        for sent in text_list:
+            if contain(sent,['Item','ITEM']):
+                #print('start')
+                start = True
+            if contain(sent,['SIGNATURE']):
+                #print('end')
+                stop = True
+            if stop:
+                return info
+            if start:
+                info += sent
+    except:
+        print('exception when parsing 8k, returning an empty string')
+        return ''
 
 def tenk_parser(link):       
     try:
