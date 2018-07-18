@@ -84,6 +84,19 @@ def parser(query_string, linkList):
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
+        
+def parse_single_page(link):
+    if link[-4:] != '.pdf':
+            try:
+                html = urllib.request.urlopen(link).read()
+                return bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore')
+            except Exception as e:
+                print(link + " threw the following exception " + str(e))
+    else:
+            try:
+                return get_PDF_content(query_string, link, linkList)
+            except Exception as e:
+                print(link + " threw the following exception " + str(e))
 
 def parser_iter(query_string, linkList):
     for link in linkList:
@@ -218,14 +231,6 @@ def wiki_parser(company):
     except:
         pass
 
-def ten_k_parser(url):
-    html = urllib.request.urlopen(url).read()
-    soup = BeautifulSoup(html.decode("utf-8", "ignore"), 'lxml')
-    texts = soup.findAll(text=True)
-    visible_texts = filter(tag_visible, texts)
-    visible_texts = " ".join(t.strip() for t in visible_texts)
-    print(visible_texts)
-
 def contain(sent,word_list):
     for i in range(len(word_list)):
         if word_list[i] in sent:
@@ -235,24 +240,25 @@ def contain(sent,word_list):
 def eightk_parser(link):       
     try:
         html = urllib.request.urlopen(link).read()
-        text_list = nltk.sent_tokenize(text_from_html(html))
-        #print(text_list)
+        text_list = nltk.sent_tokenize(text_from_html(html).replace("\n", "."))
+#        print(text_list)
         start = False
         stop = False
         info = ''
         for sent in text_list:
-            if contain(sent,['Item','ITEM']):
-                #print('start')
-                start = True
-            if contain(sent,['SIGNATURE']):
-                #print('end')
-                stop = True
             if stop:
                 return info
-            if start:
+            elif contain(sent,['SIGNATURE']):
+                #print('end')
+                stop = True
+            elif start:
                 info += sent
-    except:
-        print('exception when parsing 8k, returning an empty string')
+            elif contain(sent,['Item','ITEM']):
+                #print('start')
+                start = True
+        return info
+    except Exception as e:
+        print('exception when parsing 8k, returning an empty string {}'.format(str(e)))
         return ''
     
 def ex21_parser(link):
@@ -271,14 +277,30 @@ def ex21_parser(link):
                     desc = d.get_text().strip('\n')
                     sub_list.append(desc)
             if sub_list != []:
+                for i in range(len(sub_list)):
+                    sub_list[i] = sub_list[i].replace("\xa0", " ").replace("\n", "").strip()
                 return sub_list
             else:
                 html = urllib.request.urlopen(link).read()
-                text_list = nltk.sent_tokenize(text_from_html(html))
+                text_list = text_from_html(html).splitlines()
+                for i in range(len(text_list)):
+                    text_list[i] = re.sub('[\s][\s]+[\S]+', "", text_list[i].replace("\xa0", " ").replace("\n", "").replace("-", "").strip())
+                while "" in text_list:
+                    try:
+                        text_list.remove("")
+                    except:
+                        pass
                 return text_list
         else:
             html = urllib.request.urlopen(link).read()
-            text_list = nltk.sent_tokenize(text_from_html(html))
+            text_list = text_from_html(html).splitlines()
+            for i in range(len(text_list)):
+                text_list[i] = re.sub('[\s][\s]+[\S]+', "", text_list[i].replace("\xa0", " ").replace("\n", "").replace("-", "").strip())
+            while "" in text_list:
+                try:
+                    text_list.remove("")
+                except:
+                    pass
             return text_list
             
     except:
@@ -298,7 +320,6 @@ def tenk_parser(link): # not working
             if contain(sent,'Item 1A') and contain(sent,'PART I'):
                 stop = True
             if stop:
-                print(info)
                 return info
             if start:
                 info += sent
@@ -311,9 +332,7 @@ def main():
 #    for company in pm:
 #        print("Now getting information for {}".format(company['name']))
 #        print(wiki_parser(company['name']))
-    print(tenk_parser("http://www.sec.gov/Archives/edgar/data/1750/000104746918004978/a2236183z10-k.htm"))
-    print(tenk_parser("http://www.sec.gov/Archives/edgar/data/2034/000114420417045100/v472462_10k.htm"))
-    print(tenk_parser("http://www.sec.gov/Archives/edgar/data/2488/000000248817000043/amd-12312016x10k.htm"))
+    print(ex21_parser("https://www.sec.gov/Archives/edgar/data/1800/000091205701006039/a2035109zex-21.txt"))
 
 
 if __name__ == "__main__" :

@@ -5,6 +5,7 @@ Created on Wed Jul 11 12:47:13 2018
 
 @author: alex
 """
+from PCATParser import *
 import json, os
 
 class ProfileManager(object):
@@ -99,15 +100,54 @@ class ProfileManager(object):
             this['subsidiaries'] = None
             try:
                 this['ten_ks'] = thicc_edgar[cik]["10K"]
-            except:
+                remove_queue = []
+                for elem in this['ten_ks']:
+                    if elem['url'] == "":
+                        remove_queue.append(elem)
+                for elem in remove_queue:
+                    this['ten_ks'].remove(elem)
+                if len(this['ten_ks']) == 0:
+                    this['ten_ks'] = None
+                else:
+                    for elem in this['ten_ks']:
+                        elem['txt'] = parse_single_page(elem['url'])
+                        print("Parsed {}".format(elem['url']))
+            except Exception as e:
+                print(str(e))
                 this['ten_ks'] = None
             try:
-                this['ten_ks'] = thicc_edgar[cik]["8K"]
-            except:
+                this['eight_ks'] = thicc_edgar[cik]["8K"]
+                remove_queue = []
+                for elem in this['eight_ks']:
+                    if elem['url'] == "":
+                        remove_queue.append(elem)
+                for elem in remove_queue:
+                    this['eight_ks'].remove(elem)
+                if len(this['eight_ks']) == 0:
+                    this['eight_ks'] = None
+                else:
+                    for elem in this['eight_ks']:
+                        elem['txt'] = eightk_parser(elem['url'])
+                        print("Parsed {}".format(elem['url']))
+            except Exception as e:
+                print(str(e))
                 this['eight_ks'] = None
             try:
                 this['EX21s'] = thicc_edgar[cik]["EX21"]
-            except:
+                remove_queue = []
+                for elem in this['EX21s']:
+                    if elem['url'] == "":
+                        remove_queue.append(elem)
+                for elem in remove_queue:
+                    this['EX21s'].remove(elem)
+                if len(this['EX21s']) == 0:
+                    this['EX21s'] = None
+                else:
+                    for elem in this['EX21s']:
+                        elem['txt'] = eightk_parser(elem['url'])
+                        print("Parsed {}".format(elem['url']))
+            except Exception as e:
+                print(str(e))
                 this['EX21s'] = None
             this['website'] = None
             open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
