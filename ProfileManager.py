@@ -86,7 +86,7 @@ class ProfileManager(object):
     def generate_profiles(self):
         cik_to_sic = json.loads(open(os.path.join("data/profilemanager/data", "cik_to_sic.json"), "r").read())
         sic_to_naics = json.loads(open(os.path.join("data/profilemanager/data", "sic_to_naics.json"), "r").read())
-        cik_to_10k = json.loads(open(os.path.join("data/profilemanager/data", "cik_to_10k.json"), "r").read())
+        thicc_edgar = json.loads(open(os.path.join("data/profilemanager/data", "edgardata.json"), "r").read())
         for cik in self.cik_name:
             this = {}
             this['cik'] = cik
@@ -98,9 +98,17 @@ class ProfileManager(object):
                 this['naics'] = None
             this['subsidiaries'] = None
             try:
-                this['tenks'] = cik_to_10k[cik]
+                this['ten_ks'] = thicc_edgar[cik]["10K"]
             except:
-                this['tenks'] = None
+                this['ten_ks'] = None
+            try:
+                this['ten_ks'] = thicc_edgar[cik]["8K"]
+            except:
+                this['eight_ks'] = None
+            try:
+                this['EX21s'] = thicc_edgar[cik]["EX21"]
+            except:
+                this['EX21s'] = None
             this['website'] = None
             open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
         

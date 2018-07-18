@@ -64,9 +64,9 @@ def pickle_to_JSON():
 #     with open(os.path.join("../../data/profilemanager/data", "ciknames2code.pk"), "rb") as handle:
 #         file = pickle.load(handle)
 #     open(os.path.join("../../data/profilemanager/data", "name_to_code.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
-     with open(os.path.join("../../data/profilemanager/data", "cik10Kall.pk"), "rb") as handle:
+     with open(os.path.join("../../data/profilemanager/data", "bigedgar.pk"), "rb") as handle:
          file = pickle.load(handle)
-     open(os.path.join("../../data/profilemanager/data", "cik_to_10k.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
+     open(os.path.join("../../data/profilemanager/data", "edgardata.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
 
 def inverse_dictionary():
     this = json.loads(open(os.path.join("../../data/profilemanager/data", "sic_to_cik.json"), "r").read())
