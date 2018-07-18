@@ -238,12 +238,13 @@ def tenk_parser(link):
         start = False
         stop = False
         info = ''
-        for sent in text:
+        for sent in text_list:
             if contain(sent,'PART I') and contain(sent,'Item 1'):
                 start = True
             if contain(sent,'Item 1A') and contain(sent,'PART I'):
                 stop = True
             if stop:
+                print(info)
                 return info
             if start:
                 info += sent
@@ -256,7 +257,9 @@ def main():
 #    for company in pm:
 #        print("Now getting information for {}".format(company['name']))
 #        print(wiki_parser(company['name']))
-    ten_k_parser("https://www.sec.gov/Archives/edgar/data/1750/000104746918004978/a2236183z10-k.htm#de74901_item_4._mine_safety_disclosures")
+    print(tenk_parser("http://www.sec.gov/Archives/edgar/data/1750/000104746918004978/a2236183z10-k.htm"))
+    print(tenk_parser("http://www.sec.gov/Archives/edgar/data/2034/000114420417045100/v472462_10k.htm"))
+    print(tenk_parser("http://www.sec.gov/Archives/edgar/data/2488/000000248817000043/amd-12312016x10k.htm"))
 
 
 if __name__ == "__main__" :
