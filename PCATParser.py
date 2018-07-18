@@ -254,8 +254,38 @@ def eightk_parser(link):
     except:
         print('exception when parsing 8k, returning an empty string')
         return ''
+    
+def ex21_parser(link):
+    try:
+        body = urllib.request.urlopen(link).read()
+        soup = BeautifulSoup(body, 'lxml')
+        table = soup.findAll('table')
+        if table != []:
+            sub_list = []
+            for t in table:
+                row = t.findAll('tr')
+                for r in row[1:]:
+                    division = r.findAll('td')
+                    #for d in division[0]:
+                    d = division[0]
+                    desc = d.get_text().strip('\n')
+                    sub_list.append(desc)
+            if sub_list != []:
+                return sub_list
+            else:
+                html = urllib.request.urlopen(link).read()
+                text_list = nltk.sent_tokenize(text_from_html(html))
+                return text_list
+        else:
+            html = urllib.request.urlopen(link).read()
+            text_list = nltk.sent_tokenize(text_from_html(html))
+            return text_list
+            
+    except:
+        print("exception when parsing ex21, returning an empty list")
+        return []
 
-def tenk_parser(link):       
+def tenk_parser(link): # not working      
     try:
         html = urllib.request.urlopen(link).read()
         text_list = nltk.sent_tokenize(text_from_html(html))
