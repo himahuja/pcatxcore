@@ -398,7 +398,7 @@ def crawlerWrapper(search_query, engine):
         count = 0
         cikcodes2name = OrderedDict(sorted(cikcodes2name.items(), key=lambda t: t[0]))
         starting_length = len(bigedgar)
-        for cik in list(cikcodes2name.keys())[search_query['starting_point']:search_query['ending_point']]:
+        for cik in list(cikcodes2name.keys())[search_query['starting_point']+starting_length:search_query['ending_point']]:
             count = count + 1
             k8_info = []
             k10_info = []
@@ -525,8 +525,8 @@ def crawlerWrapper(search_query, engine):
 
                 bigedgar[cik] = {'8K': k8_info, '10K': k10_info, 'EX21': ex21_info}
                 # Save every 200 files
-                if count%100 == 0:
-                    print("Completed {}/{}.".format(count, search_query['ending_point']-search_query['starting_point']))
+                if count%100 == 0 or count == (search_query['ending_point']-search_query['starting_point']):
+                    print("Completed {}/{} in part {}.".format(count, search_query['ending_point']-search_query['starting_point'], search_query['part']))
                     # print('Saving the first {} items'.format(count))
                     with open('data/SEC_Data/bigedgar_part{}.pk'.format(search_query['part']), 'wb') as handle:
                         pk.dump(bigedgar, handle, protocol=pk.HIGHEST_PROTOCOL)
@@ -543,7 +543,7 @@ def crawlerWrapper(search_query, engine):
                 with open('data/SEC_Data/error_cik.pk', 'wb') as handle:
                     pk.dump(error_cik, handle, protocol=pk.HIGHEST_PROTOCOL)
                 pass
-        print('Completed 1000 CIK from script {}'.format(search_query['part']))
+        print('Completed {} CIK from script {}'.format(count, search_query['part']))
         links = []
     else:
         print("Engine hasn't been defined yet.")
