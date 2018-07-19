@@ -84,7 +84,7 @@ def parser(query_string, linkList):
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
-        
+
 def parse_single_page(link):
     if link[-4:] != '.pdf':
             try:
@@ -154,7 +154,7 @@ def wiki_parser(company):
             info_dict["Formerly called"] = fka
         except Exception as e:
             print(str(e))
-            
+
         try:
             tmp = info_dict["Founders"]
             fka = []
@@ -166,7 +166,7 @@ def wiki_parser(company):
             info_dict["Founders"] = fka
         except Exception as e:
             print(str(e))
-            
+
         try:
             tmp = info_dict["Industry"]
             fka = []
@@ -178,7 +178,7 @@ def wiki_parser(company):
             info_dict["Industry"] = fka
         except Exception as e:
             print(str(e))
-        
+
         try:
             tmp = info_dict["Key people"]
             fka = []
@@ -190,7 +190,7 @@ def wiki_parser(company):
             info_dict["Key people"] = fka
         except Exception as e:
             print(str(e))
-        
+
         try:
             tmp = info_dict["Products"]
             fka = []
@@ -202,7 +202,7 @@ def wiki_parser(company):
             info_dict["Products"] = fka
         except Exception as e:
             print(str(e))
-        
+
         try:
             tmp = info_dict["Subsidiaries"]
             fka = []
@@ -214,7 +214,7 @@ def wiki_parser(company):
             info_dict["Subsidiaries"] = fka
         except Exception as e:
             print(str(e))
-        
+
         try:
             tmp = info_dict["Traded as"]
             fka = []
@@ -226,7 +226,7 @@ def wiki_parser(company):
             info_dict["Traded as"] = fka
         except Exception as e:
             print(str(e))
-        
+
         return json.dumps(info_dict, sort_keys = True, indent = 4)
     except:
         pass
@@ -237,7 +237,7 @@ def contain(sent,word_list):
             return True
     return False
 
-def eightk_parser(link):       
+def eightk_parser(link):
     try:
         html = urllib.request.urlopen(link).read()
         text_list = nltk.sent_tokenize(text_from_html(html).replace("\n", "."))
@@ -260,7 +260,7 @@ def eightk_parser(link):
     except Exception as e:
         print('exception when parsing 8k, returning an empty string {}'.format(str(e)))
         return ''
-    
+
 def ex21_parser(link):
     try:
         body = urllib.request.urlopen(link).read()
@@ -302,12 +302,12 @@ def ex21_parser(link):
                 except:
                     pass
             return text_list
-            
+
     except:
         print("exception when parsing ex21, returning an empty list")
         return []
 
-def tenk_parser(link): # not working      
+def tenk_parser(link): # not working
     try:
         html = urllib.request.urlopen(link).read()
         text_list = nltk.sent_tokenize(text_from_html(html))
@@ -326,6 +326,8 @@ def tenk_parser(link): # not working
     except:
         print('exception when parsing 10k, returning an empty string')
         return ''
+
+def wikiParser(url):
     
 def main():
     pm = ProfileManager()
