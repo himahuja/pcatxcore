@@ -14,9 +14,11 @@ The Keyword Producing Model takes data and finds words highly associated with ou
 The following modules and scripts are part of the Keyword Producing Model:
 
 * [corpusBuilder.py](corpusBuilder.py) --- [Documentation](docs/corpusBuilder.md)
+**Note: Currently deprecated. The functionality this previously served is now served by [WebResourceManager.py](../knowledge_management/WebResourceManager.py)**
 corpusBuilder is a wrapper for a list of lists that is specifically designed to process text documents and get them into a format which is optimal for doc2vec.
 
 * [Mapper.py](Mapper.py) --- [Documentation](docs/Mapper.md)
+**Note: Currently deprecated. The functionality this previously served is now served by [ProfileManager.py](../knowledge_management/ProfileManager.py)**
 Mapper is essentially a wrapper for a dictionary, it associates unique identifiers with a list of aliases for the entity identified. An example would be "00001" -> ["Micron Technology", "MU", "Micron"].
 
 ##### /bin

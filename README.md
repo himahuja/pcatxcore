@@ -7,35 +7,16 @@ A web crawling and artificial intelligence framework for Praedicat, Inc. develop
 ### Table of Contents
 ---------------------
 * Classifier
-* Keyword Producing Module (KPM)
 * Parser
+* Profile Manager
 * Query Formulator
-* WebResourceManager
+* Web Crawler
+* Web Resource Manager
 
 ### Classifier
 --------------
 
-### Keyword Producing Module (KPM)
----------------------------------
-
-This module is divided into two parts: the Mapper and the Keyword Producing Model (KPM).
-
-Mapper is essentially a wrapper for a dictionary, it associates unique identifiers with a list of aliases for the entity identified. An example would be "00001" -> ["Micron Technology", "MU", "Micron"]. For full documentation on Mapper, go to [docs/Mapper.md](kpm/docs/Mapper.md).
-
-The Keyword Producing Model takes data and finds words highly associated with our entities to build the list of aliases using data2vec and neural networks.
-
-The following modules and scripts are part of the Keyword Producing Model:
-
-* [corpusBuilder.py](kpm/corpusBuilder.py) --- [Documentation](kpm/docs/corpusBuilder.md)
-corpusBuilder is a wrapper for a list of lists that is specifically designed to process text documents and get them into a format which is optimal for doc2vec.
-
-* [Mapper.py](kpm/Mapper.py) --- [Documentation](kpm/docs/Mapper.md)
-Mapper is essentially a wrapper for a dictionary, it associates unique identifiers with a list of aliases for the entity identified. An example would be "00001" -> ["Micron Technology", "MU", "Micron"].
-
-##### /bin
-
-* [ProcessTxtFiles.py](kpm/bin/ProcessTxtFiles.py)
-A simple module with functions for processing text files in particular formats we encountered such as the 20 News Groups data set.
+Currently in development. We are hoping to use computational fact-checking and knowledge graph concepts to implement a classification and credibility checking module. To see the concepts and papers we are exploring, feel free to check out the "Computational Fact-Checking" section of my [AIReading Github](https://github.com/alexandermichels/AIReading#computational-fact-checking).
 
 
 ### Parser
@@ -45,7 +26,7 @@ It can
 * save original html pages and pdf contents
 * write new files with relevant html/pdf contents in a directory
 
-#### Documentation
+##### Documentation
 
 |Function | Input        | Processing           | Output  |
 |-----   | ------------- |:-------------:| -----:|
@@ -55,12 +36,18 @@ It can
 |sentence_filter(sentence_list)| a list of sentences | remove non-sentences | a list of sentences after removal|
 
 
+### Profile Manager
+-------------------
+
+
 ### Query Formulator
-------------------------------------
+--------------------
 
+### Web Crawler
+---------------
 
-### WebResourceManager
-----------------
+### Web Resource Manager
+-------------------------------
 
-* [WebResourceManager.py](WebResourceManager.py) --- [Documentation](kpm/docs/WebResourceManager.md)
+* [WebResourceManager.py](knowledge_management/WebResourceManager.py) --- [Documentation](knowledge_management/docs/WebResourceManager.md)
 WebResourceManager is a class for helping manage a database of web resources. WebResourceManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintain a dictionary from  URL to UUID. Using this uniform data storage system and a simple API, WebResourceManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.

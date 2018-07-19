@@ -4,7 +4,7 @@
 from bs4 import BeautifulSoup
 from bs4.element import Comment
 import urllib.request, os, webbrowser, PyPDF2, nltk, os, pdfkit, re, wikipedia, json
-from ProfileManager import *
+from knowledge_management.ProfileManager import *
 
 def tag_visible(element):
     if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:

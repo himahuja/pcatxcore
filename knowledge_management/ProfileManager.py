@@ -52,7 +52,7 @@ class ProfileManager(object):
                         # open name_cik[name_aliases.keys()[i]]
         
     def __iter__(self):
-        for cik in self.cik_name.keys():
+        for cik in self.cik_name:
             yield self.get(cik)
         
     def __len__(self):
@@ -94,7 +94,7 @@ class ProfileManager(object):
             this['name'] = self.cik_to_name(cik)
             this['sic'] = cik_to_sic[cik]
             try:
-                this['naics'] = sic_to_naics[this['sic'].pop()]
+                this['naics'] = [ x for x in sic_to_naics[this['sic']] ]
             except:
                 this['naics'] = None
             this['subsidiaries'] = None
@@ -188,6 +188,89 @@ class ProfileManager(object):
     
     def name_to_description(self, name):
         return self.naics_description[self.get(name).naics] + self.sic_description[self.get(name).sic]
+        
+    def update_profiles(self):
+        thicc_edgar = json.loads(open(os.path.join("data/profilemanager/data", "edgardata.json"), "r").read())
+        for cik in self:
+            this = json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "r").read())
+            this['name'] = self.cik_to_name(cik)
+            this['sic'] = cik_to_sic[cik]
+            try:
+                this['naics'] = [ x for x in sic_to_naics[this['sic']] ]
+            except:
+                this['naics'] = None
+            this['subsidiaries'] = None
+            try:
+                this['ten_ks'] = thicc_edgar[cik]["10K"]
+                remove_queue = []
+                for elem in this['ten_ks']:
+                    if elem['url'] == "":
+                        remove_queue.append(elem)
+                for elem in remove_queue:
+                    this['ten_ks'].remove(elem)
+            except Exception as e:
+                print(str(e))
+                this['ten_ks'] = None
+            try:
+                if len(this['ten_ks']) == 0:
+                    this['ten_ks'] = None
+                else:
+                    for elem in this['ten_ks']:
+                        try:
+                            tmp = elem['txt']
+                        except:
+                            elem['txt'] = parse_single_page(elem['url'])
+                            print("Parsed {}".format(elem['url']))
+            except:
+                pass
+            try:
+                this['eight_ks'] = thicc_edgar[cik]["8K"]
+                remove_queue = []
+                for elem in this['eight_ks']:
+                    if elem['url'] == "":
+                        remove_queue.append(elem)
+                for elem in remove_queue:
+                    this['eight_ks'].remove(elem)
+            except Exception as e:
+                print(str(e))
+                this['eight_ks'] = None
+            try:
+                if len(this['eight_ks']) == 0:
+                    this['eight_ks'] = None
+                else:
+                    for elem in this['eight_ks']:
+                        try:
+                            tmp = elem['txt']
+                        except:
+                            elem['txt'] = eightk_parser(elem['url'])
+                            print("Parsed {}".format(elem['url']))
+            except:
+                pass
+            try:
+                this['EX21s'] = thicc_edgar[cik]["EX21"]
+                remove_queue = []
+                for elem in this['EX21s']:
+                    if elem['url'] == "":
+                        remove_queue.append(elem)
+                for elem in remove_queue:
+                    this['EX21s'].remove(elem)
+            except Exception as e:
+                print(str(e))
+                this['EX21s'] = None
+            try:
+                if len(this['EX21s']) == 0:
+                    this['EX21s'] = None
+                else:
+                    for elem in this['EX21s']:
+                        try:
+                            tmp = elem['txt']
+                        except:
+                            elem['txt'] = eightk_parser(elem['url'])
+                            print("Parsed {}".format(elem['url']))
+            except:
+                pass
+            this['website'] = None
+            open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4))
         
 def main():
     pm = ProfileManager()

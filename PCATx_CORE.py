@@ -6,7 +6,7 @@ Created on Fri Jul  6 14:10:12 2018
 """
 import parser, pickle
 from webcrawlAll import crawlerWrapper
-from WebResourceManager import *
+from knowledge_management.WebResourceManager import *
 from gensim import models
 import logging, re
 
@@ -28,9 +28,9 @@ def main():
         query = { 'name' : line.strip().replace(".json", "") }
         print("Currently web crawling: {}".format(query['name']))
         WC_to_KPM(query)
-    wrm = WebResourceManager()
+    wrm = WebResourceManager("..")
     for file in os.listdir("data/webresourcemanagers"):
-        tmp = WebResourceManager()
+        tmp = WebResourceManager("..")
         tmp.load(os.path.join("data/webresourcemanagers", file))
         wrm.absorb_file_manager(tmp)
     wrm.save()
