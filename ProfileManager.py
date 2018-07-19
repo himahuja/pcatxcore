@@ -106,15 +106,18 @@ class ProfileManager(object):
                         remove_queue.append(elem)
                 for elem in remove_queue:
                     this['ten_ks'].remove(elem)
+            except Exception as e:
+                print(str(e))
+                this['ten_ks'] = None
+            try:
                 if len(this['ten_ks']) == 0:
                     this['ten_ks'] = None
                 else:
                     for elem in this['ten_ks']:
                         elem['txt'] = parse_single_page(elem['url'])
                         print("Parsed {}".format(elem['url']))
-            except Exception as e:
-                print(str(e))
-                this['ten_ks'] = None
+            except:
+                pass
             try:
                 this['eight_ks'] = thicc_edgar[cik]["8K"]
                 remove_queue = []
@@ -123,15 +126,18 @@ class ProfileManager(object):
                         remove_queue.append(elem)
                 for elem in remove_queue:
                     this['eight_ks'].remove(elem)
+            except Exception as e:
+                print(str(e))
+                this['eight_ks'] = None
+            try:
                 if len(this['eight_ks']) == 0:
                     this['eight_ks'] = None
                 else:
                     for elem in this['eight_ks']:
                         elem['txt'] = eightk_parser(elem['url'])
                         print("Parsed {}".format(elem['url']))
-            except Exception as e:
-                print(str(e))
-                this['eight_ks'] = None
+            except:
+                pass
             try:
                 this['EX21s'] = thicc_edgar[cik]["EX21"]
                 remove_queue = []
@@ -140,15 +146,18 @@ class ProfileManager(object):
                         remove_queue.append(elem)
                 for elem in remove_queue:
                     this['EX21s'].remove(elem)
+            except Exception as e:
+                print(str(e))
+                this['EX21s'] = None
+            try:
                 if len(this['EX21s']) == 0:
                     this['EX21s'] = None
                 else:
                     for elem in this['EX21s']:
                         elem['txt'] = eightk_parser(elem['url'])
                         print("Parsed {}".format(elem['url']))
-            except Exception as e:
-                print(str(e))
-                this['EX21s'] = None
+            except:
+                pass
             this['website'] = None
             open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
         

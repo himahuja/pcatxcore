@@ -94,7 +94,7 @@ def parse_single_page(link):
                 print(link + " threw the following exception " + str(e))
     else:
             try:
-                return get_PDF_content(query_string, link, linkList)
+                return get_PDF_content("test", link, linkList)
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
 
