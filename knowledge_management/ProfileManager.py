@@ -170,11 +170,11 @@ class ProfileManager(object):
     def name_to_description(self, name):
         return self.naics_description[self.get(name).naics] + self.sic_description[self.get(name).sic]
         
-    def update_profiles(self):
+    def update_profiles(self, filename):
         if self.rel_path == None:
-            thicc_edgar = json.loads(open("data/profilemanager/data/edgardata.json", "r").read())
+            thicc_edgar = json.loads(open("data/profilemanager/data/edgardata/JSON/{}.json".format(filename), "r").read())
         else:
-            thicc_edgar = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/edgardata.json"), "r").read())
+            thicc_edgar = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/edgardata/JSON/{}.json".format(filename)), "r").read())
         for this in self:
             try:
                 this['ten_ks'] = thicc_edgar[this['cik']]["10K"]
@@ -249,7 +249,9 @@ class ProfileManager(object):
         
 def main():
     pm = ProfileManager("..")
-    pm.generate_profiles()
+    edgar_list = ["bigedgar_part25", "bigedgar_part26", "bigedgar_part27", "bigedgar_part28", "bigedgar_part29", "bigedgar_part30"]
+    for edgar in edgar_list:
+        pm.update_profiles(edgar)
     
 if __name__ == "__main__" :
     main()

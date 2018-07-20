@@ -45,7 +45,7 @@ def TxtToJson(file_in, file_out):
         dictionary[line.strip().lower()] = line.strip().lower()
     open(file_out, "w").write(json.dumps(dictionary, sort_keys = True, indent = 4))
 
-def pickle_to_JSON():
+def pickle_to_JSON(filename):
 #    with open(os.path.join("../../Dictionaries", "naics_dict.pk"), "rb") as handle:
 #        file = pickle.load(handle)
 #    open(os.path.join("../../data/profilemanager/data", "naics_to_description.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))
@@ -64,9 +64,9 @@ def pickle_to_JSON():
 #     with open(os.path.join("../../data/profilemanager/data", "ciknames2code.pk"), "rb") as handle:
 #         file = pickle.load(handle)
 #     open(os.path.join("../../data/profilemanager/data", "name_to_code.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
-     with open(os.path.join("../../data/profilemanager/data", "bigedgar.pk"), "rb") as handle:
+     with open(os.path.join("../../data/profilemanager/data/edgardata/pickles", "{}.pk".format(filename)), "rb") as handle:
          file = pickle.load(handle)
-     open(os.path.join("../../data/profilemanager/data", "edgardata.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
+     open(os.path.join("../../data/profilemanager/data/edgardata/JSON", "{}.json".format(filename)), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
 
 def inverse_dictionary():
     this = json.loads(open(os.path.join("../../data/profilemanager/data", "sic_to_cik.json"), "r").read())
@@ -81,7 +81,9 @@ def inverse_dictionary():
         
     
 def main():    
-    pickle_to_JSON()
+    for file in os.listdir("../../data/profilemanager/data/edgardata/pickles"):
+            print("Converting {}....".format(file[:-3]))
+            pickle_to_JSON(file[:-3])
     
 if __name__ == "__main__" :
     main()

@@ -30,12 +30,7 @@ def main():
         WC_to_KPM(query)
     wrm = WebResourceManager("..")
     for file in os.listdir("data/webresourcemanagers"):
-<<<<<<< HEAD
-        print(file)
-        tmp = WebResourceManager()
-=======
         tmp = WebResourceManager("..")
->>>>>>> 8379d6ceaa723780c1ae8ed325c10431068b97d2
         tmp.load(os.path.join("data/webresourcemanagers", file))
         wrm.absorb_file_manager(tmp)
     wrm.save()
