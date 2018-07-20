@@ -3,12 +3,16 @@
 
 from bs4 import BeautifulSoup
 from bs4.element import Comment
-import urllib.request, os, webbrowser, PyPDF2, nltk, pdfkit, re, wikipedia, json, sys
+import urllib.request, os, webbrowser, PyPDF2, nltk, pdfkit, re, wikipedia, json, sys, unicodedata, requests
+import wikipedia as wiki
 sys.path.append
 from knowledge_management.ProfileManager import *
-import requests
 
 def tag_visible(element):
+    """
+    HELPER FUNCTION
+    Boolean function that filters out non-required tags in HTML-pages
+    """
     if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:
         return False
     if isinstance(element, Comment):
@@ -18,6 +22,7 @@ def tag_visible(element):
     return True
 
 def text_from_html(body):
+
     soup = BeautifulSoup(body.decode("utf-8", "ignore"), 'lxml')
     texts = soup.findAll(text=True)
     visible_texts = filter(tag_visible, texts)
@@ -329,19 +334,55 @@ def tenk_parser(link): # not working
         print('exception when parsing 10k, returning an empty string')
         return ''
 
-def wikiParser_new(url):
-    response = requests.get(url)
-    doc = Document(response.text)
-    print(doc.title())
+def wikiParser_new(company):
+    """
+
+    """
+    wiki_page = {}
+    wiki_table = {}
+    try:
+        page = wiki.page(title = company)
+    except:
+        print("Reading the wiki page, {} was not possible".format(company))
+    secs = page.sections
+    for sec in secs:
+        wiki_page[sec] = page.section(sec)
+    # Do the wikipedia table
+    link = page.url
+    body = urllib.request.urlopen(link).read()
+    soup = BeautifulSoup(body, 'lxml')
+    try:
+        table = soup.find('table',{'class':'infobox vcard'})
+        rows = table.find_all('tr')
+        for row in rows:
+            right = row.find_all('td')
+            left = row.find_all('th')
+            for head, elem in zip(left, right):
+                filler = unicodedata.normalize("NFKD", head.get_text(strip=True))
+                els = elem.find_all('li')
+                if len(els) != 0:
+                    temp_list = []
+                    for el in els:
+                        temp_list.append(unicodedata.normalize("NFKD",re.sub('\[[^()]*\]', "", el.get_text(strip=True))))
+                    wiki_table[filler] = temp_list
+                elif head.text == "Founded":
+                    wiki_table[filler] = unicodedata.normalize("NFKD",elem.get_text(strip=True).split(";", 1)[0])
+                elif elem.text != "":
+                    wiki_table[filler] = unicodedata.normalize("NFKD",re.sub('\[[^()]*\]', "",elem.get_text(strip=True)))
+    except:
+        print("Wikipedia Table does not exist for {}".format(company))
+    return (wiki_page, wiki_table)
 
 
 def main():
-    pm = ProfileManager()
+    # pm = ProfileManager()
 #    for company in pm:
 #        print("Now getting information for {}".format(company['name']))
 #        print(wiki_parser(company['name']))
     # print(ex21_parser("https://www.sec.gov/Archives/edgar/data/1800/000091205701006039/a2035109zex-21.txt"))
-    print(parse_single_page('https://www.sec.gov/Archives/edgar/data/1800/000104746914001176/a2218043z10-k.htm'))
+    (wiki_page, wiki_table) = wikiParser_new('Apple Inc')
+    print(wiki_page)
+    print(wiki_table)
 
 if __name__ == "__main__" :
     main()
