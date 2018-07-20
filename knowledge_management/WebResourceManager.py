@@ -5,13 +5,14 @@ Created on Sun Jul  8 15:27:52 2018
 
 @author: alex
 """
+import sys
+sys.path.append("..")
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from PCATParser import *
-import json, os, uuid
+import json, os, uuid, nltk, re, time
 import numpy as np
-import json, nltk, os, re, time, uuid
 
 class WebResourceManager(object):
     
@@ -87,7 +88,7 @@ class WebResourceManager(object):
                                     pass
                     corpus_list.append(doc_list)
                     item['corpus'] = doc_list
-                    file = open(os.path.join("data/docs", item['id']+".json"), "w")
+                    file = open(os.path.join("../data/docs", item['id']+".json"), "w")
                     file.write(json.dumps(item, sort_keys=True, indent=4))
                     file.close()
                     if (count % 100 == 99):
@@ -249,12 +250,13 @@ def insertionSort(arr):
     return arr
             
 def main():
-    with open("kpm/data/articles.txt") as f:
+    with open("../kpm/data/articles.txt") as f:
         content = f.readlines()
     content = [x.strip() for x in content]
-    wrm = WebResourceManager()
+    wrm = WebResourceManager("..")
     wrm.load()
     corpus = wrm.get_corpus()
+    td = wrm.get_TaggedDocuments()
     
 if __name__ == "__main__" :
     main()

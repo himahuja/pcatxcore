@@ -24,7 +24,7 @@ Currently in development. We are hoping to use computational fact-checking and k
 This is a parser that extracts visible and relevant content from webpages.
 It can
 * save original html pages and pdf contents
-* write new files with relevant html/pdf contents in a directory
+* write text files with the contents in a directory
 
 ##### Documentation
 
@@ -39,6 +39,8 @@ It can
 ### Profile Manager
 -------------------
 
+* [ProfileManager.py](knowledge_management/ProfileManager.py) --- [Documentation](knowledge_management/docs/ProfileManager.md)
+ProfileManager is a class for helping manage a database of business profiles. It uses the SEC's (United States Securities and Exchange Commission) CIK codes (Central Index Key) to act as identifiers and allows the user to compile a variety of information on corporate entities in an easy to use and query format. Assisting the accessibility of information, ProfileManager supports using a series of mappings from CIK codes to names and back, names to aliases, and mappings from industry code standards and descriptions of them. The hope to provide for a flexible data solution for complex business oriented applications.
 
 ### Query Formulator
 --------------------

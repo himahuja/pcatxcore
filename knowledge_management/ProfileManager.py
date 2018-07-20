@@ -5,27 +5,46 @@ Created on Wed Jul 11 12:47:13 2018
 
 @author: alex
 """
+import json, os, sys
+sys.path.append("..")
 from PCATParser import *
-import json, os
 
 class ProfileManager(object):
     
-    def __init__(self):
-        #identify the Profile
-        try:
-            self.cik_name = json.loads(open("data/profilemanager/data/cik_to_name.json", "r").read())
-            self.name_cik = json.loads(open("data/profilemanager/data/name_to_cik.json", "r").read())
-            self.name_alias = {}
-        except Exception as e:
-            print("Error reading in one of the profile indentifier files " + str(e))
-        #sic <---> naics transforms
-        try:
-            self.naics_description = json.loads(open("data/profilemanager/data/naics2017_to_naics2017_title.json", "r").read())
-            self.sic_description = json.loads(open("data/profilemanager/data/sic_to_description.json", "r").read())
-            self.naics_sic = json.loads(open("data/profilemanager/data/naics_to_sic.json", "r").read())
-            self.sic_naics = json.loads(open("data/profilemanager/data/sic_to_naics.json", "r").read())
-        except Exception as e:
-            print("Error reading in one of the SIC <---> NAICS Transforms " + str(e))
+    def __init__(self, rel_path=None):
+        self.rel_path = rel_path
+        if rel_path == None:
+            #identify the Profile
+            try:
+                self.cik_name = json.loads(open("data/profilemanager/data/cik_to_name.json", "r").read())
+                self.name_cik = json.loads(open("data/profilemanager/data/name_to_cik.json", "r").read())
+                self.name_alias = {}
+            except Exception as e:
+                print("Error reading in one of the profile indentifier files " + str(e))
+            #sic <---> naics transforms
+            try:
+                self.naics_description = json.loads(open("data/profilemanager/data/naics2017_to_naics2017_title.json", "r").read())
+                self.sic_description = json.loads(open("data/profilemanager/data/sic_to_description.json", "r").read())
+                self.naics_sic = json.loads(open("data/profilemanager/data/naics_to_sic.json", "r").read())
+                self.sic_naics = json.loads(open("data/profilemanager/data/sic_to_naics.json", "r").read())
+            except Exception as e:
+                print("Error reading in one of the SIC <---> NAICS Transforms " + str(e))
+        else:
+            #identify the Profile
+            try:
+                self.cik_name = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/cik_to_name.json"), "r").read())
+                self.name_cik = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/name_to_cik.json"), "r").read())
+                self.name_alias = {}
+            except Exception as e:
+                print("Error reading in one of the profile indentifier files " + str(e))
+            #sic <---> naics transforms
+            try:
+                self.naics_description = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/naics2017_to_naics2017_title.json"), "r").read())
+                self.sic_description = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/sic_to_description.json"), "r").read())
+                self.naics_sic = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/naics_to_sic.json"), "r").read())
+                self.sic_naics = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/sic_to_naics.json"), "r").read())
+            except Exception as e:
+                print("Error reading in one of the SIC <---> NAICS Transforms " + str(e))
         
     def __contains__(self, key):
         if key in self.cik_name:
@@ -34,21 +53,30 @@ class ProfileManager(object):
             return True
         else:
             for i in range(len(self.name_aliases.values())):
-                for alias in self.name_aliases.values()[i]:
-                    if key == alias:
+                if alias in self.name_aliases.values()[i]:
                         return True
+        return False
     
-    def __getitem(self, key):
+    def __getitem__(self, key):
         if key in self.cik_name:
-            return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(key)), "r").read())
+            if self.rel_path == None:
+                return json.loads(open("data/profilemanager/profiles/{}.json".format(key), "r").read())
+            else:
+                return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(key)), "r").read())
         elif key in self.name_cik:
-            return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(self.name_cik[key])), "r").read())
+            if self.rel_path == None:
+                return json.loads(open("data/profilemanager/profiles/{}.json".format(self.name_cik[key]), "r").read())
+            else:
+                return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[key])), "r").read())
             #open name_cik[key]
         else:
             for i in range(len(self.name_aliases.values())):
                 for alias in self.name_aliases.values()[i]:
                     if key == alias:
-                        return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
+                        if self.rel_path == None:
+                            return json.loads(open("data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]]), "r").read())
+                        else:
+                            return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
         
     def __iter__(self):
@@ -69,25 +97,27 @@ class ProfileManager(object):
     def cik_to_alias(self, cik):
         return self.name_alias[self.cik_name[cik]]
         
-    def cik_to_naics(self, cik):
-        return self.get(cik).naics
-        
-    def cik_to_name(self, cik):
-        return self.cik_name(cik)
-    
-    def cik_to_sic(self, cik):
-        return self.cik_sic[cik]
-        
     def cik_to_description(self, cik):
         return self.naics_description[self.get(cik).naics] + self.sic_description[self.get(cik).sic]
         
+    def cik_to_naics(self, cik):
+        return self.get(cik)['naics']
+        
     def cik_to_name(self, cik):
         return self.cik_name[cik]
+    
+    def cik_to_sic(self, cik):
+        return self.get(cik)['sic']
         
     def generate_profiles(self):
-        cik_to_sic = json.loads(open(os.path.join("data/profilemanager/data", "cik_to_sic.json"), "r").read())
-        sic_to_naics = json.loads(open(os.path.join("data/profilemanager/data", "sic_to_naics.json"), "r").read())
-        thicc_edgar = json.loads(open(os.path.join("data/profilemanager/data", "edgardata.json"), "r").read())
+        if self.rel_path == None:
+            cik_to_sic = json.loads(open("data/profilemanager/data/cik_to_sic.json", "r").read())
+            sic_to_naics = json.loads(open("data/profilemanager/data/sic_to_naics.json", "r").read())
+            thicc_edgar = json.loads(open("data/profilemanager/data/edgardata.json", "r").read())
+        else:
+            cik_to_sic = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/cik_to_sic.json"), "r").read())
+            sic_to_naics = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/sic_to_naics.json"), "r").read())
+            thicc_edgar = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/edgardata.json"), "r").read())
         for cik in self.cik_name:
             this = {}
             this['cik'] = cik
@@ -107,7 +137,6 @@ class ProfileManager(object):
                 for elem in remove_queue:
                     this['ten_ks'].remove(elem)
             except Exception as e:
-                print(str(e))
                 this['ten_ks'] = None
             try:
                 if len(this['ten_ks']) == 0:
@@ -115,7 +144,7 @@ class ProfileManager(object):
                 else:
                     for elem in this['ten_ks']:
                         elem['txt'] = parse_single_page(elem['url'])
-                        print("Parsed {}".format(elem['url']))
+                        print("Parsed 10K at {} for {}".format(elem['url'], this['name']))
             except:
                 pass
             try:
@@ -127,7 +156,6 @@ class ProfileManager(object):
                 for elem in remove_queue:
                     this['eight_ks'].remove(elem)
             except Exception as e:
-                print(str(e))
                 this['eight_ks'] = None
             try:
                 if len(this['eight_ks']) == 0:
@@ -135,7 +163,7 @@ class ProfileManager(object):
                 else:
                     for elem in this['eight_ks']:
                         elem['txt'] = eightk_parser(elem['url'])
-                        print("Parsed {}".format(elem['url']))
+                        print("Parsed 8K at {} for {}".format(elem['url'], this['name']))
             except:
                 pass
             try:
@@ -147,7 +175,6 @@ class ProfileManager(object):
                 for elem in remove_queue:
                     this['EX21s'].remove(elem)
             except Exception as e:
-                print(str(e))
                 this['EX21s'] = None
             try:
                 if len(this['EX21s']) == 0:
@@ -155,23 +182,35 @@ class ProfileManager(object):
                 else:
                     for elem in this['EX21s']:
                         elem['txt'] = eightk_parser(elem['url'])
-                        print("Parsed {}".format(elem['url']))
+                        print("Parsed EX21 at {} for {}".format(elem['url'], this['name']))
             except:
                 pass
             this['website'] = None
-            open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
+            if self.rel_path == None:
+                open("data/profilemanager/profiles/{}.json".format(cik), "w").write(json.dumps(this, sort_keys = True, indent = 4))
+            else:
+                open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
         
     def get(self, key):
         if key in self.cik_name:
-            return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(key)), "r").read())
+            if self.rel_path == None:
+                return json.loads(open("data/profilemanager/profiles/{}.json".format(key), "r").read())
+            else:
+                return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(key)), "r").read())
         elif key in self.name_cik:
-            return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(self.name_cik[key])), "r").read())
+            if self.rel_path == None:
+                return json.loads(open("data/profilemanager/profiles/{}.json".format(self.name_cik[key]), "r").read())
+            else:
+                return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[key])), "r").read())
             #open name_cik[key]
         else:
             for i in range(len(self.name_aliases.values())):
                 for alias in self.name_aliases.values()[i]:
                     if key == alias:
-                        return json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
+                        if self.rel_path == None:
+                            return json.loads(open("data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]]), "r").read())
+                        else:
+                            return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
     
     def naics_to_description(self, naics):
@@ -190,18 +229,19 @@ class ProfileManager(object):
         return self.naics_description[self.get(name).naics] + self.sic_description[self.get(name).sic]
         
     def update_profiles(self):
-        thicc_edgar = json.loads(open(os.path.join("data/profilemanager/data", "edgardata.json"), "r").read())
-        for cik in self:
-            this = json.loads(open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "r").read())
-            this['name'] = self.cik_to_name(cik)
-            this['sic'] = cik_to_sic[cik]
+        if self.rel_path == None:
+            thicc_edgar = json.loads(open("data/profilemanager/data/edgardata.json", "r").read())
+        else:
+            thicc_edgar = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/edgardata.json"), "r").read())
+        for this in self:
+            this['name'] = self.cik_to_name(this['cik'])
             try:
                 this['naics'] = [ x for x in sic_to_naics[this['sic']] ]
             except:
                 this['naics'] = None
             this['subsidiaries'] = None
             try:
-                this['ten_ks'] = thicc_edgar[cik]["10K"]
+                this['ten_ks'] = thicc_edgar[this['cik']]["10K"]
                 remove_queue = []
                 for elem in this['ten_ks']:
                     if elem['url'] == "":
@@ -209,7 +249,6 @@ class ProfileManager(object):
                 for elem in remove_queue:
                     this['ten_ks'].remove(elem)
             except Exception as e:
-                print(str(e))
                 this['ten_ks'] = None
             try:
                 if len(this['ten_ks']) == 0:
@@ -220,11 +259,11 @@ class ProfileManager(object):
                             tmp = elem['txt']
                         except:
                             elem['txt'] = parse_single_page(elem['url'])
-                            print("Parsed {}".format(elem['url']))
+                            print("Parsed 10K at {} for {}".format(elem['url'], this['name']))
             except:
                 pass
             try:
-                this['eight_ks'] = thicc_edgar[cik]["8K"]
+                this['eight_ks'] = thicc_edgar[this['cik']]["8K"]
                 remove_queue = []
                 for elem in this['eight_ks']:
                     if elem['url'] == "":
@@ -232,7 +271,6 @@ class ProfileManager(object):
                 for elem in remove_queue:
                     this['eight_ks'].remove(elem)
             except Exception as e:
-                print(str(e))
                 this['eight_ks'] = None
             try:
                 if len(this['eight_ks']) == 0:
@@ -243,11 +281,11 @@ class ProfileManager(object):
                             tmp = elem['txt']
                         except:
                             elem['txt'] = eightk_parser(elem['url'])
-                            print("Parsed {}".format(elem['url']))
+                            print("Parsed 8K at {} for {}".format(elem['url'], this['name']))
             except:
                 pass
             try:
-                this['EX21s'] = thicc_edgar[cik]["EX21"]
+                this['EX21s'] = thicc_edgar[this['cik']]["EX21"]
                 remove_queue = []
                 for elem in this['EX21s']:
                     if elem['url'] == "":
@@ -255,7 +293,6 @@ class ProfileManager(object):
                 for elem in remove_queue:
                     this['EX21s'].remove(elem)
             except Exception as e:
-                print(str(e))
                 this['EX21s'] = None
             try:
                 if len(this['EX21s']) == 0:
@@ -266,14 +303,17 @@ class ProfileManager(object):
                             tmp = elem['txt']
                         except:
                             elem['txt'] = eightk_parser(elem['url'])
-                            print("Parsed {}".format(elem['url']))
+                            print("Parsed EX21 at {} for {}".format(elem['url'], this['name']))
             except:
                 pass
             this['website'] = None
-            open(os.path.join("data/profilemanager/profiles", "{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4))
+            if self.rel_path == None:
+                open("data/profilemanager/profiles/{}.json".format(this['cik']), "w").write(json.dumps(this, sort_keys = True, indent = 4))
+            else:
+                open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(this['cik'])), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
         
 def main():
-    pm = ProfileManager()
+    pm = ProfileManager("..")
     pm.generate_profiles()
     
 if __name__ == "__main__" :

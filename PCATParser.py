@@ -327,7 +327,6 @@ def tenk_parser(link): # not working
         print('exception when parsing 10k, returning an empty string')
         return ''
 
-def wikiParser(url):
     
 def main():
     pm = ProfileManager()

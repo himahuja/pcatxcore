@@ -42,11 +42,23 @@ Returns a string representation of the WebResourceManager object using JSON.
 
 This object starts tracking all of the files in the **other_file_manager** by adding the files to its dictionary. **other_file_manager** and its files are not altered in any way.
 
+##### get_corpus(process_all=False)
+
+* **process_all** is a parameter that allows you specify whether or not you would like to reprocess a document which already has a **corpus** field. If the document already has a **corpus** field and **process_all** == False, the document is not processed and the field is added to the corpora. If the document already has a **corpus** field and **process_all** == True, the document is reprocessed and its **corpus** field is overwritten using the new output.
+
+Specifically, it this function decodes using the "UTF-8" codec, ignoring errors, uses regular expressions to remove email addresses, special characters and numbers, then removes all words of length < 3 from the corpus and stems using NLTK's PorterStemmer.
+
+Note: This method serves the function of the now deprecated corpusBuilder's **`__init__()`** and **filter_dict()** functions.
+
 ##### get_relevance_score(document)
 
 * **document** is a string, generally the text attribute of a document.
 
 Returns the relevance score using **classifier**.
+
+##### get_TaggedDocuments()
+
+A generator that yields the **corpus** fields of the contained documents as gensim's TaggedDocument objects with the **id** and **query** fields as tags.
 
 ##### get_texts()
 
