@@ -1,7 +1,9 @@
 # Knowledge Management
 -------------------------------
 
-Knowledge Management is a section of PCATx CORE which is currently being developed as part of PCATx CORE, a web crawling and artificial intelligence framework for Praedicat, Inc. by the 2018 RIPS team at UCLA's Institute for Pure and Applied Mathematics. Our goal is to utilize Natural Language Processing techniques and Artificial Intelligence to collect automate data collection for the InsurTech company. Knowledge Management specifically deals with management, representation, and classification of data.
+Knowledge Management is a section of PCATx CORE which is currently being developed as part of PCATx CORE, a web crawling and artificial intelligence framework for Praedicat, Inc. by the 2018 RIPS team at UCLA's Institute for Pure and Applied Mathematics. Our goal is to utilize Natural Language Processing techniques and Artificial Intelligence to automate data collection for the InsurTech company. Knowledge Management specifically deals with management, representation, and classification of data.
+
+Analysts at Praedicat, Inc., need to manually associate each company with a set of business activities. Using this information, analysts attempt to find evidence linking businesses with potentially dangerous practices, such as the use of hazardous chemicals. With a plethora of companies and business activities, manual search is a tedious process. Further, the analysis is generally performed on unstructured, non-uniform, and sporadic internet sites which makes it difficult to algorithmically search for the information needed and complex to determine the semantic meaning of the documents even when they are found. Our work attempts to tackle these problems by building a web crawler which procures information and comparing the statements found in the documents to a credible knowledge base. Based on computational fact checking, we are hoping this approach will lead to better classification of unstructured text information on the internet.
 
 ![Diagram of PCATx Core Architecture](/img/PCATxCOREArchitecture.jpg)
 
