@@ -1,41 +1,24 @@
 # PCATx CORE
 
-A web crawling and artificial intelligence framework for Praedicat, Inc. developed by the 2018 RIPS team at UCLA's Institute for Pure and Applied Mathematics. Our goal utilize Natural Language Processing techniques and Artificial Intelligence to collect automate data collection for the InsurTech company.
+PCATx CORE is currently being developed as a web crawling and artificial intelligence framework for Praedicat, Inc. by the 2018 RIPS team at UCLA's Institute for Pure and Applied Mathematics. Our goal is to utilize Natural Language Processing techniques and Artificial Intelligence to automate data collection for the InsurTech company.
+
+Analysts at Praedicat, Inc., need to manually associate each company with a set of business activities. Using this information, analysts attempt to find evidence linking businesses with potentially dangerous practices, such as the use of hazardous chemicals. With a plethora of companies and business activities, manual search is a tedious process. Further, the analysis is generally performed on unstructured, non-uniform, and sporadic Internet sites which makes it difficult to algorithmically search for the information needed and complex to determine the semantic meaning of the documents even when they are found. Our work attempts to tackle these problems by building a web crawler which procures information and comparing the statements found in the documents to a credible knowledge base. Based on computational fact checking, we are hoping this approach will lead to better classification of unstructured text information on the Internet.
 
 ![Diagram of PCATx Core Architecture](/img/PCATxCOREArchitecture.jpg)
 
 ### Table of Contents
 ---------------------
 * Classifier
-* Keyword Producing Module (KPM)
 * Parser
+* Profile Manager
 * Query Formulator
-* WebResourceManager
+* Web Crawler
+* Web Resource Manager
 
 ### Classifier
 --------------
 
-### Keyword Producing Module (KPM)
----------------------------------
-
-This module is divided into two parts: the Mapper and the Keyword Producing Model (KPM).
-
-Mapper is essentially a wrapper for a dictionary, it associates unique identifiers with a list of aliases for the entity identified. An example would be "00001" -> ["Micron Technology", "MU", "Micron"]. For full documentation on Mapper, go to [docs/Mapper.md](kpm/docs/Mapper.md).
-
-The Keyword Producing Model takes data and finds words highly associated with our entities to build the list of aliases using data2vec and neural networks.
-
-The following modules and scripts are part of the Keyword Producing Model:
-
-* [corpusBuilder.py](kpm/corpusBuilder.py) --- [Documentation](kpm/docs/corpusBuilder.md)
-corpusBuilder is a wrapper for a list of lists that is specifically designed to process text documents and get them into a format which is optimal for doc2vec.
-
-* [Mapper.py](kpm/Mapper.py) --- [Documentation](kpm/docs/Mapper.md)
-Mapper is essentially a wrapper for a dictionary, it associates unique identifiers with a list of aliases for the entity identified. An example would be "00001" -> ["Micron Technology", "MU", "Micron"].
-
-##### /bin
-
-* [ProcessTxtFiles.py](kpm/bin/ProcessTxtFiles.py)
-A simple module with functions for processing text files in particular formats we encountered such as the 20 News Groups data set.
+Currently in development. We are hoping to use computational fact-checking and knowledge graph concepts to implement a classification and credibility checking module. To see the concepts and papers we are exploring, feel free to check out the "Computational Fact-Checking" section of my [AIReading Github](https://github.com/alexandermichels/AIReading#computational-fact-checking).
 
 
 ### Parser
@@ -43,9 +26,9 @@ A simple module with functions for processing text files in particular formats w
 This is a parser that extracts visible and relevant content from webpages.
 It can
 * save original html pages and pdf contents
-* write new files with relevant html/pdf contents in a directory
+* write text files with the contents in a directory
 
-#### Documentation
+##### Documentation
 
 |Function | Input        | Processing           | Output  |
 |-----   | ------------- |:-------------:| -----:|
@@ -55,12 +38,20 @@ It can
 |sentence_filter(sentence_list)| a list of sentences | remove non-sentences | a list of sentences after removal|
 
 
+### Profile Manager
+-------------------
+
+* [ProfileManager.py](knowledge_management/ProfileManager.py) --- [Documentation](knowledge_management/docs/ProfileManager.md)
+ProfileManager is a class for helping manage a database of business profiles. It uses the SEC's (United States Securities and Exchange Commission) CIK codes (Central Index Key) to act as identifiers and allows the user to compile a variety of information on corporate entities in an easy to use and query format. Assisting the accessibility of information, ProfileManager supports using a series of mappings from CIK codes to names and back, names to aliases, and mappings from industry code standards and descriptions of them. The hope to provide for a flexible data solution for complex business oriented applications.
+
 ### Query Formulator
-------------------------------------
+--------------------
 
+### Web Crawler
+---------------
 
-### WebResourceManager
-----------------
+### Web Resource Manager
+-------------------------------
 
-* [WebResourceManager.py](WebResourceManager.py) --- [Documentation](kpm/docs/WebResourceManager.md)
+* [WebResourceManager.py](knowledge_management/WebResourceManager.py) --- [Documentation](knowledge_management/docs/WebResourceManager.md)
 WebResourceManager is a class for helping manage a database of web resources. WebResourceManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintain a dictionary from  URL to UUID. Using this uniform data storage system and a simple API, WebResourceManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.

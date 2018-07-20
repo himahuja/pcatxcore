@@ -5,8 +5,8 @@ Created on Fri Jul  6 14:10:12 2018
 @author: alex
 """
 import parser, pickle
-from kpm.corpusBuilder import *
 from webcrawlAll import crawlerWrapper
+from knowledge_management.WebResourceManager import *
 from gensim import models
 import logging, re
 
@@ -20,17 +20,7 @@ def WC_to_KPM(query):
         wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^A-Za-z]+', '', query['name'])))
         wrm.train_classifier()
         wrm.rank_by_relevance()
-#    cb = corpusBuilder(file_manager=wrm)
-#    cb.save()
-#    docs = cb.to_TaggedDocument()
-#    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-#    model = models.Doc2Vec(docs, workers=3, min_count=20)
-#    print("Start training process...")
-#    model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
-#    print(model.wv.most_similar(positive=['woman', 'king'], negative=['man']))
-#    print(model.wv.doesnt_match("breakfast cereal dinner lunch".split()))
-#    print(model.wv.similarity('woman', 'man'))
-
+        
 def main():
     with open("data/praedicat_data/Companies.txt") as f:
         content = f.readlines()
@@ -38,10 +28,14 @@ def main():
         query = { 'name' : line.strip().replace(".json", "") }
         print("Currently web crawling: {}".format(query['name']))
         WC_to_KPM(query)
-    wrm = WebResourceManager()
+    wrm = WebResourceManager("..")
     for file in os.listdir("data/webresourcemanagers"):
+<<<<<<< HEAD
         print(file)
         tmp = WebResourceManager()
+=======
+        tmp = WebResourceManager("..")
+>>>>>>> 8379d6ceaa723780c1ae8ed325c10431068b97d2
         tmp.load(os.path.join("data/webresourcemanagers", file))
         wrm.absorb_file_manager(tmp)
     wrm.save()
