@@ -3,10 +3,10 @@
 
 from bs4 import BeautifulSoup
 from bs4.element import Comment
-import urllib.request, os, webbrowser, PyPDF2, nltk, os, pdfkit, re, wikipedia, json
-from ProfileManager import *
+import urllib.request, os, webbrowser, PyPDF2, nltk, pdfkit, re, wikipedia, json, sys
+sys.path.append
+from knowledge_management.ProfileManager import *
 import requests
-from readability import Document
 
 def tag_visible(element):
     if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:
@@ -341,7 +341,7 @@ def main():
 #        print("Now getting information for {}".format(company['name']))
 #        print(wiki_parser(company['name']))
     # print(ex21_parser("https://www.sec.gov/Archives/edgar/data/1800/000091205701006039/a2035109zex-21.txt"))
-    print(wikiParser_new('https://en.wikipedia.org/wiki/Dow_Chemical_Company'))
+    print(parse_single_page('https://www.sec.gov/Archives/edgar/data/1800/000104746914001176/a2218043z10-k.htm'))
 
 if __name__ == "__main__" :
     main()

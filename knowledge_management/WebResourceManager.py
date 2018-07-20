@@ -255,8 +255,9 @@ def main():
     content = [x.strip() for x in content]
     wrm = WebResourceManager("..")
     wrm.load()
-    corpus = wrm.get_corpus()
-    td = wrm.get_TaggedDocuments()
+    url_list = ["https://www.sec.gov/Archives/edgar/data/1800/000104746914001176/a2218043z10-k.htm", "https://www.sec.gov/Archives/edgar/data/1800/000091205701006039/a2035109zex-21.txt"]
+    for url in url_list:
+        print(str(wrm.string_to_uuid(url)) + "--" + re.sub('[^A-Za-z0-9]+', '', url))
     
 if __name__ == "__main__" :
     main()
