@@ -234,12 +234,6 @@ class ProfileManager(object):
         else:
             thicc_edgar = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/edgardata.json"), "r").read())
         for this in self:
-            this['name'] = self.cik_to_name(this['cik'])
-            try:
-                this['naics'] = [ x for x in sic_to_naics[this['sic']] ]
-            except:
-                this['naics'] = None
-            this['subsidiaries'] = None
             try:
                 this['ten_ks'] = thicc_edgar[this['cik']]["10K"]
                 remove_queue = []
@@ -306,7 +300,6 @@ class ProfileManager(object):
                             print("Parsed EX21 at {} for {}".format(elem['url'], this['name']))
             except:
                 pass
-            this['website'] = None
             if self.rel_path == None:
                 open("data/profilemanager/profiles/{}.json".format(this['cik']), "w").write(json.dumps(this, sort_keys = True, indent = 4))
             else:
