@@ -266,7 +266,6 @@ def eightk_parser(link):
         return info
     except Exception as e:
         print('exception when parsing 8k, returning an empty string {}'.format(str(e)))
-        return ''
 
 def ex21_parser(link):
     try:
@@ -331,8 +330,7 @@ def tenk_parser(link): # not working
             if start:
                 info += sent
     except:
-        print('exception when parsing 10k, returning an empty string')
-        return ''
+        print('exception when parsing 10k')
 
 def wikiParser_new(company):
     """
@@ -344,8 +342,10 @@ def wikiParser_new(company):
         page = wiki.page(title = company)
     except:
         print("Reading the wiki page, {} was not possible".format(company))
+        return (wiki_page, wiki_table)
     secs = page.sections
     for sec in secs:
+        print(sec)
         wiki_page[sec] = page.section(sec)
     # Do the wikipedia table
     link = page.url
