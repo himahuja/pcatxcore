@@ -1,8 +1,7 @@
 # Knowledge Management
--------------------------------
 
 ## Table of Contents
----------------------
+
 * Introduction
   * Milestone One
   * Milestone Two
@@ -23,7 +22,6 @@ Analysts at Praedicat, Inc., need to manually associate each company with a set 
 </div>
 
 #### Milestone One
------------------
 
 <div align="center">
   <img alt="Diagram of Milestone 1 of the PCATx Core Architecture" src="/img/Milestone1.jpg">
@@ -32,7 +30,6 @@ Analysts at Praedicat, Inc., need to manually associate each company with a set 
 Milestone One is the web crawling part of our work. It consists of designing and implementing an intelligent web crawler that is able to find relevant information for Praedicat, Inc.'s analysts. Currently all of our work is focused on Milestone One.
 
 #### Milestone Two
-------------------
 
 <div align="center">
   <img alt="Diagram of Milestone 2 of the PCATx Core Architecture" src="/img/Milestone2.jpg">
@@ -41,7 +38,6 @@ Milestone One is the web crawling part of our work. It consists of designing and
 Milestone 2 is much more Natural Language Processing focused, we will be trying to automate refining, structuring, and interpreting the data as much as possible to make the job of Praedicat analysts as easy as possible. Ideally, we should be providing the analysts with a summary document for each company including the company's profile, the system's belief's about the company's associations with potential litigation causing agents, and sources. The simpler it is for the analyst to verify the better and although we would like to avoid all errors, we especially want to minimize Type II errors ("false negatives").
 
 ## Components
---------------
 
 This module is divided into three parts: the Web Resource Manager, the Profile Manager, and the Knowledge Graph.
 
