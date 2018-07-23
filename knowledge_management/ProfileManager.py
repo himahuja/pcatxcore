@@ -128,10 +128,7 @@ class ProfileManager(object):
                 this['naics'] = None
             this['subsidiaries'] = None
             this['website'] = None
-            if self.rel_path == None:
-                open("data/profilemanager/profiles/{}.json".format(cik), "w").write(json.dumps(this, sort_keys = True, indent = 4))
-            else:
-                open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(cik)), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
+            self.update_profile(this)
         
     def get(self, key):
         if key in self.cik_name:
@@ -169,6 +166,12 @@ class ProfileManager(object):
     
     def name_to_description(self, name):
         return self.naics_description[self.get(name).naics] + self.sic_description[self.get(name).sic]
+    
+    def update_profile(self, profile):
+        if self.rel_path == None:
+            open("data/profilemanager/profiles/{}.json".format(profile['cik']), "w").write(json.dumps(profile, sort_keys = True, indent = 4))
+        else:
+            open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w").write(json.dumps(profile, sort_keys = True, indent = 4)) 
         
     def update_profiles(self, filename):
         if self.rel_path == None:
@@ -242,16 +245,22 @@ class ProfileManager(object):
                             print("Parsed EX21 at {} for {}".format(elem['url'], this['name']))
             except:
                 pass
-            if self.rel_path == None:
-                open("data/profilemanager/profiles/{}.json".format(this['cik']), "w").write(json.dumps(this, sort_keys = True, indent = 4))
-            else:
-                open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(this['cik'])), "w").write(json.dumps(this, sort_keys = True, indent = 4)) 
-        
+            self.update_profile(this)            
+            
 def main():
     pm = ProfileManager("..")
-    edgar_list = ["bigedgar_part25", "bigedgar_part26", "bigedgar_part27", "bigedgar_part28", "bigedgar_part29", "bigedgar_part30"]
-    for edgar in edgar_list:
-        pm.update_profiles(edgar)
+    for company in pm:
+        print("...Now parsing {}".format(company['name']))
+        (wiki_page, wiki_table) = wikiParser_new(company['name'])
+        company['wiki_page'] = wiki_page
+        print(wiki_page)
+        company['wiki_table'] = wiki_table
+        print(wiki_table)
+        pm.update_profile(company)
+    
+#    edgar_list = ["bigedgar_part25", "bigedgar_part26", "bigedgar_part27", "bigedgar_part28", "bigedgar_part29", "bigedgar_part30"]
+#    for edgar in edgar_list:
+#        pm.update_profiles(edgar)
     
 if __name__ == "__main__" :
     main()
