@@ -86,6 +86,7 @@ ProfileManager is a class for helping manage a database of business profiles. It
   * `google-subs`: Pulls the subsidaries out of Google
   * `everything-all`: Pulls out the 10Ks, 8Ks, and E-21s for a CIK dictionary
 
+Some of the helper modules are as follows:
 
 1. `setDriver`: sets the driver using selenium; sets the types of arguments and the locates the drivers.
 
