@@ -50,6 +50,29 @@ ProfileManager is a class for helping manage a database of business profiles. It
 ### Web Crawler
 ---------------
 
+[webcrawlAll.py](/webcrawlAll.py) is a set of modules to crawl various credible websites (TRI, EPA and SEC). Each of these modules is accessible from the module: `crawlerWrapper` which specifies various *engines*.
+  * `google`: calls `search_google`.
+  * `sec10k`: [*Deprecated*] constructs the url with `urlmaker_sec` and calls the `search_sec10k` for that CIK code.
+  * `sec10kall`: engine is related to `sec10k`, but it runs for a CIK dict rather than a single CIK.
+  * `secsic10k`: gets the 10-Ks related to that company for the SEC group.
+  * `generalSEC`: make a general query to the SEC website, uses `urlmaker_sec`.
+  * `sitespecific`:  Uses *httrack* to download index and PDFs from the input website.
+  * `google-subs`: Pulls the subsidaries out of Google
+  * `everything-all`: Pulls out the 10Ks, 8Ks, and E-21s for a CIK dictionary
+
+
+1. `setDriver`: sets the driver using selenium; sets the types of arguments and the locates the drivers.
+
+1. `urlmaker_sec`: creates a URL given the `searchText`, `formType` (10-K, 8-K, E-21 etc.), `cik`, `startDate`, `endDate`
+
+1. `linkFilter_google`: filters out results received from social media websites
+
+1. `search_google`: returns the search results from google for a particular query.
+
+1. `search_sec10k`: [*Deprecated*] searches the SEC websites for the 10-K based on CIK
+
+
+
 ### Web Resource Manager
 -------------------------------
 
