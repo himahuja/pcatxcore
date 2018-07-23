@@ -1,11 +1,34 @@
 # Knowledge Management
 -------------------------------
 
+### Introduction
+----------------
+
 Knowledge Management is a section of PCATx CORE which is currently being developed as part of PCATx CORE, a web crawling and artificial intelligence framework for Praedicat, Inc. by the 2018 RIPS team at UCLA's Institute for Pure and Applied Mathematics. Our goal is to utilize Natural Language Processing techniques and Artificial Intelligence to automate data collection for the InsurTech company. Knowledge Management specifically deals with management, representation, and classification of data.
 
-Analysts at Praedicat, Inc., need to manually associate each company with a set of business activities. Using this information, analysts attempt to find evidence linking businesses with potentially dangerous practices, such as the use of hazardous chemicals. With a plethora of companies and business activities, manual search is a tedious process. Further, the analysis is generally performed on unstructured, non-uniform, and sporadic internet sites which makes it difficult to algorithmically search for the information needed and complex to determine the semantic meaning of the documents even when they are found. Our work attempts to tackle these problems by building a web crawler which procures information and comparing the statements found in the documents to a credible knowledge base. Based on computational fact checking, we are hoping this approach will lead to better classification of unstructured text information on the internet.
+Analysts at Praedicat, Inc., need to manually associate each company with a set of business activities. Using this information, analysts attempt to find evidence linking businesses with potentially dangerous practices, such as the use of hazardous chemicals. With a plethora of companies and business activities, manual search is a tedious process. Further, the analysis is generally performed on unstructured, non-uniform, and sporadic Internet sites which makes it difficult to algorithmically search for the information needed and complex to determine the semantic meaning of the documents even when they are found. Our work attempts to tackle these problems by building a web crawler which procures information and comparing the statements found in the documents to a credible knowledge base. Based on computational fact checking, we are hoping this approach will lead to better classification of unstructured text information on the Internet.
 
-![Diagram of PCATx Core Architecture](/img/PCATxCOREArchitecture.jpg)
+<div align="center">
+  <img alt="Diagram of PCATx Core Architecture" src="/img/PCATxCOREArchitecture.jpg">
+</div>
+
+##### Milestone One
+-----------------
+
+<div align="center">
+  <img alt="Diagram of Milestone 1 of the PCATx Core Architecture" src="/img/Milestone1.jpg">
+</div>
+
+Milestone One is the web crawling part of our work. It consists of designing and implementing an intelligent web crawler that is able to find relevant information for Praedicat, Inc.'s analysts. Currently all of our work is focused on Milestone One.
+
+##### Milestone Two
+------------------
+
+<div align="center">
+  <img alt="Diagram of Milestone 2 of the PCATx Core Architecture" src="/img/Milestone2.jpg">
+</div>
+
+Milestone 2 is much more Natural Language Processing focused, we will be trying to automate refining, structuring, and interpreting the data as much as possible to make the job of Praedicat analysts as easy as possible. Ideally, we should be providing the analysts with a summary document for each company including the company's profile, the system's belief's about the company's associations with potential litigation causing agents, and sources. The simpler it is for the analyst to verify the better and although we would like to avoid all errors, we especially want to minimize Type II errors ("false negatives").
 
 This module is divided into three parts: the Web Resource Manager, the Profile Manager, and the Knowledge Graph.
 
