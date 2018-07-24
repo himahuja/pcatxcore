@@ -108,12 +108,38 @@ class ProfileManager(object):
     
     def cik_to_sic(self, cik):
         return self.get(cik)['sic']
-        
+
+    def clean_financial_statements(self):
+        for company in self:
+            if company['ten_ks'] != None:
+                for elem in company['ten_ks']:
+                    try:
+                        del elem['txt']
+                    except:
+                        pass
+                    if elem['text'] == "" or elem['text'] == None:
+                        del elem['text']
+            if company['eight_ks'] != None:
+                for elem in company['eight_ks']:
+                    try:
+                        del elem['txt']
+                    except:
+                        pass
+                    if elem['text'] == "" or elem['text'] == None:
+                        del elem['text']
+            if company['EX21S'] != None:
+                for elem in company['EX21s']:
+                    try:
+                        del elem['txt']
+                    except:
+                        pass
+                    if elem['text'] == "" or elem['text'] == None:
+                        del elem['text']
+                    
     def generate_profiles(self):
         if self.rel_path == None:
             cik_to_sic = json.loads(open("data/profilemanager/data/cik_to_sic.json", "r").read())
             sic_to_naics = json.loads(open("data/profilemanager/data/sic_to_naics.json", "r").read())
-            thicc_edgar = json.loads(open("data/profilemanager/data/edgardata.json", "r").read())
         else:
             cik_to_sic = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/cik_to_sic.json"), "r").read())
             sic_to_naics = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/sic_to_naics.json"), "r").read())
@@ -166,101 +192,114 @@ class ProfileManager(object):
     
     def name_to_description(self, name):
         return self.naics_description[self.get(name).naics] + self.sic_description[self.get(name).sic]
-    
-    def update_profile(self, profile):
-        if self.rel_path == None:
-            open("data/profilemanager/profiles/{}.json".format(profile['cik']), "w").write(json.dumps(profile, sort_keys = True, indent = 4))
-        else:
-            open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w").write(json.dumps(profile, sort_keys = True, indent = 4)) 
         
-    def update_profiles(self, filename):
+    def parse_sec_docs(self, filename):
         if self.rel_path == None:
             thicc_edgar = json.loads(open("data/profilemanager/data/edgardata/JSON/{}.json".format(filename), "r").read())
         else:
             thicc_edgar = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/edgardata/JSON/{}.json".format(filename)), "r").read())
-        for this in self:
+        for cik in thicc_edgar.keys():
+            this = self.get(cik)
             try:
-                this['ten_ks'] = thicc_edgar[this['cik']]["10K"]
+                this['ten_ks'] = thicc_edgar[cik]["10K"]
                 remove_queue = []
                 for elem in this['ten_ks']:
                     if elem['url'] == "":
                         remove_queue.append(elem)
                 for elem in remove_queue:
                     this['ten_ks'].remove(elem)
-            except Exception as e:
-                this['ten_ks'] = None
-            try:
                 if len(this['ten_ks']) == 0:
                     this['ten_ks'] = None
                 else:
                     for elem in this['ten_ks']:
                         try:
-                            tmp = elem['txt']
+                            tmp = elem['text']
                         except:
-                            elem['txt'] = parse_single_page(elem['url'])
-                            print("Parsed 10K at {} for {}".format(elem['url'], this['name']))
-            except:
-                pass
+                            elem['text'] = parse_single_page(elem['url'])
+            except Exception as e:
+                print("{} threw the following exception: {}".format(this['name'], str(e)))
+                this['ten_ks'] = None
             try:
-                this['eight_ks'] = thicc_edgar[this['cik']]["8K"]
+                this['eight_ks'] = thicc_edgar[cik]["8K"]
                 remove_queue = []
                 for elem in this['eight_ks']:
                     if elem['url'] == "":
                         remove_queue.append(elem)
                 for elem in remove_queue:
                     this['eight_ks'].remove(elem)
-            except Exception as e:
-                this['eight_ks'] = None
-            try:
                 if len(this['eight_ks']) == 0:
                     this['eight_ks'] = None
                 else:
                     for elem in this['eight_ks']:
                         try:
-                            tmp = elem['txt']
+                            tmp = elem['text']
                         except:
-                            elem['txt'] = eightk_parser(elem['url'])
-                            print("Parsed 8K at {} for {}".format(elem['url'], this['name']))
-            except:
-                pass
+                            elem['text'] = eightk_parser(elem['url'])
+            except Exception as e:
+                this['eight_ks'] = None
             try:
-                this['EX21s'] = thicc_edgar[this['cik']]["EX21"]
+                this['EX21s'] = thicc_edgar[cik]["EX21"]
                 remove_queue = []
                 for elem in this['EX21s']:
                     if elem['url'] == "":
                         remove_queue.append(elem)
                 for elem in remove_queue:
                     this['EX21s'].remove(elem)
-            except Exception as e:
-                this['EX21s'] = None
-            try:
                 if len(this['EX21s']) == 0:
                     this['EX21s'] = None
                 else:
                     for elem in this['EX21s']:
                         try:
-                            tmp = elem['txt']
+                            tmp = elem['text']
                         except:
-                            elem['txt'] = eightk_parser(elem['url'])
-                            print("Parsed EX21 at {} for {}".format(elem['url'], this['name']))
-            except:
-                pass
-            self.update_profile(this)            
+                            elem['text'] = ex21_parser(elem['url'])
+            except Exception as e:
+                print("{} threw the following exception: {}".format(this['name'], str(e)))
+                this['EX21s'] = None
+            self.update_profile(this)
+    
+    def parse_wikipedia(self):
+        for company in self:
+            print("...Now parsing {}".format(company['name']))
+            (wiki_page, wiki_table) = wikiParser_new(company['name'])
+            company['wiki_page'] = wiki_page
+            company['wiki_table'] = wiki_table
+            self.update_profile(company)
+    
+    def update_profile(self, profile):
+        if self.rel_path == None:
+            file = open("data/profilemanager/profiles/{}.json".format(profile['cik']), "w")
+            file.write(json.dumps(profile, sort_keys = True, indent = 4))
+            file.close()
+        else:
+            file = open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w")
+            file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
+            file.close()
             
 def main():
     pm = ProfileManager("..")
-    for company in pm:
-        print("...Now parsing {}".format(company['name']))
-        (wiki_page, wiki_table) = wikiParser_new(company['name'])
-        company['wiki_page'] = wiki_page
-        print(wiki_page)
-        company['wiki_table'] = wiki_table
-        print(wiki_table)
-        pm.update_profile(company)
-    
-#    edgar_list = ["bigedgar_part25", "bigedgar_part26", "bigedgar_part27", "bigedgar_part28", "bigedgar_part29", "bigedgar_part30"]
-#    for edgar in edgar_list:
-#        pm.update_profiles(edgar)
-    
+#    pm.generate_profiles()
+    instances, num_edgars = 6, 31
+    mod = num_edgars % instances
+    count = 0
+    edgar_lists = []
+    for i in range(instances):
+        edgar_lists.append([])
+        if mod == 0:
+            for j in range(num_edgars//instances):
+                edgar_lists[i].append("bigedgar_part{}".format(count))
+                count+=1
+        else:
+            if i < mod:
+                for j in range(num_edgars//instances + 1):
+                    edgar_lists[i].append("bigedgar_part{}".format(count))
+                    count+=1
+            else:
+                for j in range(num_edgars//instances):
+                    edgar_lists[i].append("bigedgar_part{}".format(count))
+                    count+=1
+    for edgar in edgar_lists[0]:
+        pm.parse_sec_docs(edgar)
+#    
 if __name__ == "__main__" :
     main()

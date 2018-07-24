@@ -79,14 +79,17 @@ Returns the name of the business entity identified by the CIK (Central Index Key
 
 Returns the SIC (Standard Industrial Classification) codes of the business entity identified by the CIK (Central Index Key) code.
 
+##### clean_financial_statements()
+
+Removes the **text** field of all **ten_k**'s, **eight_k**'s, and **EX21**'s which are either the empty string or None.
+
 ##### generate_profiles()
 
-Currently the code uses three additional JSON files to generate profiles:
+Currently the code uses two additional JSON files to generate profiles:
 * a map from CIK (Central Index Key) to SIC (Standard Industrial Classification)
 * a map from SIC (Standard Industrial Classification) to NAICS (North American Industrial Classification System)
-* a dictionary that maps from CIK (Central Index Key) to a dictionary containing **10K**, **8K**, and **EX21** as keys and their values are a list of dictionaries of SEC filings with **url** and **time_of_filing** fields for each type of document respectively.
 
-The code parses the documents and uses the various mappings to aggregate the information into one profile.
+The code uses the various mappings to aggregate the information into one profile for each business entity.
 
 ##### naics_to_description(naics)
 
@@ -118,9 +121,21 @@ Returns the CIK (Central Index Key) of the named business entity.
 
 Returns a list of descriptions of the industries of the named business entity.
 
-##### update_profiles()
+##### parse_sec_docs(filename)
 
-The code uses a JSON mapping CIK (Central Index Key) to a dictionary that maps from CIK (Central Index Key) to a dictionary containing **10K**, **8K**, and **EX21** as keys and their values are a list of dictionaries of SEC filings with **url** and **time_of_filing** fields for each type of document respectively. The code parses the filings which haven't already been parsed.
+* **filename** is the name of a JSON file in "data/profilemanager/data/edgardata/JSON". It must be a dictionary from CIK (Central Index Key) to a dictionary containing the keys "10K", "8K", and "EX21". These keys must map to a list of dictionaries each containing the keys "time_of_filing" and "url".
+
+The code parses the filings which haven't already been parsed, iterating on the CIK codes contained in filename. This means if the CIK codes are disjoint, this method can safely be run in parallel.
+
+##### parse_wikipedia()
+
+Iterates on the companies contained and searching Wikipedia for the **name** field, then saves the returned page's parsed table and text in dictionaries ("wiki_table" and "wiki_page" respectively). The table is a dictionary from heading to values and the page is a dictionary from section headings to content.
+
+##### update_profile(profile)
+
+* **profile** is a company profile object
+
+Writes the **profile** to the JSON.
 
 ## Usage
 

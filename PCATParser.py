@@ -37,10 +37,17 @@ def sentence_filter(text_list):
                     new_list.remove(sent)
     return new_list
 
-def get_PDF_content(query_string, link, linkList):
+def get_PDF_content(query_string, link, linkList=None, name=None):
     #download pdf file ,from web
     content=urllib.request.urlopen(link).read()
-    file_name = query_string+str(linkList.index(link))+".pdf"
+    if linkList != None:
+        file_name = query_string+str(linkList.index(link))+".pdf"
+    else:
+        file_name = query_string+name
+        file_name = re.sub('[^A-Za-z0-9]+', '', file_name)
+        if len(file_name) > 240:
+                file_name = file_name[:240]
+        file_name = file_name + ".pdf"
     fout=open(os.path.join("data/tmp", file_name), "wb")
     fout.write(content)
     fout.close()
@@ -79,7 +86,7 @@ def parser(query_string, linkList):
                 print(link + " threw the following exception " + str(e))
         else:
             try:
-                content = get_PDF_content(query_string, link, linkList)
+                content = get_PDF_content(query_string, link, linkList=linkList)
                 file_name = query_string+str(linkList.index(link))+".txt"
                 text_list = sentence_filter(nltk.sent_tokenize(content))
                 text_file = open(os.path.join("data/sentences", file_name), "w")
@@ -101,7 +108,7 @@ def parse_single_page(link):
                 print(link + " threw the following exception " + str(e))
     else:
             try:
-                return get_PDF_content("test", link, linkList)
+                return get_PDF_content("test", link, name=link)
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
 
@@ -265,7 +272,7 @@ def eightk_parser(link):
                 start = True
         return info
     except Exception as e:
-        print('exception when parsing 8k, returning an empty string {}'.format(str(e)))
+        print('{} threw an the following exception during 8K parsing {}'.format(link, str(e)))
 
 def ex21_parser(link):
     try:
@@ -279,9 +286,10 @@ def ex21_parser(link):
                 for r in row[1:]:
                     division = r.findAll('td')
                     #for d in division[0]:
-                    d = division[0]
-                    desc = d.get_text().strip('\n')
-                    sub_list.append(desc)
+                    if len(division) > 0:
+                        d = division[0]
+                        desc = d.get_text().strip('\n')
+                        sub_list.append(desc)
             if sub_list != []:
                 for i in range(len(sub_list)):
                     sub_list[i] = sub_list[i].replace("\xa0", " ").replace("\n", "").strip()
@@ -309,9 +317,8 @@ def ex21_parser(link):
                     pass
             return text_list
 
-    except:
-        print("exception when parsing ex21, returning an empty list")
-        return []
+    except Exception as e:
+        print('{} threw an the following exception during EX21 parsing {}'.format(link, str(e)))
 
 def tenk_parser(link): # not working
     try:
@@ -329,8 +336,8 @@ def tenk_parser(link): # not working
                 return info
             if start:
                 info += sent
-    except:
-        print('exception when parsing 10k')
+    except Exception as e:
+        print('{} threw an the following exception during 10K parsing {}'.format(link, str(e)))
 
 def wikiParser_new(company):
     """
@@ -379,10 +386,10 @@ def main():
 #    for company in pm:
 #        print("Now getting information for {}".format(company['name']))
 #        print(wiki_parser(company['name']))
-    # print(ex21_parser("https://www.sec.gov/Archives/edgar/data/1800/000091205701006039/a2035109zex-21.txt"))
-    (wiki_page, wiki_table) = wikiParser_new('Apple Inc')
-    print(wiki_page)
-    print(wiki_table)
+     print(ex21_parser("https://www.sec.gov/Archives/edgar/data/1131554/000104746913001391/a2213010zex-21.htm"))
+#    (wiki_page, wiki_table) = wikiParser_new('Apple Inc')
+#    print(wiki_page)
+#    print(wiki_table)
 
 if __name__ == "__main__" :
     main()
