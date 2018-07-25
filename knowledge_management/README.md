@@ -53,5 +53,5 @@ ProfileManager is a class for helping manage a database of business profiles. It
 
 #### Knowledge Graph
 
-* Knowledge Graph\
+* Knowledge Graph --- [Documentation](docs/KnowledgeGraph.md)\
 Currently in development. We are hoping to use computational fact-checking and knowledge graph concepts to implement a classification and credibility checking module. To see the concepts and papers we are exploring, feel free to check out the "Computational Fact-Checking" section of my [AIReading Github](https://github.com/alexandermichels/AIReading#computational-fact-checking).

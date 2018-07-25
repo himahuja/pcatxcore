@@ -311,7 +311,7 @@ def main():
     pm = ProfileManager("..")
 #    pm.generate_profiles()
     wiki_lists = divvy_up_wikipedia(pm,6)
-    pm.parse_wikipedia(wiki_lists[0])
+    pm.parse_wikipedia(wiki_lists[5])
 #    
 if __name__ == "__main__" :
     main()

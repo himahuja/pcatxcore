@@ -44,6 +44,7 @@ Milestone 2 is much more Natural Language Processing focused, we will be trying 
 ### Classifier
 --------------
 
+* Knowledge Graph --- [Documentation](knowledge_management/docs/KnowledgeGraph.md)\
 Currently in development. We are hoping to use computational fact-checking and knowledge graph concepts to implement a classification and credibility checking module. To see the concepts and papers we are exploring, feel free to check out the "Computational Fact-Checking" section of my [AIReading Github](https://github.com/alexandermichels/AIReading#computational-fact-checking).
 
 
