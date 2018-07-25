@@ -275,11 +275,8 @@ class ProfileManager(object):
             file = open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w")
             file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
             file.close()
-            
-def main():
-    pm = ProfileManager("..")
-#    pm.generate_profiles()
-    instances, num_edgars = 6, 31
+
+def divvy_up_da_thiccedgars(instances, num_edgars):
     mod = num_edgars % instances
     count = 0
     edgar_lists = []
@@ -298,8 +295,21 @@ def main():
                 for j in range(num_edgars//instances):
                     edgar_lists[i].append("bigedgar_part{}".format(count))
                     count+=1
-    for edgar in edgar_lists[0]:
-        pm.parse_sec_docs(edgar)
+    return edgar_lists
+    
+def divvy_up_wikipedia(profile_manager, instances):
+    wiki_lists = []
+    for i in range(instances):
+        wiki_lists.append([])
+    for item in profile_manager:
+        for wiki_list in wiki_lists:
+            wiki_list.append(item['cik'])
+    return wiki_lists
+
+def main():
+    pm = ProfileManager("..")
+#    pm.generate_profiles()
+    print(divvy_up_wikipedia(pm,6))
 #    
 if __name__ == "__main__" :
     main()
