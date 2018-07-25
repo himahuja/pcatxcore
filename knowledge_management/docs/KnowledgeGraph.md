@@ -70,11 +70,12 @@ The presence or absence of subject-predicate-object triples is correlated with, 
 * **Graph Feature Models** - Assume all y<sub>*ijk*</sub> are conditionally independent give observed graph features and additional parameters
 * **Markov Random Fields** - Assume all y<sub>*ijk*</sub> have local interactions
 
-The models using the Latent Feature Models and Graph Feature Models predict the existence of a statement of fact y<sub>*ijk*</sub> using a score function f(x<sub>*ijk*</sub>; &Theta;) representing the system's confidence in the existence of the fact given the parameters &Theta;. The model can be written as follows where **Y** is the third-order tensor and *D* is the set of observed triples.
+The models using the Latent Feature Models and Graph Feature Models predict the existence of a statement of fact y<sub>*ijk*</sub> using a score function f(x<sub>*ijk*</sub>; &Theta;) representing the system's confidence in the existence of the fact given the parameters &Theta;. The model can be written as follows where **Y** is the third-order tensor and *D* is the set of observed triples:
 
 <div align="center">
-  <img alt="Diagram of PCATx Core Architecture" src="img/KGConfidenceOfPrediction.png">
+  <img alt="Probability model for the confidence of link prediction in a knowledge graph" src="img/KGConfidenceOfPrediction.png">
 </div>
+[image credits](https://github.com/alexandermichels/AIReading/blob/master/pdf/A_Review_of_Relational_Machine_Learning_for_Knowledge_Graphs.pdf)
 
 ## Benefits of Using a Knowledge Graph
 
@@ -98,8 +99,18 @@ Knowledge graphs are becoming more and more popular, it is used in Google's sear
 
 #### Converting Unstructed Data to Subject-Predicate-Object Triples
 
-LMAO we are FUCKED
+This is going to be the hardest part.
 
 #### Entity Resolution
 
 This problem is also known as Record Linkage, Object Identification, Instance Matching, and Deduplication. It is the problem of knowing when we have two instances of the same object in our knowledge graph and how to know when to automatically merge the nodes. To illustrate the problem, suppose we have ("Obama", "was born in", "Hawaii") and ("Barack Obama", "birthplace", "Hawaii"). Our system will be much more effective if it is able to recognize that "Obama" and "Barack Obama" are the same entity and is able to recognize that many relations (such as "was born in" and "birthplace") have the same semantic meaning.
+
+## Sources
+
+* [Automated Fact-Checking presentation by Joshua Chen](http://joshchen.io/Computational%20Fact-Checking/Automated%20fact-checking%20-%20Jul%2025.pdf)
+* [Computational Fact Checking from Knowledge Networks](https://github.com/alexandermichels/AIReading/blob/master/pdf/Computational_Fact_Checking_from_Knowledge_Networks.pdf)
+* [Computational Fact Checking through Query Perturbations](https://github.com/alexandermichels/AIReading/blob/master/pdf/Computational_Fact_Checking_through_Query_Perturbations.pdf)
+* [Discriminative Predicate Path Mining for Fact Checking in Knowledge Graphs](https://github.com/alexandermichels/AIReading/blob/master/pdf/Discriminative_Predicate_Path_Mining_for_fact_checking_in_knowledge_graphs.pdf)
+* [Open Information Extraction: The Second Generation](https://github.com/alexandermichels/AIReading/blob/master/pdf/Open_Information_Extraction_The_Second_Generation.pdf)
+* [A Review of Relational Machine Learning for Knowledge Graphs](https://github.com/alexandermichels/AIReading/blob/master/pdf/A_Review_of_Relational_Machine_Learning_for_Knowledge_Graphs.pdf)
+* [Towards Computational Fact-Checking](https://github.com/alexandermichels/AIReading/blob/master/pdf/Towards_Computational_Fact-Checking.pdf)
