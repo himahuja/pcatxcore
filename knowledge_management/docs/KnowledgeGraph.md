@@ -7,6 +7,7 @@
 * Properties of Knowledge Graphs
 * Benefits of Using a Knowledge Graph
 * Challenges
+* Sources
 
 ## Introduction
 
