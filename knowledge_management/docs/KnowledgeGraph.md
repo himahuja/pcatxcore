@@ -73,7 +73,7 @@ The presence or absence of subject-predicate-object triples is correlated with, 
 The models using the Latent Feature Models and Graph Feature Models predict the existence of a statement of fact y<sub>*ijk*</sub> using a score function f(x<sub>*ijk*</sub>; &Theta;) representing the system's confidence in the existence of the fact given the parameters &Theta;. The model can be written as follows where **Y** is the third-order tensor and *D* is the set of observed triples.
 
 <div align="center">
-  <img alt="Diagram of PCATx Core Architecture" src="/img/KGConfidenceOfPrediction.png">
+  <img alt="Diagram of PCATx Core Architecture" src="img/KGConfidenceOfPrediction.png">
 </div>
 
 ## Benefits of Using a Knowledge Graph
