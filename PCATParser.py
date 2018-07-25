@@ -352,7 +352,6 @@ def wikiParser_new(company):
         return (wiki_page, wiki_table)
     secs = page.sections
     for sec in secs:
-        print(sec)
         wiki_page[sec] = page.section(sec)
     # Do the wikipedia table
     link = page.url

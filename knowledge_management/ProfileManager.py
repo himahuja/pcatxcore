@@ -258,8 +258,9 @@ class ProfileManager(object):
                 this['EX21s'] = None
             self.update_profile(this)
     
-    def parse_wikipedia(self):
-        for company in self:
+    def parse_wikipedia(self, parse_list):
+        for company in parse_list:
+            company = self[company]
             print("...Now parsing {}".format(company['name']))
             (wiki_page, wiki_table) = wikiParser_new(company['name'])
             company['wiki_page'] = wiki_page
@@ -302,14 +303,15 @@ def divvy_up_wikipedia(profile_manager, instances):
     for i in range(instances):
         wiki_lists.append([])
     for item in profile_manager:
-        for wiki_list in wiki_lists:
-            wiki_list.append(item['cik'])
+        for i in range(instances):
+            wiki_lists[i].append(item['cik'])
     return wiki_lists
 
 def main():
     pm = ProfileManager("..")
 #    pm.generate_profiles()
-    print(divvy_up_wikipedia(pm,6))
+    wiki_lists = divvy_up_wikipedia(pm,6)
+    pm.parse_wikipedia(wiki_lists[0])
 #    
 if __name__ == "__main__" :
     main()
