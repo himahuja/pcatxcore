@@ -76,6 +76,7 @@ The models using the Latent Feature Models and Graph Feature Models predict the 
 <div align="center">
   <img alt="Probability model for the confidence of link prediction in a knowledge graph" src="img/KGConfidenceOfPrediction.png">
 </div>
+
 [image credits](https://github.com/alexandermichels/AIReading/blob/master/pdf/A_Review_of_Relational_Machine_Learning_for_Knowledge_Graphs.pdf)
 
 ## Benefits of Using a Knowledge Graph
