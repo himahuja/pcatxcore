@@ -71,7 +71,7 @@ The presence or absence of subject-predicate-object triples is correlated with, 
 * **Graph Feature Models** - Assume all y<sub>*ijk*</sub> are conditionally independent give observed graph features and additional parameters
 * **Markov Random Fields** - Assume all y<sub>*ijk*</sub> have local interactions
 
-The models using the Latent Feature Models and Graph Feature Models predict the existence of a statement of fact y<sub>*ijk*</sub> using a score function f(x<sub>*ijk*</sub>; &Theta;) representing the system's confidence in the existence of the fact given the parameters &Theta;. The model can be written as follows where **Y** is the third-order tensor and *D* is the set of observed triples:
+The models using the Latent Feature Models and Graph Feature Models predict the existence of a statement of fact x<sub>*ijk*</sub> using a score function f(x<sub>*ijk*</sub>; &Theta;) representing the system's confidence in the existence of the fact given the parameters &Theta;. The model can be written as follows where **Y** is the third-order tensor and *D* is the set of observed triples:
 
 <div align="center">
   <img alt="Probability model for the confidence of link prediction in a knowledge graph" src="img/KGConfidenceOfPrediction.png">
