@@ -177,6 +177,38 @@ class ProfileManager(object):
                         else:
                             return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
+    def get_texts(self):
+        for item in self:
+            try:
+                if item['ten_ks'] != None:
+                    for doc in item['ten_ks']:
+                        yield doc['text']
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
+            try:
+                if item['eight_ks'] != None:
+                    for doc in item['eight_ks']:
+                        yield doc['text']
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
+            try:
+                if item['EX21s'] != None:
+                    for doc in item['EX21s']:
+                        yield doc['text']
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding EX21 text: {}".format(item['cik'], str(e)))
+            try:
+                yield item['wiki_page']
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
     
     def naics_to_description(self, naics):
         return self.naics_description[naics]
@@ -310,8 +342,11 @@ def divvy_up_wikipedia(profile_manager, instances):
 def main():
     pm = ProfileManager("..")
 #    pm.generate_profiles()
-    wiki_lists = divvy_up_wikipedia(pm,6)
-    pm.parse_wikipedia(wiki_lists[5])
+#    wiki_lists = divvy_up_wikipedia(pm,6)
+#    pm.parse_wikipedia(wiki_lists[5])
+    for text in pm.get_texts():
+        print(text)
+#        pass
 #    
 if __name__ == "__main__" :
     main()

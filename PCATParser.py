@@ -133,118 +133,6 @@ def parser_iter(query_string, linkList):
                 print(link + " threw the following exception " + str(e))
         print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
 
-def wiki_parser(company):
-    try:
-        link = wikipedia.page(company).url
-    #url exception
-        body = urllib.request.urlopen(link).read()
-        soup = BeautifulSoup(body, 'lxml')
-        table = soup.findAll('table',{'class':'infobox vcard'})
-        info_dict = {}
-    #table error
-        for t in table:
-                row = t.findAll('tr')
-                for r in row:
-                    head = r.findAll('th')
-                    division = r.findAll('td')
-                    for h,d in zip(head,division):
-                        desc = h.get_text()
-                        detail = d.get_text()
-                        info_dict[desc] = detail
-        print(info_dict)
-        for key in info_dict:
-            info_dict[key] = re.sub("[[][0-9][]]", "", info_dict[key].replace('\u00a0', ", ").replace('\n', ", ").replace("\u2013", "-"))
-        for key in info_dict:
-            if "\u00a0" in key:
-                info_dict[key.replace('\u00a0', " ").replace("\u2013", "-")] = info_dict[key]
-                del info_dict[key]
-        try:
-            tmp = info_dict["Formerly called"]
-            fka = []
-            while "(" in tmp:
-                index = tmp.find(")")+1
-                fka.append(tmp[:index])
-                tmp = tmp[index:]
-            info_dict["Formerly called"] = fka
-        except Exception as e:
-            print(str(e))
-
-        try:
-            tmp = info_dict["Founders"]
-            fka = []
-            while "," in tmp:
-                ind = tmp.find(",")+1
-                fka.append(tmp[:ind-1].strip())
-                tmp = tmp[ind:]
-            fka.append(tmp.strip())
-            info_dict["Founders"] = fka
-        except Exception as e:
-            print(str(e))
-
-        try:
-            tmp = info_dict["Industry"]
-            fka = []
-            while "," in tmp:
-                ind = tmp.find(",")+1
-                fka.append(tmp[:ind-1].strip())
-                tmp = tmp[ind:]
-            fka.append(tmp.strip())
-            info_dict["Industry"] = fka
-        except Exception as e:
-            print(str(e))
-
-        try:
-            tmp = info_dict["Key people"]
-            fka = []
-            while "," in tmp:
-                ind = tmp.find(",")+1
-                fka.append(tmp[:ind-1].strip())
-                tmp = tmp[ind:]
-            fka.append(tmp.strip())
-            info_dict["Key people"] = fka
-        except Exception as e:
-            print(str(e))
-
-        try:
-            tmp = info_dict["Products"]
-            fka = []
-            while "," in tmp:
-                ind = tmp.find(",")+1
-                fka.append(tmp[:ind-1].strip())
-                tmp = tmp[ind:]
-            fka.append(tmp.strip())
-            info_dict["Products"] = fka
-        except Exception as e:
-            print(str(e))
-
-        try:
-            tmp = info_dict["Subsidiaries"]
-            fka = []
-            while "," in tmp:
-                ind = tmp.find(",")+1
-                fka.append(tmp[:ind-1].strip())
-                tmp = tmp[ind:]
-            fka.append(tmp.strip())
-            info_dict["Subsidiaries"] = fka
-        except Exception as e:
-            print(str(e))
-
-        try:
-            tmp = info_dict["Traded as"]
-            fka = []
-            while "," in tmp:
-                ind = tmp.find(",")+1
-                fka.append(tmp[:ind-1].strip())
-                tmp = tmp[ind:]
-            fka.append(tmp.strip())
-            info_dict["Traded as"] = fka
-        except Exception as e:
-            print(str(e))
-
-        return json.dumps(info_dict, sort_keys = True, indent = 4)
-    except:
-        pass
-
 def contain(sent,word_list):
     for i in range(len(word_list)):
         if word_list[i] in sent:
@@ -339,7 +227,7 @@ def tenk_parser(link): # not working
     except Exception as e:
         print('{} threw an the following exception during 10K parsing {}'.format(link, str(e)))
 
-def wikiParser_new(company):
+def wikiParser(company):
     """
 
     """
