@@ -196,19 +196,37 @@ class ProfileManager(object):
             except Exception as e:
                 print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
             try:
-                if item['EX21s'] != None:
-                    for doc in item['EX21s']:
-                        yield doc['text']
-            except KeyError as k:
-                pass
-            except Exception as e:
-                print("{} threw the following exception while yielding EX21 text: {}".format(item['cik'], str(e)))
-            try:
                 yield item['wiki_page']
             except KeyError as k:
                 pass
             except Exception as e:
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
+                
+    def get_texts_by_company(self, item):
+            item_string = item['cik']
+            try:
+                if item['ten_ks'] != None:
+                    for doc in item['ten_ks']:
+                        item_string += "\n\n" +  doc['text']
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
+            try:
+                if item['eight_ks'] != None:
+                    for doc in item['eight_ks']:
+                        item_string += "\n\n" +  doc['text']
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
+            try:
+                item_string += "\n\n" +  str(item['wiki_page'])
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
+            return item_string
     
     def naics_to_description(self, naics):
         return self.naics_description[naics]
@@ -299,6 +317,18 @@ class ProfileManager(object):
             company['wiki_table'] = wiki_table
             self.update_profile(company)
     
+    def write_to_raw_text(self):
+        for item in self:
+            doc = self.get_texts_by_company(item)
+            if self.rel_path == None:
+                file = open("data/profilemanager/raw_text/{}.txt".format(item['cik']), "w")
+                file.write(doc)
+                file.close()
+            else:
+                file = open(os.path.join(self.rel_path, "data/profilemanager/raw_text/{}.txt".format(item['cik'])), "w")
+                file.write(doc)
+                file.close()
+    
     def update_profile(self, profile):
         if self.rel_path == None:
             file = open("data/profilemanager/profiles/{}.json".format(profile['cik']), "w")
@@ -344,9 +374,7 @@ def main():
 #    pm.generate_profiles()
 #    wiki_lists = divvy_up_wikipedia(pm,6)
 #    pm.parse_wikipedia(wiki_lists[5])
-    for text in pm.get_texts():
-        print(text)
-#        pass
+    pm.write_to_raw_text()
 #    
 if __name__ == "__main__" :
     main()
