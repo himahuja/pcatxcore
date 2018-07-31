@@ -319,15 +319,52 @@ class ProfileManager(object):
     
     def write_to_raw_text(self):
         for item in self:
-            doc = self.get_texts_by_company(item)
             if self.rel_path == None:
-                file = open("data/profilemanager/raw_text/{}.txt".format(item['cik']), "w")
-                file.write(doc)
+                if not os.path.exists("data/profilemanager/raw_text/{}".format(item['cik'])):
+                    os.makedirs("data/profilemanager/raw_text/{}".format(item['cik']))
+                file = open("data/profilemanager/raw_text/{}/wiki_page.txt".format(item['cik']), "w+")
+                file.write(json.dumps(item['wiki_page'], sort_keys = True, indent = 4))
                 file.close()
+                file = open("data/profilemanager/raw_text/{}/wiki_table.txt".format(item['cik']), "w+")
+                file.write(json.dumps(item['wiki_table'], sort_keys = True, indent = 4))
+                file.close()
+                try:
+                    for tenk in item['ten_ks']:
+                        file = open("data/profilemanager/raw_text/{}/tenk_{}.txt".format(item['cik'], tenk['time_of_filing']), "w+")
+                        file.write(tenk['text'])
+                        file.close()
+                except:
+                    pass
+                try:
+                    for eightk in item['eight_ks']:
+                        file = open("data/profilemanager/raw_text/{}/eightk_{}.txt".format(item['cik'], eightk['time_of_filing']), "w+")
+                        file.write(eightk['text'])
+                        file.close()
+                except:
+                    pass
             else:
-                file = open(os.path.join(self.rel_path, "data/profilemanager/raw_text/{}.txt".format(item['cik'])), "w")
-                file.write(doc)
+                if not os.path.exists(os.path.join(self.rel_path, "data/profilemanager/raw_text/{}".format(item['cik']))):
+                    os.makedirs(os.path.join(self.rel_path, "data/profilemanager/raw_text/{}".format(item['cik'])))
+                file = open(os.path.join(self.rel_path, "data/profilemanager/raw_text/{}/wiki_page.txt".format(item['cik'])), "w+")
+                file.write(json.dumps(item['wiki_page'], sort_keys = True, indent = 4))
                 file.close()
+                file = open(os.path.join(self.rel_path, "data/profilemanager/raw_text/{}/wiki_table.txt".format(item['cik'])), "w+")
+                file.write(json.dumps(item['wiki_table'], sort_keys = True, indent = 4))
+                file.close()
+                try:
+                    for tenk in item['ten_ks']:
+                        file = open(os.path.join(self.rel_path, "data/profilemanager/raw_text/{}/tenk_{}.txt".format(item['cik'], tenk['time_of_filing'])), "w+")
+                        file.write(tenk['text'])
+                        file.close()
+                except:
+                    pass
+                try:
+                    for eightk in item['eight_ks']:
+                        file = open(os.path.join(self.rel_path, "data/profilemanager/raw_text/{}/eightk_{}.txt".format(item['cik'], eightk['time_of_filing'])), "w+")
+                        file.write(eightk['text'])
+                        file.close()
+                except:
+                    pass
     
     def update_profile(self, profile):
         if self.rel_path == None:

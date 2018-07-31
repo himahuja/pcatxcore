@@ -1,7 +1,7 @@
 **Knowledge Graph**
 ----------------------
 
-## Table of contents
+## Table of Contents
 * Introduction
 * Types of Knowledge Graphs
 * Properties of Knowledge Graphs
