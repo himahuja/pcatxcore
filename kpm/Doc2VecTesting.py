@@ -11,7 +11,7 @@ from knowledge_management.ProfileManager import *
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
      
-def train_model(instances):           
+def train_model():           
     docs = []
     for file in os.listdir("../data/profilemanager/TaggedDocuments"):
         filename = os.fsdecode(file)
@@ -56,9 +56,9 @@ def tag_idks(instances):
 
 def main():
     pm = ProfileManager("..")
-    pm.get_TaggedDocuments(6, 1)
+    pm.get_TaggedDocuments(6, 4)
     time.sleep(3600)
-    train_model(6)
+    train_model()
     tag_idks(6)
 
 if __name__ == "__main__" :

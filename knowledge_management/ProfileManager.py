@@ -238,7 +238,12 @@ class ProfileManager(object):
             names = json.loads(handle.read())
         with open(os.path.join("../data/profilemanager/data", "cas_from_wiki.json"), "r") as handle:
             cas = json.loads(handle.read())
-        goodlist = stem_and_lemmatize(names + cas)
+        templist = [nltk.word_tokenize(word) for word in names] + [nltk.word_tokenize(word) for word in cas]
+        goodlist = []
+        for wordlist in templist:
+            for word in wordlist:
+                goodlist.append(word)
+        goodlist = stem_and_lemmatize(goodlist)
         for text, tag in self.get_docs_by_sentence(instances, iam):
             text = self.convert_to_corpus(str(text))
             tagged = False
