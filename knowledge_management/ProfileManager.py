@@ -8,6 +8,10 @@ Created on Wed Jul 11 12:47:13 2018
 import json, os, sys
 sys.path.append("..")
 from PCATParser import *
+import nltk
+from gensim.models.doc2vec import TaggedDocument
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 
 class ProfileManager(object):
     
@@ -79,9 +83,14 @@ class ProfileManager(object):
                             return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
         
-    def __iter__(self):
-        for cik in self.cik_name:
-            yield self.get(cik)
+    def __iter__(self, instances=1, iam = 1):
+        if instances == 1:
+            for cik in self.cik_name:
+                yield self.get(cik)
+        else:
+            for i in range(len(self.cik_name)):
+                if i % instances == iam:
+                    yield self.get(list(self.cik_name.keys())[i])
         
     def __len__(self):
         return len(self.cik_name)
@@ -177,12 +186,35 @@ class ProfileManager(object):
                         else:
                             return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
-    def get_texts(self):
-        for item in self:
+                            
+    def convert_to_corpus(self, doc):
+        stoplist = set(stopwords.words('english'))
+        ps = PorterStemmer()  
+        text = re.sub('[^A-Za-z]+', ' ', re.sub('\S*@\S*\s?', "", doc.lower())).splitlines()
+        doc_list = []
+        for line in text:
+            words = line.split()
+            for word in words:
+                doc_list.append(ps.stem(word.strip()))
+        doc_list = [word for word in doc_list if word not in stoplist]
+        sent_set = set(doc_list)
+        for word in sent_set:
+            if len(word) < 3:
+                while word in doc_list:
+                    try:
+                        doc_list.remove(word)
+                    except:
+                        pass
+        return doc_list
+        
+    def get_docs_by_sentence(self, instances, iam):
+        for item in self.__iter__(instances, iam):
             try:
                 if item['ten_ks'] != None:
                     for doc in item['ten_ks']:
-                        yield doc['text']
+                        sent_list = nltk.sent_tokenize(doc['text'])
+                        for i in range(len(sent_list)):
+                            yield (sent_list[i], str(item['cik'] + "_10k_" + doc['time_of_filing'] + "_" + str(i)))
             except KeyError as k:
                 pass
             except Exception as e:
@@ -190,43 +222,86 @@ class ProfileManager(object):
             try:
                 if item['eight_ks'] != None:
                     for doc in item['eight_ks']:
-                        yield doc['text']
+                        sent_list = nltk.sent_tokenize(doc['text'])
+                        for i in range(len(sent_list)):
+                            yield (sent_list[i], str(item['cik'] + "_8k_" + doc['time_of_filing'] + "_" + str(i)))
             except KeyError as k:
                 pass
             except Exception as e:
                 print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
             try:
-                yield item['wiki_page']
+                sent_list = nltk.sent_tokenize(str(item['wiki_page']['text']))
+                for i in range(len(sent_list)):
+                    yield (sent_list[i], str(item['cik'] + "_wiki_page" + "_" + str(i)))
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
+        
+    def get_TaggedDocuments(self, instances, iam):
+        good = []
+        bad = []
+        idk = []
+        for text, tag in self.get_docs_by_sentence(instances, iam):
+            text = self.convert_to_corpus(str(text))
+            if ['call', 'pursuant', 'accord', 'secur', 'goodwil', 'admiss', 'registr', 'amend', 'transit', 'proxi', 'stockhold', 'disclosur', 'mission', 'share', 'flow', 'amortiz', 'pension', 'depreci', 'statement', 'certif', 'reciev', 'payabl', 'licens', 'expens'] in text:
+                bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
+            elif ['activities', 'subsidiaries', 'segment', 'manufactur', 'produce', 'product', 'sell', 'acquir', 'merge', 'competit', 'chemical', 'hazard'] in text:
+                good.append(TaggedDocument(words=text, tags=list({tag, "good"})))
+            else:
+                idk.append(TaggedDocument(words=text, tags=list({tag})))
+        return (good, bad, idk)
+    
+    def get_texts(self):
+        for item in self:
+            try:
+                if item['ten_ks'] != None:
+                    for doc in item['ten_ks']:
+                        yield (doc['text'], str(item['cik'] + "_10k_" + doc['time_of_filing']))
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
+            try:
+                if item['eight_ks'] != None:
+                    for doc in item['eight_ks']:
+                        yield (doc['text'], str(item['cik'] + "_8k_" + doc['time_of_filing']))
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
+            try:
+                yield (item['wiki_page'], str(item['cik'] + "_wiki_page"))
             except KeyError as k:
                 pass
             except Exception as e:
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
                 
     def get_texts_by_company(self, item):
-            item_string = item['cik']
-            try:
-                if item['ten_ks'] != None:
-                    for doc in item['ten_ks']:
-                        item_string += "\n\n" +  doc['text']
-            except KeyError as k:
-                pass
-            except Exception as e:
-                print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
-            try:
-                if item['eight_ks'] != None:
-                    for doc in item['eight_ks']:
-                        item_string += "\n\n" +  doc['text']
-            except KeyError as k:
-                pass
-            except Exception as e:
-                print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
-            try:
-                item_string += "\n\n" +  str(item['wiki_page'])
-            except KeyError as k:
-                pass
-            except Exception as e:
-                print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
-            return item_string
+        item_string = item['cik']
+        try:
+            if item['ten_ks'] != None:
+                for doc in item['ten_ks']:
+                    item_string += "\n\n" +  doc['text']
+        except KeyError as k:
+            pass
+        except Exception as e:
+            print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
+        try:
+            if item['eight_ks'] != None:
+                for doc in item['eight_ks']:
+                    item_string += "\n\n" +  doc['text']
+        except KeyError as k:
+            pass
+        except Exception as e:
+            print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
+        try:
+            item_string += "\n\n" +  str(item['wiki_page'])
+        except KeyError as k:
+            pass
+        except Exception as e:
+            print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
+        return item_string
     
     def naics_to_description(self, naics):
         return self.naics_description[naics]
@@ -411,7 +486,7 @@ def main():
 #    pm.generate_profiles()
 #    wiki_lists = divvy_up_wikipedia(pm,6)
 #    pm.parse_wikipedia(wiki_lists[5])
-    pm.write_to_raw_text()
+    good, bad, idk = pm.get_TaggedDocuments(6, 5)
 #    
 if __name__ == "__main__" :
     main()

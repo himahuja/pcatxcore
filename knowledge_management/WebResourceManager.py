@@ -10,6 +10,7 @@ sys.path.append("..")
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from gensim.models.doc2vec import TaggedDocument
 from PCATParser import *
 import json, os, uuid, nltk, re, time
 import numpy as np
@@ -76,7 +77,7 @@ class WebResourceManager(object):
                     for line in text:
                         words = line.split()
                         for word in words:
-                            doc_list.append(word.strip())
+                            doc_list.append(ps.stem(word.strip()))
                     doc_list = [word for word in doc_list if word not in stoplist]
                     sent_set = set(doc_list)
                     for word in sent_set:
@@ -101,7 +102,7 @@ class WebResourceManager(object):
                     for line in text:
                         words = line.split()
                         for word in words:
-                            doc_list.append(word.strip())
+                            doc_list.append(ps.stem(word.strip()))
                     doc_list = [word for word in doc_list if word not in stoplist]
                     sent_set = set(doc_list)
                     for word in sent_set:
