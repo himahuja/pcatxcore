@@ -273,7 +273,7 @@ def main():
 #    for company in pm:
 #        print("Now getting information for {}".format(company['name']))
 #        print(wiki_parser(company['name']))
-     print(ex21_parser("https://www.sec.gov/Archives/edgar/data/1131554/000104746913001391/a2213010zex-21.htm"))
+     print(wikiParser("List of CAS numbers by chemical compound"))
 #    (wiki_page, wiki_table) = wikiParser_new('Apple Inc')
 #    print(wiki_page)
 #    print(wiki_table)
