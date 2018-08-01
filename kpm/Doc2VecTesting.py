@@ -4,22 +4,58 @@ Created on Mon Jul  2 20:24:15 2018
 
 @author: alex
 """
-from gensim import models
-from corpusBuilder import corpusBuilder
-import logging
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+import logging, sys, time
+sys.path.append("..")
+from knowledge_management.ProfileManager import *
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-                
-cb = corpusBuilder(dirname=None)
-cb.load()
-docs = cb.to_TaggedDocument()
-model = models.Doc2Vec(docs, workers=3, vector_size=300)
+     
+def train_model(instances):           
+    attribute_list = ['good', 'bad', 'idk']
+    docs = []
+    for word in attribute_list:
+        for i in range(instances):
+            file = json.loads(open("../data/profilemanager/{}_sentences_{}.json".format(word, str(i)), "r").read())
+            for td in file:
+                docs.append(TaggedDocument(words=td[0], tags=list(td[1])))
+    
+    model = Doc2Vec(docs, workers=7, vector_size=300)
+    
+    print("Start training process...")
+    model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
+    
+    #save model
+    model.save("../data/doc2vec_model")
 
-print("Start training process...")
-model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
+def tag_idks(instances):
+    model = Doc2Vec.load("../data/doc2vec_model")
+    good_list = []
+    bad_list = []
+    for i in range(instances):
+        file = json.loads(open("../data/profilemanager/idk_sentences_{}.json".format(str(i)), "r").read())
+        for td in file:
+            bad = model.docvecs.similarity('bad',td[1][0])
+            good = model.docvecs.similarity('good',td[1][0])
+            if good/bad >= 1:
+                td[1].append('good')
+                good_list.append(TaggedDocument(words=td[0], tags=td[1]))
+            else:
+                td[1].append('bad')
+                bad_list.append(TaggedDocument(words=td[0], tags=td[1]))
+    file = open("../data/profilemanager/good.json", "w")
+    file.write(json.dumps(good_list, sort_keys = True, indent = 4))
+    file.close()
+    file = open("../data/profilemanager/bad.json", "w")
+    file.write(json.dumps(bad_list, sort_keys = True, indent = 4))
+    file.close()
 
-#save model
-model.save("data/doc2vec_model")
-print(model.wv.most_similar(positive=['woman', 'king'], negative=['man']))
-print(model.wv.doesnt_match("breakfast cereal dinner lunch".split()))
-print(model.wv.similarity('woman', 'man'))
+def main():
+    pm = ProfileManager("..")
+    gimme_dat_corpus(pm, 6, 5)
+    time.sleep(5000)
+    train_model(6)
+    tag_idks(6)
+
+if __name__ == "__main__" :
+    main()

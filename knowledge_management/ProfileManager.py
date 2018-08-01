@@ -244,11 +244,17 @@ class ProfileManager(object):
         idk = []
         for text, tag in self.get_docs_by_sentence(instances, iam):
             text = self.convert_to_corpus(str(text))
-            if ['call', 'pursuant', 'accord', 'secur', 'goodwil', 'admiss', 'registr', 'amend', 'transit', 'proxi', 'stockhold', 'disclosur', 'mission', 'share', 'flow', 'amortiz', 'pension', 'depreci', 'statement', 'certif', 'reciev', 'payabl', 'licens', 'expens'] in text:
-                bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
-            elif ['activities', 'subsidiaries', 'segment', 'manufactur', 'produce', 'product', 'sell', 'acquir', 'merge', 'competit', 'chemical', 'hazard'] in text:
-                good.append(TaggedDocument(words=text, tags=list({tag, "good"})))
-            else:
+            tagged = False
+            for word in ['call', 'pursuant', 'accord', 'secur', 'goodwil', 'admiss', 'registr', 'amend', 'transit', 'proxi', 'stockhold', 'disclosur', 'mission', 'share', 'flow', 'amortiz', 'pension', 'depreci', 'statement', 'certif', 'reciev', 'payabl', 'licens', 'expens', "jurisdict", ]:
+                if not tagged and word in text or len(text) < 3:
+                    tagged = True
+                    bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
+            if not tagged:
+                for word in ['activities', 'subsidiaries', 'segment', 'manufactur', 'produce', 'product', 'sell', 'acquir', 'merge', 'competit', 'chemical', 'hazard']:
+                    if not tagged and word in text:
+                        tagged = True
+                        good.append(TaggedDocument(words=text, tags=list({tag, "good"})))
+            if not tagged:
                 idk.append(TaggedDocument(words=text, tags=list({tag})))
         return (good, bad, idk)
     
@@ -451,6 +457,29 @@ class ProfileManager(object):
             file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
             file.close()
 
+def gimme_dat_corpus(pm, instances, iam):
+    good, bad, idk = pm.get_TaggedDocuments(instances, iam)
+    if pm.rel_path == None:
+        file = open("data/profilemanager/{}_{}.json".format("good_sentences", iam), "w")
+        file.write(json.dumps(good, sort_keys = True, indent = 4))
+        file.close()
+        file = open("data/profilemanager/{}_{}.json".format("bad_sentences", iam), "w")
+        file.write(json.dumps(bad, sort_keys = True, indent = 4))
+        file.close()
+        file = open("data/profilemanager/{}_{}.json".format("idk_sentences", iam), "w")
+        file.write(json.dumps(idk, sort_keys = True, indent = 4))
+        file.close()
+    else:
+        file = open(os.path.join(pm.rel_path, "data/profilemanager/{}_{}.json".format("good_sentences", iam)), "w")
+        file.write(json.dumps(good, sort_keys = True, indent = 4)) 
+        file.close()
+        file = open(os.path.join(pm.rel_path, "data/profilemanager/{}_{}.json".format("bad_sentences", iam)), "w")
+        file.write(json.dumps(bad, sort_keys = True, indent = 4)) 
+        file.close()
+        file = open(os.path.join(pm.rel_path, "data/profilemanager/{}_{}.json".format("idk_sentences", iam)), "w")
+        file.write(json.dumps(idk, sort_keys = True, indent = 4)) 
+        file.close()
+
 def divvy_up_da_thiccedgars(instances, num_edgars):
     mod = num_edgars % instances
     count = 0
@@ -486,7 +515,7 @@ def main():
 #    pm.generate_profiles()
 #    wiki_lists = divvy_up_wikipedia(pm,6)
 #    pm.parse_wikipedia(wiki_lists[5])
-    good, bad, idk = pm.get_TaggedDocuments(6, 5)
+    gimme_dat_corpus(pm, 6, 5)
 #    
 if __name__ == "__main__" :
     main()
