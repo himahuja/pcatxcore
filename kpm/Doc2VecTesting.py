@@ -11,22 +11,26 @@ from knowledge_management.ProfileManager import *
 
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
      
-def train_model(instances):           
-    attribute_list = ['good', 'bad', 'idk']
+def train_model():           
     docs = []
-    for word in attribute_list:
-        for i in range(instances):
-            file = json.loads(open("../data/profilemanager/{}_sentences_{}.json".format(word, str(i)), "r").read())
+    for file in os.listdir("../data/profilemanager/TaggedDocuments"):
+        filename = os.fsdecode(file)
+        if filename.endswith(".json"):
+            file = json.loads(open(os.path.join("../data/profilemanager/TaggedDocuments", filename), "r").read())
             for td in file:
                 docs.append(TaggedDocument(words=td[0], tags=list(td[1])))
-    
-    model = Doc2Vec(docs, workers=7, vector_size=300)
-    
-    print("Start training process...")
-    model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
-    
-    #save model
-    model.save("../data/doc2vec_model")
+            try:
+                model = Doc2Vec.load("../data/doc2vec_model")
+                print("Start training process...")
+                model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
+                #save model
+                model.save("../data/doc2vec_model")
+            except:
+                model = Doc2Vec(docs, workers=7, vector_size=300)
+                print("Start training process...")
+                model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
+                #save model
+                model.save("../data/doc2vec_model")
 
 def tag_idks(instances):
     model = Doc2Vec.load("../data/doc2vec_model")
@@ -43,18 +47,18 @@ def tag_idks(instances):
             else:
                 td[1].append('bad')
                 bad_list.append(TaggedDocument(words=td[0], tags=td[1]))
-    file = open("../data/profilemanager/good.json", "w")
-    file.write(json.dumps(good_list, sort_keys = True, indent = 4))
-    file.close()
-    file = open("../data/profilemanager/bad.json", "w")
-    file.write(json.dumps(bad_list, sort_keys = True, indent = 4))
-    file.close()
+        file = open("../data/profilemanager/labeled_good_{}.json".format(str(i)), "w")
+        file.write(json.dumps(good_list, sort_keys = True, indent = 4))
+        file.close()
+        file = open("../data/profilemanager/labeled_bad_{}.json".format(str(i)), "w")
+        file.write(json.dumps(bad_list, sort_keys = True, indent = 4))
+        file.close()
 
 def main():
     pm = ProfileManager("..")
-    gimme_dat_corpus(pm, 6, 5)
-    time.sleep(5000)
-    train_model(6)
+    pm.get_TaggedDocuments(6, 4)
+    time.sleep(3600)
+    train_model()
     tag_idks(6)
 
 if __name__ == "__main__" :

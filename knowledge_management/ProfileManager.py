@@ -10,7 +10,7 @@ sys.path.append("..")
 from PCATParser import *
 import nltk
 from gensim.models.doc2vec import TaggedDocument
-from nltk.corpus import stopwords
+from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem import PorterStemmer
 
 class ProfileManager(object):
@@ -188,23 +188,14 @@ class ProfileManager(object):
                         # open name_cik[name_aliases.keys()[i]]
                             
     def convert_to_corpus(self, doc):
-        stoplist = set(stopwords.words('english'))
         ps = PorterStemmer()  
+        lmtzr = WordNetLemmatizer()
         text = re.sub('[^A-Za-z]+', ' ', re.sub('\S*@\S*\s?', "", doc.lower())).splitlines()
         doc_list = []
         for line in text:
             words = line.split()
             for word in words:
-                doc_list.append(ps.stem(word.strip()))
-        doc_list = [word for word in doc_list if word not in stoplist]
-        sent_set = set(doc_list)
-        for word in sent_set:
-            if len(word) < 3:
-                while word in doc_list:
-                    try:
-                        doc_list.remove(word)
-                    except:
-                        pass
+                doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
         return doc_list
         
     def get_docs_by_sentence(self, instances, iam):
@@ -242,6 +233,17 @@ class ProfileManager(object):
         good = []
         bad = []
         idk = []
+        count = 0
+        with open(os.path.join("../data/profilemanager/data", "names.json"), "r") as handle:
+            names = json.loads(handle.read())
+        with open(os.path.join("../data/profilemanager/data", "cas_from_wiki.json"), "r") as handle:
+            cas = json.loads(handle.read())
+        templist = [nltk.word_tokenize(word) for word in names] + [nltk.word_tokenize(word) for word in cas]
+        goodlist = []
+        for wordlist in templist:
+            for word in wordlist:
+                goodlist.append(word)
+        goodlist = stem_and_lemmatize(goodlist)
         for text, tag in self.get_docs_by_sentence(instances, iam):
             text = self.convert_to_corpus(str(text))
             tagged = False
@@ -250,13 +252,37 @@ class ProfileManager(object):
                     tagged = True
                     bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
             if not tagged:
-                for word in ['activities', 'subsidiaries', 'segment', 'manufactur', 'produce', 'product', 'sell', 'acquir', 'merge', 'competit', 'chemical', 'hazard']:
+                for word in goodlist:
                     if not tagged and word in text:
                         tagged = True
                         good.append(TaggedDocument(words=text, tags=list({tag, "good"})))
             if not tagged:
                 idk.append(TaggedDocument(words=text, tags=list({tag})))
-        return (good, bad, idk)
+            count = count + 1
+            if count % 100000 == 0:
+                if self.rel_path == None:
+                    file = open("data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("good_sentences", iam, count//100000), "w")
+                    file.write(json.dumps(good, sort_keys = True, indent = 4))
+                    file.close()
+                    file = open("data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("bad_sentences", iam, count//100000), "w")
+                    file.write(json.dumps(bad, sort_keys = True, indent = 4))
+                    file.close()
+                    file = open("data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("idk_sentences", iam, count//100000), "w")
+                    file.write(json.dumps(idk, sort_keys = True, indent = 4))
+                    file.close()
+                else:
+                    file = open(os.path.join(self.rel_path, "data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("good_sentences", iam, count//100000)), "w")
+                    file.write(json.dumps(good, sort_keys = True, indent = 4)) 
+                    file.close()
+                    file = open(os.path.join(self.rel_path, "data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("bad_sentences", iam, count//100000)), "w")
+                    file.write(json.dumps(bad, sort_keys = True, indent = 4)) 
+                    file.close()
+                    file = open(os.path.join(self.rel_path, "data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("idk_sentences", iam, count//100000)), "w")
+                    file.write(json.dumps(idk, sort_keys = True, indent = 4)) 
+                    file.close()
+                good = []
+                bad = []
+                idk = []
     
     def get_texts(self):
         for item in self:
@@ -397,6 +423,29 @@ class ProfileManager(object):
             company['wiki_page'] = wiki_page
             company['wiki_table'] = wiki_table
             self.update_profile(company)
+            
+    def write_EX21s_to_raw_text(self):
+        for item in self:
+            if self.rel_path == None:
+                if not os.path.exists("data/profilemanager/EX21s/{}".format(item['cik'])):
+                    os.makedirs("data/profilemanager/EX21s/{}".format(item['cik']))
+                try:
+                    for ex21 in item['EX21s']:
+                        file = open("data/profilemanager/EX21s/{}/EX21_{}.txt".format(item['cik'], ex21['time_of_filing']), "w+")
+                        file.write(tenk['text'])
+                        file.close()
+                except:
+                    pass
+            else:
+                if not os.path.exists(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}".format(item['cik']))):
+                    os.makedirs(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}".format(item['cik'])))
+                try:
+                    for ex21 in item['EX21s']:
+                        file = open(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}/EX21_{}.txt".format(item['cik'], ex21['time_of_filing'])), "w+")
+                        file.write(tenk['text'])
+                        file.close()
+                except:
+                    pass
     
     def write_to_raw_text(self):
         for item in self:
@@ -457,29 +506,6 @@ class ProfileManager(object):
             file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
             file.close()
 
-def gimme_dat_corpus(pm, instances, iam):
-    good, bad, idk = pm.get_TaggedDocuments(instances, iam)
-    if pm.rel_path == None:
-        file = open("data/profilemanager/{}_{}.json".format("good_sentences", iam), "w")
-        file.write(json.dumps(good, sort_keys = True, indent = 4))
-        file.close()
-        file = open("data/profilemanager/{}_{}.json".format("bad_sentences", iam), "w")
-        file.write(json.dumps(bad, sort_keys = True, indent = 4))
-        file.close()
-        file = open("data/profilemanager/{}_{}.json".format("idk_sentences", iam), "w")
-        file.write(json.dumps(idk, sort_keys = True, indent = 4))
-        file.close()
-    else:
-        file = open(os.path.join(pm.rel_path, "data/profilemanager/{}_{}.json".format("good_sentences", iam)), "w")
-        file.write(json.dumps(good, sort_keys = True, indent = 4)) 
-        file.close()
-        file = open(os.path.join(pm.rel_path, "data/profilemanager/{}_{}.json".format("bad_sentences", iam)), "w")
-        file.write(json.dumps(bad, sort_keys = True, indent = 4)) 
-        file.close()
-        file = open(os.path.join(pm.rel_path, "data/profilemanager/{}_{}.json".format("idk_sentences", iam)), "w")
-        file.write(json.dumps(idk, sort_keys = True, indent = 4)) 
-        file.close()
-
 def divvy_up_da_thiccedgars(instances, num_edgars):
     mod = num_edgars % instances
     count = 0
@@ -509,13 +535,21 @@ def divvy_up_wikipedia(profile_manager, instances):
         for i in range(instances):
             wiki_lists[i].append(item['cik'])
     return wiki_lists
+    
+def stem_and_lemmatize(wordlist):
+    lmtzr = WordNetLemmatizer()
+    ps = PorterStemmer()
+    for i in range(len(wordlist)):
+        wordlist[i] = ps.stem(lmtzr.lemmatize(wordlist[i]))
+        
+    return wordlist
 
 def main():
     pm = ProfileManager("..")
 #    pm.generate_profiles()
 #    wiki_lists = divvy_up_wikipedia(pm,6)
 #    pm.parse_wikipedia(wiki_lists[5])
-    gimme_dat_corpus(pm, 6, 5)
+    pm.write_EX21s_to_raw_text()
 #    
 if __name__ == "__main__" :
     main()
