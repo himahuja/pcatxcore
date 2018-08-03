@@ -9,6 +9,7 @@
   * WebResourceManager
   * ProfileManager
   * Knowledge Graph
+  * Self-Supervised Classifier
 
 ### Introduction
 ----------------
@@ -67,3 +68,9 @@ ProfileManager is a class for helping manage a database of business profiles. It
 
 * Knowledge Graph --- [Documentation](docs/KnowledgeGraph.md)\
 Currently in development. We are hoping to use computational fact-checking and knowledge graph concepts to implement a classification and credibility checking module. To see the concepts and papers we are exploring, feel free to check out the "Computational Fact-Checking" section of my [AIReading Github](https://github.com/alexandermichels/AIReading#computational-fact-checking).
+
+##### Self-Supervised Classifier
+
+* [Self-Supervised Classifier](SelfSupervisedClassifier.py) ---
+[Documentation](docs/SelfSupervisedClassifier.md)\
+A model for classifying sentences as relevant or not. The approach was inspired by [Banko et al.'s 2007 "Open Information Extraction from the Web"](https://www.aaai.org/Papers/IJCAI/2007/IJCAI07-429.pdf) which used a self-supervised learner to perform open information extraction. We are taking much the same approach to relevancy classification by having the learner tag certain sentences as relevant or irrelevant based on keyword input and then Doc2Vec is trained on these tagged sentences to learn more complex features.

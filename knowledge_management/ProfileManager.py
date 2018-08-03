@@ -186,17 +186,6 @@ class ProfileManager(object):
                         else:
                             return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
-                            
-    def convert_to_corpus(self, doc):
-        ps = PorterStemmer()  
-        lmtzr = WordNetLemmatizer()
-        text = re.sub('[^A-Za-z]+', ' ', re.sub('\S*@\S*\s?', "", doc.lower())).splitlines()
-        doc_list = []
-        for line in text:
-            words = line.split()
-            for word in words:
-                doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
-        return doc_list
         
     def get_docs_by_sentence(self, instances, iam):
         for item in self.__iter__(instances, iam):
@@ -229,60 +218,6 @@ class ProfileManager(object):
             except Exception as e:
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
         
-    def get_TaggedDocuments(self, instances, iam):
-        good = []
-        bad = []
-        idk = []
-        count = 0
-        with open(os.path.join("../data/profilemanager/data", "names.json"), "r") as handle:
-            names = json.loads(handle.read())
-        with open(os.path.join("../data/profilemanager/data", "cas_from_wiki.json"), "r") as handle:
-            cas = json.loads(handle.read())
-        templist = [nltk.word_tokenize(word) for word in names] + [nltk.word_tokenize(word) for word in cas]
-        goodlist = []
-        for wordlist in templist:
-            for word in wordlist:
-                goodlist.append(word)
-        goodlist = stem_and_lemmatize(goodlist)
-        for text, tag in self.get_docs_by_sentence(instances, iam):
-            text = self.convert_to_corpus(str(text))
-            tagged = False
-            for word in ['call', 'pursuant', 'accord', 'secur', 'goodwil', 'admiss', 'registr', 'amend', 'transit', 'proxi', 'stockhold', 'disclosur', 'mission', 'share', 'flow', 'amortiz', 'pension', 'depreci', 'statement', 'certif', 'reciev', 'payabl', 'licens', 'expens', "jurisdict", ]:
-                if not tagged and word in text or len(text) < 3:
-                    tagged = True
-                    bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
-            if not tagged:
-                for word in goodlist:
-                    if not tagged and word in text:
-                        tagged = True
-                        good.append(TaggedDocument(words=text, tags=list({tag, "good"})))
-            if not tagged:
-                idk.append(TaggedDocument(words=text, tags=list({tag})))
-            count = count + 1
-            if count % 100000 == 0:
-                if self.rel_path == None:
-                    file = open("data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("good_sentences", iam, count//100000), "w")
-                    file.write(json.dumps(good, sort_keys = True, indent = 4))
-                    file.close()
-                    file = open("data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("bad_sentences", iam, count//100000), "w")
-                    file.write(json.dumps(bad, sort_keys = True, indent = 4))
-                    file.close()
-                    file = open("data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("idk_sentences", iam, count//100000), "w")
-                    file.write(json.dumps(idk, sort_keys = True, indent = 4))
-                    file.close()
-                else:
-                    file = open(os.path.join(self.rel_path, "data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("good_sentences", iam, count//100000)), "w")
-                    file.write(json.dumps(good, sort_keys = True, indent = 4)) 
-                    file.close()
-                    file = open(os.path.join(self.rel_path, "data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("bad_sentences", iam, count//100000)), "w")
-                    file.write(json.dumps(bad, sort_keys = True, indent = 4)) 
-                    file.close()
-                    file = open(os.path.join(self.rel_path, "data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("idk_sentences", iam, count//100000)), "w")
-                    file.write(json.dumps(idk, sort_keys = True, indent = 4)) 
-                    file.close()
-                good = []
-                bad = []
-                idk = []
     
     def get_texts(self):
         for item in self:
