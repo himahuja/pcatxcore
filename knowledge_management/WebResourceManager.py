@@ -74,7 +74,7 @@ class WebResourceManager(object):
                 try:
                     corpus_list.append(item['corpus'])
                 except:
-                    text = re.sub("[^A-Za-z'-]+", ' ', re.sub('\S*@\S*\s?', "", item['text'])).lower().splitlines()
+                    text = re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", item['text'])).lower().splitlines()
                     doc_list = []
                     for line in text:
                         words = line.split()

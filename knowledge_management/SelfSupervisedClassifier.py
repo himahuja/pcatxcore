@@ -68,7 +68,7 @@ def get_TaggedDocuments(pm, instances, iam):
                 bad = []
                 idk = []
                 
-def tag_idks(instances):
+def tag_idks():
     model = Doc2Vec.load("../data/doc2vec_model")
     good_list = []
     bad_list = []
