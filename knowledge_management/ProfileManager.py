@@ -49,6 +49,11 @@ class ProfileManager(object):
                 self.sic_naics = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/sic_to_naics.json"), "r").read())
             except Exception as e:
                 print("Error reading in one of the SIC <---> NAICS Transforms " + str(e))
+        try:
+            self.name_alias = json.loads(open("data/profilemanager/data/name_alias.json", "r").read())
+        except:
+            self.build_name_alias()
+            self.save_name_alias()
         
     def __contains__(self, key):
         if key in self.cik_name:
@@ -102,6 +107,16 @@ class ProfileManager(object):
         return json.dumps(self.cik_name, sort_keys = True, indent = 4)
     
     #def alias_to_cik(self, alias):
+    
+    def build_name_alias(self):
+        self.name_alias = []
+        for item in self:
+            self.name_alias.append(item['name'])
+            try:
+                for alias in item['alias']:
+                    self.name_alias.append(item['alias'])
+            except:
+                pass
     
     def cik_to_alias(self, cik):
         return self.name_alias[self.cik_name[cik]]
@@ -186,6 +201,9 @@ class ProfileManager(object):
                         else:
                             return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
+    
+    def get_name_alias(self):
+        return self.name_alias
         
     def get_docs_by_sentence(self, instances, iam):
         for item in self.__iter__(instances, iam):
@@ -358,6 +376,11 @@ class ProfileManager(object):
             company['wiki_page'] = wiki_page
             company['wiki_table'] = wiki_table
             self.update_profile(company)
+            
+    def save_name_alias(self):
+        file = open("data/profilemanager/data/name_alias.json", "w")
+        file.write(json.dumps(self.name_alias, sort_keys = True, indent = 4))
+        file.close()
             
     def write_EX21s_to_raw_text(self):
         for item in self:

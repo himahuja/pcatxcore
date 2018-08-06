@@ -245,6 +245,9 @@ def wikiParser(company):
     link = page.url
     body = urllib.request.urlopen(link).read()
     soup = BeautifulSoup(body, 'lxml')
+    title = soup.find('title')
+    if title != None:
+        title = str(title).replace("<title>", "").replace("</title>", "").replace("- Wikipedia", "").strip()
     try:
         table = soup.find('table',{'class':'infobox vcard'})
         rows = table.find_all('tr')
@@ -265,7 +268,7 @@ def wikiParser(company):
                     wiki_table[filler] = unicodedata.normalize("NFKD",re.sub('\[[^()]*\]', "",elem.get_text(strip=True)))
     except:
         print("Wikipedia Table does not exist for {}".format(company))
-    return (wiki_page, wiki_table)
+    return (wiki_page, wiki_table, title)
 
 
 def main():

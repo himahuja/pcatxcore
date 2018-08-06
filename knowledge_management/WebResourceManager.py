@@ -7,10 +7,8 @@ Created on Sun Jul  8 15:27:52 2018
 """
 import sys
 sys.path.append("..")
-from sklearn.feature_extraction.text import TfidfVectorizer
-from nltk.corpus import stopwords
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.stem import PorterStemmer
-from gensim.models.doc2vec import TaggedDocument
 from nltk.stem.wordnet import WordNetLemmatizer
 from PCATParser import *
 import json, os, uuid, nltk, re, time
@@ -22,7 +20,10 @@ class WebResourceManager(object):
         #read in the file
         self.rel_path = rel_path
         self.url_to_uuid = {}
-        self.classifier = TfidfVectorizer(stop_words='english')
+        if rel_path == None:
+            self.classifier = Doc2Vec.load("data/doc2vec_model")
+        else:
+            self.classifier = Doc2Vec.load(os.path.join(self.rel_path, "data/doc2vec_model"))
         
     def __iter__(self):
         for elem in self.url_to_uuid.values():
@@ -66,7 +67,6 @@ class WebResourceManager(object):
     def get_corpus(self, process_all=False):
         corpus_list = []
         count = 0
-        stoplist = set(stopwords.words('english'))
         ps = PorterStemmer()
         lmtzr = WordNetLemmatizer()
         if not process_all:
@@ -214,8 +214,8 @@ class WebResourceManager(object):
         file.write(json.dumps(this, sort_keys = True, indent = 4))
         file.close
 
-    def train_classifier(self):
-        self.classifier.fit_transform(self.get_texts())
+#    def train_classifier(self):
+#        self.classifier.fit_transform(self.get_texts())
 
             
 def insertionSort(arr):

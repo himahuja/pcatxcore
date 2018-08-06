@@ -54,19 +54,28 @@ def get_TaggedDocuments(pm, instances, iam):
                 idk.append(TaggedDocument(words=text, tags=list({tag})))
             count = count + 1
             if count % numPerList == 0:
-                if self.rel_path == None:
-                    file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("good_sentences", iam, count//numPerList), "w")
-                    file.write(json.dumps(good, sort_keys = True, indent = 4))
-                    file.close()
-                    file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("bad_sentences", iam, count//numPerList), "w")
-                    file.write(json.dumps(bad, sort_keys = True, indent = 4))
-                    file.close()
-                    file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("idk_sentences", iam, count//numPerList), "w")
-                    file.write(json.dumps(idk, sort_keys = True, indent = 4))
-                    file.close()
+                file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("good_sentences", iam, count//numPerList), "w")
+                file.write(json.dumps(good, sort_keys = True, indent = 4))
+                file.close()
+                file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("bad_sentences", iam, count//numPerList), "w")
+                file.write(json.dumps(bad, sort_keys = True, indent = 4))
+                file.close()
+                file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("idk_sentences", iam, count//numPerList), "w")
+                file.write(json.dumps(idk, sort_keys = True, indent = 4))
+                file.close()
                 good = []
                 bad = []
                 idk = []
+                
+        file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("good_sentences", iam, count//numPerList), "w")
+        file.write(json.dumps(good, sort_keys = True, indent = 4))
+        file.close()
+        file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("bad_sentences", iam, count//numPerList), "w")
+        file.write(json.dumps(bad, sort_keys = True, indent = 4))
+        file.close()
+        file = open("../data/profilemanager/TaggedDocuments/{}_{}_{}.json".format("idk_sentences", iam, count//numPerList), "w")
+        file.write(json.dumps(idk, sort_keys = True, indent = 4))
+        file.close()
                 
 def tag_idks():
     model = Doc2Vec.load("../data/doc2vec_model")
@@ -101,18 +110,18 @@ def train_model():
             file = json.loads(open(os.path.join("../data/profilemanager/TaggedDocuments", filename), "r").read())
             for td in file:
                 docs.append(TaggedDocument(words=td[0], tags=list(td[1])))
-            try:
-                model = Doc2Vec.load("../data/doc2vec_model")
-                print("Start training process...")
-                model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
-                #save model
-                model.save("../data/doc2vec_model")
-            except:
-                model = Doc2Vec(docs, workers=7, vector_size=1000)
-                print("Start training process...")
-                model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
-                #save model
-                model.save("../data/doc2vec_model")
+    try:
+        model = Doc2Vec.load("../data/doc2vec_model")
+        print("Start training process...")
+        model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
+        #save model
+        model.save("../data/doc2vec_model")
+    except:
+        model = Doc2Vec(docs, workers=7, vector_size=1000)
+        print("Start training process...")
+        model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
+        #save model
+        model.save("../data/doc2vec_model")
 
 def main():
     pm = ProfileManager("..")
