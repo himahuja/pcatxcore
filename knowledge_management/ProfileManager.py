@@ -50,10 +50,13 @@ class ProfileManager(object):
             except Exception as e:
                 print("Error reading in one of the SIC <---> NAICS Transforms " + str(e))
         try:
-            self.name_alias = json.loads(open("data/profilemanager/data/name_alias.json", "r").read())
+            if self.rel_path == None:
+                self.aliases = json.loads(open("data/profilemanager/data/aliases.json", "r").read())
+            else:
+                self.aliases = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/aliases.json"), "r").read())
         except:
-            self.build_name_alias()
-            self.save_name_alias()
+            self.build_aliases()
+            self.save_aliases()
         
     def __contains__(self, key):
         if key in self.cik_name:
@@ -61,8 +64,8 @@ class ProfileManager(object):
         elif key in self.name_cik:
             return True
         else:
-            for i in range(len(self.name_aliases.values())):
-                if alias in self.name_aliases.values()[i]:
+            for i in range(len(self.aliaseses.values())):
+                if alias in self.aliaseses.values()[i]:
                         return True
         return False
     
@@ -79,14 +82,14 @@ class ProfileManager(object):
                 return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[key])), "r").read())
             #open name_cik[key]
         else:
-            for i in range(len(self.name_aliases.values())):
-                for alias in self.name_aliases.values()[i]:
+            for i in range(len(self.name_alias.values())):
+                for alias in self.name_alias.values()[i]:
                     if key == alias:
                         if self.rel_path == None:
-                            return json.loads(open("data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]]), "r").read())
+                            return json.loads(open("data/profilemanager/profiles/{}.json".format(self.name_cik[name_alias.keys()[i]]), "r").read())
                         else:
-                            return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
-                        # open name_cik[name_aliases.keys()[i]]
+                            return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_alias.keys()[i]])), "r").read())
+                        # open name_cik[name_alias.keys()[i]]
         
     def __iter__(self, instances=1, iam = 1):
         if instances == 1:
@@ -108,13 +111,13 @@ class ProfileManager(object):
     
     #def alias_to_cik(self, alias):
     
-    def build_name_alias(self):
-        self.name_alias = []
+    def build_aliases(self):
+        self.aliases = []
         for item in self:
-            self.name_alias.append(item['name'])
+            self.aliases.append(item['name'])
             try:
                 for alias in item['alias']:
-                    self.name_alias.append(item['alias'])
+                    self.aliases.append(item['alias'])
             except:
                 pass
     
@@ -193,17 +196,17 @@ class ProfileManager(object):
                 return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[key])), "r").read())
             #open name_cik[key]
         else:
-            for i in range(len(self.name_aliases.values())):
-                for alias in self.name_aliases.values()[i]:
+            for i in range(len(self.name_alias.values())):
+                for alias in self.name_alias.values()[i]:
                     if key == alias:
                         if self.rel_path == None:
-                            return json.loads(open("data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]]), "r").read())
+                            return json.loads(open("data/profilemanager/profiles/{}.json".format(self.name_cik[name_alias.keys()[i]]), "r").read())
                         else:
-                            return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
-                        # open name_cik[name_aliases.keys()[i]]
+                            return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_alias.keys()[i]])), "r").read())
+                        # open name_cik[name_alias.keys()[i]]
     
-    def get_name_alias(self):
-        return self.name_alias
+    def get_aliases(self):
+        return self.aliases
         
     def get_docs_by_sentence(self, instances, iam):
         for item in self.__iter__(instances, iam):
@@ -235,7 +238,26 @@ class ProfileManager(object):
                 pass
             except Exception as e:
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
-        
+
+    def get_resources_by_company(self, item):
+        resources = []
+        try:
+            if item['ten_ks'] != None:
+                for doc in item['ten_ks']:
+                    resources.append((doc['text'],doc['url']))
+        except KeyError as k:
+            pass
+        except Exception as e:
+            print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
+        try:
+            if item['eight_ks'] != None:
+                for doc in item['eight_ks']:
+                    resources.append((doc['text'],doc['url']))
+        except KeyError as k:
+            pass
+        except Exception as e:
+            print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
+        return resources
     
     def get_texts(self):
         for item in self:
@@ -377,10 +399,14 @@ class ProfileManager(object):
             company['wiki_table'] = wiki_table
             self.update_profile(company)
             
-    def save_name_alias(self):
-        file = open("data/profilemanager/data/name_alias.json", "w")
-        file.write(json.dumps(self.name_alias, sort_keys = True, indent = 4))
+    def save_aliases(self):
+        if self.rel_path == None:
+            file = open("data/profilemanager/data/aliases.json", "w")
+        else:
+            file = open(os.path.join(self.rel_path, "data/profilemanager/data/aliases.json"), "w")
+        file.write(json.dumps(self.aliases, sort_keys = True, indent = 4))
         file.close()
+            
             
     def write_EX21s_to_raw_text(self):
         for item in self:

@@ -268,7 +268,7 @@ def wikiParser(company):
                     wiki_table[filler] = unicodedata.normalize("NFKD",re.sub('\[[^()]*\]', "",elem.get_text(strip=True)))
     except:
         print("Wikipedia Table does not exist for {}".format(company))
-    return (wiki_page, wiki_table, title)
+    return (wiki_page, wiki_table, title, link)
 
 
 def main():
