@@ -350,9 +350,10 @@ def crawlerWrapper(search_query, engine):
     #    ██    ██   ██ ██
 
     elif engine == 'tri':
-        # put code here
-        pass
-        # return links
+        tri_id = search_query['tri_id']
+        url = 'https://www3.epa.gov/enviro/facts/tri/ef-facilities/#/Facility/'+tri_id
+        return url
+
 
     #  ██████   ██████   ██████  ██          ███████ ██    ██ ██████  ███████
     # ██       ██    ██ ██       ██          ██      ██    ██ ██   ██ ██
@@ -362,19 +363,9 @@ def crawlerWrapper(search_query, engine):
 
     elif engine == 'google-subs':
         search_query['name'].replace(" ", "+")
-        url = "https://www.google.com/search?q=" + search_query['name']
-        try:
-            r = render_page(url)
-            soup = BeautifulSoup(r, "lxml")
-            sub_dict = {}
-            sub = soup.findAll('div',{'class':'kltat'})
-            sub_link = soup.findAll('a',{'class':'klitem'})
-            for item,link in zip(sub, sub_link):
-                sub_dict[item.get_text()] = link.get('href')
-            return sub_dict
-        except:
-            print("Couldn\'t find subsidiaries")
-            return
+        url = "https://www.google.com/search?q=" + search_query['name'] + '+subsidiaries'
+        return url
+
 
     #  █████  ██   ██      ██  ██████  ██   ██     ███████ ██████   ██
     # ██   ██ ██  ██      ███ ██  ████ ██  ██      ██           ██ ███
@@ -582,7 +573,15 @@ def main(part_number):
     # search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
     # search_query['name'] = 'dow-products'
     # crawlerWrapper(search_query, 'sitespecific')
+    
+    """ Using the TRI for a facility report"""
+    # search_query['tri_id'] = '88252JL3GS115SI'
+    # crawlerWrapper(search_query, 'tri')
 
+    """ Using the google for subsidiaries"""
+    # search_query['name'] = 'samsung'
+    # crawlerWrapper(search_query, 'google-subs')    
+    
     """ using the cik to get the E-21 of the company / subsidary structure, ultimate parent [top node] """
 
     # """ Mergers and acquisition """
