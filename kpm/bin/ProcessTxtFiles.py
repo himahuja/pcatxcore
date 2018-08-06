@@ -64,9 +64,9 @@ def pickle_to_JSON(filename):
 #     with open(os.path.join("../../data/profilemanager/data", "ciknames2code.pk"), "rb") as handle:
 #         file = pickle.load(handle)
 #     open(os.path.join("../../data/profilemanager/data", "name_to_code.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
-     with open(os.path.join("../../data/profilemanager/data/edgardata/pickles", "{}.pk".format(filename)), "rb") as handle:
+     with open(os.path.join("../../data/profilemanager/data/tridata", "{}.pk".format(filename)), "rb") as handle:
          file = pickle.load(handle)
-     open(os.path.join("../../data/profilemanager/data/edgardata/JSON", "{}.json".format(filename)), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
+     open(os.path.join("../../data/profilemanager/data/tridata", "{}.json".format(filename)), "w").write(json.dumps(file, sort_keys = True, indent = 4)) 
 
 def inverse_dictionary():
     this = json.loads(open(os.path.join("../../data/profilemanager/data", "sic_to_cik.json"), "r").read())
@@ -78,12 +78,25 @@ def inverse_dictionary():
             except:
                 cik_to_sic[cik] = [sic]
     open(os.path.join("../../data/profilemanager/data", "cik_to_sic.json"), "w").write(json.dumps(cik_to_sic, sort_keys = True, indent = 4))
-        
+
+
+def names_to_list():
+    with open(os.path.join("../../data/profilemanager/data", "cik_to_name.json"), "r") as handle:
+         file = json.loads(handle.read())
+    open(os.path.join("../../data/profilemanager/data/names.json"), "w").write(json.dumps(list(file.values()), sort_keys = True, indent = 4))
+
+def cas_to_list():
+    with open(os.path.join("../../data/profilemanager/data", "CAS_from_wiki.csv"), "r") as handle:
+         file = handle.read()
+    fout = []
+    for line in file.splitlines():
+        if len(line) > 4:
+            fout.append(line.replace('"', "").replace("'", "").strip())
+    open(os.path.join("../../data/profilemanager/data/cas_from_wiki.json"), "w").write(json.dumps(list(fout), sort_keys = True, indent = 4))
     
 def main():    
-    for file in os.listdir("../../data/profilemanager/data/edgardata/pickles"):
-            print("Converting {}....".format(file[:-3]))
-            pickle_to_JSON(file[:-3])
+#    pickle_to_JSON("master_dict_portion")
+    cas_to_list()
     
 if __name__ == "__main__" :
     main()

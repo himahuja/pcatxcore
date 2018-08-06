@@ -8,6 +8,10 @@ Created on Wed Jul 11 12:47:13 2018
 import json, os, sys
 sys.path.append("..")
 from PCATParser import *
+import nltk
+from gensim.models.doc2vec import TaggedDocument
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.stem import PorterStemmer
 
 class ProfileManager(object):
     
@@ -79,9 +83,14 @@ class ProfileManager(object):
                             return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
         
-    def __iter__(self):
-        for cik in self.cik_name:
-            yield self.get(cik)
+    def __iter__(self, instances=1, iam = 1):
+        if instances == 1:
+            for cik in self.cik_name:
+                yield self.get(cik)
+        else:
+            for i in range(len(self.cik_name)):
+                if i % instances == iam:
+                    yield self.get(list(self.cik_name.keys())[i])
         
     def __len__(self):
         return len(self.cik_name)
@@ -177,12 +186,15 @@ class ProfileManager(object):
                         else:
                             return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_aliases.keys()[i]])), "r").read())
                         # open name_cik[name_aliases.keys()[i]]
-    def get_texts(self):
-        for item in self:
+        
+    def get_docs_by_sentence(self, instances, iam):
+        for item in self.__iter__(instances, iam):
             try:
                 if item['ten_ks'] != None:
                     for doc in item['ten_ks']:
-                        yield doc['text']
+                        sent_list = nltk.sent_tokenize(doc['text'])
+                        for i in range(len(sent_list)):
+                            yield (sent_list[i], str(item['cik'] + "_10k_" + doc['time_of_filing'] + "_" + str(i)))
             except KeyError as k:
                 pass
             except Exception as e:
@@ -190,43 +202,73 @@ class ProfileManager(object):
             try:
                 if item['eight_ks'] != None:
                     for doc in item['eight_ks']:
-                        yield doc['text']
+                        sent_list = nltk.sent_tokenize(doc['text'])
+                        for i in range(len(sent_list)):
+                            yield (sent_list[i], str(item['cik'] + "_8k_" + doc['time_of_filing'] + "_" + str(i)))
             except KeyError as k:
                 pass
             except Exception as e:
                 print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
             try:
-                yield item['wiki_page']
+                sent_list = nltk.sent_tokenize(str(item['wiki_page']['text']))
+                for i in range(len(sent_list)):
+                    yield (sent_list[i], str(item['cik'] + "_wiki_page" + "_" + str(i)))
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
+        
+    
+    def get_texts(self):
+        for item in self:
+            try:
+                if item['ten_ks'] != None:
+                    for doc in item['ten_ks']:
+                        yield (doc['text'], str(item['cik'] + "_10k_" + doc['time_of_filing']))
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
+            try:
+                if item['eight_ks'] != None:
+                    for doc in item['eight_ks']:
+                        yield (doc['text'], str(item['cik'] + "_8k_" + doc['time_of_filing']))
+            except KeyError as k:
+                pass
+            except Exception as e:
+                print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
+            try:
+                yield (item['wiki_page'], str(item['cik'] + "_wiki_page"))
             except KeyError as k:
                 pass
             except Exception as e:
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
                 
     def get_texts_by_company(self, item):
-            item_string = item['cik']
-            try:
-                if item['ten_ks'] != None:
-                    for doc in item['ten_ks']:
-                        item_string += "\n\n" +  doc['text']
-            except KeyError as k:
-                pass
-            except Exception as e:
-                print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
-            try:
-                if item['eight_ks'] != None:
-                    for doc in item['eight_ks']:
-                        item_string += "\n\n" +  doc['text']
-            except KeyError as k:
-                pass
-            except Exception as e:
-                print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
-            try:
-                item_string += "\n\n" +  str(item['wiki_page'])
-            except KeyError as k:
-                pass
-            except Exception as e:
-                print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
-            return item_string
+        item_string = item['cik']
+        try:
+            if item['ten_ks'] != None:
+                for doc in item['ten_ks']:
+                    item_string += "\n\n" +  doc['text']
+        except KeyError as k:
+            pass
+        except Exception as e:
+            print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
+        try:
+            if item['eight_ks'] != None:
+                for doc in item['eight_ks']:
+                    item_string += "\n\n" +  doc['text']
+        except KeyError as k:
+            pass
+        except Exception as e:
+            print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
+        try:
+            item_string += "\n\n" +  str(item['wiki_page'])
+        except KeyError as k:
+            pass
+        except Exception as e:
+            print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
+        return item_string
     
     def naics_to_description(self, naics):
         return self.naics_description[naics]
@@ -316,6 +358,29 @@ class ProfileManager(object):
             company['wiki_page'] = wiki_page
             company['wiki_table'] = wiki_table
             self.update_profile(company)
+            
+    def write_EX21s_to_raw_text(self):
+        for item in self:
+            if self.rel_path == None:
+                if not os.path.exists("data/profilemanager/EX21s/{}".format(item['cik'])):
+                    os.makedirs("data/profilemanager/EX21s/{}".format(item['cik']))
+                try:
+                    for ex21 in item['EX21s']:
+                        file = open("data/profilemanager/EX21s/{}/EX21_{}.txt".format(item['cik'], ex21['time_of_filing']), "w+")
+                        file.write(tenk['text'])
+                        file.close()
+                except:
+                    pass
+            else:
+                if not os.path.exists(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}".format(item['cik']))):
+                    os.makedirs(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}".format(item['cik'])))
+                try:
+                    for ex21 in item['EX21s']:
+                        file = open(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}/EX21_{}.txt".format(item['cik'], ex21['time_of_filing'])), "w+")
+                        file.write(tenk['text'])
+                        file.close()
+                except:
+                    pass
     
     def write_to_raw_text(self):
         for item in self:
@@ -405,13 +470,21 @@ def divvy_up_wikipedia(profile_manager, instances):
         for i in range(instances):
             wiki_lists[i].append(item['cik'])
     return wiki_lists
+    
+def stem_and_lemmatize(wordlist):
+    lmtzr = WordNetLemmatizer()
+    ps = PorterStemmer()
+    for i in range(len(wordlist)):
+        wordlist[i] = ps.stem(lmtzr.lemmatize(wordlist[i]))
+        
+    return wordlist
 
 def main():
     pm = ProfileManager("..")
 #    pm.generate_profiles()
 #    wiki_lists = divvy_up_wikipedia(pm,6)
 #    pm.parse_wikipedia(wiki_lists[5])
-    pm.write_to_raw_text()
+    pm.write_EX21s_to_raw_text()
 #    
 if __name__ == "__main__" :
     main()

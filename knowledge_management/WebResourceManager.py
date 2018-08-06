@@ -10,6 +10,8 @@ sys.path.append("..")
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from gensim.models.doc2vec import TaggedDocument
+from nltk.stem.wordnet import WordNetLemmatizer
 from PCATParser import *
 import json, os, uuid, nltk, re, time
 import numpy as np
@@ -65,61 +67,45 @@ class WebResourceManager(object):
         corpus_list = []
         count = 0
         stoplist = set(stopwords.words('english'))
-        ps = PorterStemmer()  
+        ps = PorterStemmer()
+        lmtzr = WordNetLemmatizer()
         if not process_all:
             for item in self:
                 try:
                     corpus_list.append(item['corpus'])
                 except:
-                    text = re.sub('[^A-Za-z]+', ' ', re.sub('\S*@\S*\s?', "", item['text'])).lower().splitlines()
+                    text = re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", item['text'])).lower().splitlines()
                     doc_list = []
                     for line in text:
                         words = line.split()
                         for word in words:
-                            doc_list.append(word.strip())
-                    doc_list = [word for word in doc_list if word not in stoplist]
-                    sent_set = set(doc_list)
-                    for word in sent_set:
-                        if len(word) < 3:
-                            while word in doc_list:
-                                try:
-                                    doc_list.remove(word)
-                                except:
-                                    pass
+                            doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
                     corpus_list.append(doc_list)
                     item['corpus'] = doc_list
                     file = open(os.path.join("../data/docs", item['id']+".json"), "w")
                     file.write(json.dumps(item, sort_keys=True, indent=4))
                     file.close()
-                    if (count % 100 == 99):
+                    count+=1
+                    if (count % 1000 == 0):
                         if (count+1 != len(self)):
                             print("...{:2.2f}% done, processing document {} of {}".format(((count+1)/len(self))*100,count+1,len(self)))
-                    count+=1
         else:
             for item in self:
-                    text = re.sub('[^A-Za-z]+', ' ', re.sub('\S*@\S*\s?', "", item['text'])).lower().splitlines()
-                    for line in text:
-                        words = line.split()
-                        for word in words:
-                            doc_list.append(word.strip())
-                    doc_list = [word for word in doc_list if word not in stoplist]
-                    sent_set = set(doc_list)
-                    for word in sent_set:
-                        if len(word) < 3:
-                            while word in doc_list:
-                                try:
-                                    doc_list.remove(word)
-                                except:
-                                    pass
-                    corpus_list.append(doc_list)
-                    item['corpus'] = doc_list
-                    file = open(os.path.join("data/docs", item['id']+".json"), "w")
-                    file.write(json.dumps(item, sort_keys=True, indent=4))
-                    file.close()
-                    if (count % 100 == 99):
-                        if (count+1 != len(self)):
-                            print("...{:2.2f}% done, processing document {} of {}".format(((count+1)/len(self))*100,count+1,len(self)))
-                    count+=1
+                text = re.sub("[^A-Za-z'-]+", ' ', re.sub('\S*@\S*\s?', "", item['text'])).lower().splitlines()
+                doc_list = []
+                for line in text:
+                    words = line.split()
+                    for word in words:
+                        doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
+                corpus_list.append(doc_list)
+                item['corpus'] = doc_list
+                file = open(os.path.join("data/docs", item['id']+".json"), "w")
+                file.write(json.dumps(item, sort_keys=True, indent=4))
+                file.close()
+                count+=1
+                if (count % 1000 == 0):
+                    if (count+1 != len(self)):
+                        print("...{:2.2f}% done, processing document {} of {}".format(((count+1)/len(self))*100,count+1,len(self)))
         print("...100.00% done, processing document {} of {}".format(len(self),len(self)))
         return corpus_list
         
