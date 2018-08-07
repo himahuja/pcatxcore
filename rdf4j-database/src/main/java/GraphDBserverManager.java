@@ -1,10 +1,13 @@
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.impl.TreeModel;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
@@ -14,9 +17,12 @@ import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.repository.config.RepositoryConfigSchema;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryProvider;
+import org.eclipse.rdf4j.repository.util.RDFInserter;
+import org.eclipse.rdf4j.repository.util.RDFLoader;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParser;
 import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.helpers.AbstractRDFHandler;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +58,37 @@ public class GraphDBserverManager {
 			logger.error(WTF_MARKER, t.getMessage(), t);
 		}
 	}
+	
+	public void loadZippedFile(InputStream in, RDFFormat format) {
+        try {
+            MyRdfInserter inserter = new MyRdfInserter(this.repositoryConnection);
+            RDFLoader loader = 
+                    new RDFLoader(this.repositoryConnection.getParserConfig(), this.repositoryConnection.getValueFactory());
+            loader.load(in, "", RDFFormat.NTRIPLES, inserter);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    class MyRdfInserter extends AbstractRDFHandler {
+        RDFInserter rdfInserter;
+        int count = 0;
+
+        public MyRdfInserter(RepositoryConnection con) {
+            rdfInserter = new RDFInserter(con);
+        }
+
+        @Override
+        public void handleStatement(Statement st) {
+            count++;
+            if (count % 100000 == 0)
+                System.out.println("Add statement number " + count + "\n"
+                        + st.getSubject().stringValue() + " "
+                        + st.getPredicate().stringValue() + " "
+                        + st.getObject().stringValue());
+            rdfInserter.handleStatement(st);
+        }
+    }
 	
 	public void add_data_to_rdf_nt(String filename) {
 		try {
@@ -97,7 +134,7 @@ public class GraphDBserverManager {
 		this.initialize_repository_manager(repoID);
 	}
 	
-	
+	//Create a New GraphDB repository
 	public void createGraphDBRepo() {
 		try {		
 			Path path = Paths.get(".").toAbsolutePath().normalize();
@@ -139,14 +176,48 @@ public class GraphDBserverManager {
 			this.repositoryConnection = repository.getConnection();
 			return;
 			
-			} catch (Throwable t) {
+			} 
+		catch (Throwable t) {
 				logger.error(WTF_MARKER, t.getMessage(), t);
 			}		
 	}
 	
 	public static void main(String[] args) {
 		GraphDBserverManager pcatrdf = new GraphDBserverManager("graphdb-repo");
-		pcatrdf.turnoff();
-		return;
+		Scanner reader = new Scanner(System.in);
+		try {
+			while(true) {
+				System.out.println("1. Add a new RDF file.\n"
+								  +"2. Query the RDF File.\n"
+								  + "Enter a number: ");
+				int choice = reader.nextInt();
+				switch(choice) {
+				case 1:
+					System.out.println("Enter the Zipped FIle");
+					String filename = reader.nextLine();
+					System.out.println("Enter the Triple Format");;
+					pcatrdf.loadZippedFile(new FileInputStream(filename), RDFFormat.TURTLE);
+					break;
+				case 2:
+//					this.submit_query();
+					break;
+				case 9:
+					
+					break;
+				default:
+					System.out.println("Try Again!");
+					break;
+				}
+			}
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			pcatrdf.turnoff();
+			reader.close();
+		}
+
 	}
 }
