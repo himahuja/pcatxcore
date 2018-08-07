@@ -83,7 +83,19 @@ def inverse_dictionary():
 def names_to_list():
     with open(os.path.join("../../data/profilemanager/data", "cik_to_name.json"), "r") as handle:
          file = json.loads(handle.read())
+    
     open(os.path.join("../../data/profilemanager/data/names.json"), "w").write(json.dumps(list(file.values()), sort_keys = True, indent = 4))
+
+def lowercase_dat_shit():
+    with open(os.path.join("../../data/profilemanager/data", "cik_to_name.json"), "r") as handle:
+         file = json.loads(handle.read())
+    file = dict((k.lower(), v) for k,v in file.items())
+    open(os.path.join("../../data/profilemanager/data/names.json"), "w").write(json.dumps(list(file.values()), sort_keys = True, indent = 4))
+    open(os.path.join("../../data/profilemanager/data/cik_to_name.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))
+    with open(os.path.join("../../data/profilemanager/data", "name_to_cik.json"), "r") as handle:
+         file = json.loads(handle.read())
+    file = dict((k.lower(), v) for k,v in file.items())
+    open(os.path.join("../../data/profilemanager/data/name_to_cik.json"), "w").write(json.dumps(file, sort_keys = True, indent = 4))
 
 def cas_to_list():
     with open(os.path.join("../../data/profilemanager/data", "CAS_from_wiki.csv"), "r") as handle:
@@ -96,7 +108,7 @@ def cas_to_list():
     
 def main():    
 #    pickle_to_JSON("master_dict_portion")
-    cas_to_list()
+    lowercase_dat_shit()
     
 if __name__ == "__main__" :
     main()

@@ -70,6 +70,7 @@ class ProfileManager(object):
         return False
     
     def __getitem__(self, key):
+        key = key.lower()
         if key in self.cik_name:
             if self.rel_path == None:
                 return json.loads(open("data/profilemanager/profiles/{}.json".format(key), "r").read())
@@ -114,10 +115,12 @@ class ProfileManager(object):
     def build_aliases(self):
         self.aliases = []
         for item in self:
+            item['name'] = item['name'].lower()
             self.aliases.append(item['name'])
             try:
-                for alias in item['alias']:
-                    self.aliases.append(item['alias'])
+                for i in range(len(item['alias'])):
+                    item['alias'][i] = item['alias'][i].lower()
+                    self.aliases.append(item['alias'][i])
             except:
                 pass
     
@@ -173,7 +176,7 @@ class ProfileManager(object):
         for cik in self.cik_name:
             this = {}
             this['cik'] = cik
-            this['name'] = self.cik_to_name(cik)
+            this['name'] = self.cik_to_name(cik).lower()
             this['sic'] = cik_to_sic[cik]
             try:
                 this['naics'] = [ x for x in sic_to_naics[this['sic']] ]
@@ -244,7 +247,7 @@ class ProfileManager(object):
         try:
             if item['ten_ks'] != None:
                 for doc in item['ten_ks']:
-                    resources.append((doc['text'],doc['url']))
+                    resources.append((doc['text'], doc['url']))
         except KeyError as k:
             pass
         except Exception as e:
@@ -252,7 +255,7 @@ class ProfileManager(object):
         try:
             if item['eight_ks'] != None:
                 for doc in item['eight_ks']:
-                    resources.append((doc['text'],doc['url']))
+                    resources.append((doc['text'], doc['url']))
         except KeyError as k:
             pass
         except Exception as e:

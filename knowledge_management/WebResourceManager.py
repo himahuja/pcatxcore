@@ -110,26 +110,7 @@ class WebResourceManager(object):
         return corpus_list
         
     def get_relevance_score(self, document):
-        response = self.classifier.transform([document])
-        feature_names = self.classifier.get_feature_names()
-    
-        score_dict = {}
-        for col in response.nonzero()[1]:
-            score_dict[feature_names[col]] = response[0,col]
-    
-        word_list = nltk.word_tokenize(document)
-        total_score = 0
-        count_keywords = 0
-        for word in word_list:
-            if word in score_dict:
-                total_score += score_dict[word]
-                count_keywords += 1
-        if (count_keywords != 0):   
-            score = total_score / count_keywords
-        else:
-            score = 0
-        print(score)
-        return score
+        pass
     
     def get_TaggedDocuments(self):
         for file in self:
