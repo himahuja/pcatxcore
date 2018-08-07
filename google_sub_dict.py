@@ -64,5 +64,5 @@ if __name__ == "__main__":
     master_dict = get_master_dict(name)
     
     with open('master_subsidiaries.pk', 'wb') as f:
-    pickle.dump(master_dict, f)
+        pickle.dump(master_dict, f)
     
