@@ -80,6 +80,7 @@ def hazard_to_company(chemical,driver):
         return []
     
 if __name__ == "__main__":
+    # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl 
     name = input("Please enter a hazard name: ")
     driver = setDriver()
     comp_list = hazard_to_company(name, driver)
