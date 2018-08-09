@@ -16,6 +16,11 @@
   		<artifactId>logback-classic</artifactId>
   		<version>1.0.13</version>
   	</dependency>
+<dependency>
+    <groupId>com.ontotext.graphdb</groupId>
+    <artifactId>graphdb-free-runtime</artifactId>
+    <version>8.5.0</version>
+</dependency>
   </dependencies>
   <build>
     <plugins>

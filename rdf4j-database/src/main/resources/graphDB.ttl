@@ -5,8 +5,8 @@
 @prefix owlim: <http://www.ontotext.com/trree/owlim#>.
 
 [] a rep:Repository ;
-  rep:repositoryID "graphdb-repo" ;
-  rdfs:label "graphdb-repo-label" ;
+  rep:repositoryID "graphdb-pubchem" ;
+  rdfs:label "graphdb for pubchem resources" ;
   rep:repositoryImpl [
     rep:repositoryType "graphdb:FreeSailRepository" ;
     rep:repositoryType "owlim:MonitorRepository" ;

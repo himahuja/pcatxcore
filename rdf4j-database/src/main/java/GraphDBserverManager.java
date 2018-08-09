@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Scanner;
 
 import org.eclipse.rdf4j.model.Resource;
@@ -19,9 +20,11 @@ import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryProvider;
 import org.eclipse.rdf4j.repository.util.RDFInserter;
 import org.eclipse.rdf4j.repository.util.RDFLoader;
+import org.eclipse.rdf4j.rio.DatatypeHandler;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParser;
 import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.RioSetting;
 import org.eclipse.rdf4j.rio.helpers.AbstractRDFHandler;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.slf4j.Logger;
@@ -36,7 +39,6 @@ public class GraphDBserverManager {
 	// Why This Failure marker
 	private static final Marker WTF_MARKER = MarkerFactory.getMarker("WTF");
 	
-	
 	String strServerUrl;
 	
 	// Repository variables
@@ -44,27 +46,105 @@ public class GraphDBserverManager {
 	Repository repository;
 	RepositoryConnection repositoryConnection;
 	
+	// RDF Data Handlers
+	private static final RioSetting<List<DatatypeHandler>> allDatatypeHandling[] = new RioSetting<List<DatatypeHandler>> {
+		BasicParser
+	}
+    private static final RDFParser.DatatypeHandling allDatatypeHandling[] = new RDFParser.DatatypeHandling[] {
+            RDFParser.DatatypeHandling.IGNORE, RDFParser.DatatypeHandling.NORMALIZE, RDFParser.DatatypeHandling.VERIFY
+    };
+	
+	///////////////////////////////////////////
+	////   INITIALIZING THE REPOSITORY     ////
+	///////////////////////////////////////////
+	
+	public void establish_connection() {
+		try {
+			this.repositoryConnection = this.repository.getConnection();
+			System.out.println("We have established the repository connection");
+		}
+		catch (Throwable t) {
+			logger.error(WTF_MARKER, t.getMessage(), t);
+		}	
+	}
+	
 	private void initialize_repository_manager(String repoID) {
 		try {
 			this.strServerUrl = "http://localhost:7200"; 
 			this.repositoryManager  = RepositoryProvider.getRepositoryManager(this.strServerUrl);
 			this.repositoryManager.initialize();
 			this.repositoryManager.getAllRepositories();
-			this.repository = repositoryManager.getRepository(repoID);
-			System.out.println("We have successfully connected to the repository.");
-			return;
+			System.out.println("Repository Manager has been initialized");
 		}
 		catch(Throwable t){
 			logger.error(WTF_MARKER, t.getMessage(), t);
 		}
 	}
 	
+	private void findRepository(String repoID) {
+		try {
+			this.repository = this.repositoryManager.getRepository(repoID);
+			System.out.println("We have successfully found the repository.");
+		}
+		catch(Throwable t){
+			logger.error(WTF_MARKER, t.getMessage(), t);
+		}
+	}
+	
+	//Create a New GraphDB repository
+	public void createGraphDBRepo(String repoID) {
+		try {
+			
+			Path path = Paths.get(".").toAbsolutePath().normalize();
+			String strRepositoryConfig = path.toFile().getAbsolutePath() + "/src/main/resources/graphDB.ttl";
+//			String strRepositoryConfig = "/graphDB.ttl"; 
+//			String strServerUrl = 
+//			
+			this.initialize_repository_manager(repoID);
+//		// Instantiate a local repository manager and initialize it
+//			RepositoryManager repositoryManager  = RepositoryProvider.getRepositoryManager(this.strServerUrl);
+//			repositoryManager.initialize();
+//			repositoryManager.getAllRepositories();
+
+			// Instantiate a repository graph model
+			TreeModel graph = new TreeModel();
+
+			// Read repository configuration file
+			InputStream config = new FileInputStream(strRepositoryConfig);
+			RDFParser rdfParser = Rio.createParser(RDFFormat.TURTLE);
+			rdfParser.setRDFHandler(new StatementCollector(graph));
+			rdfParser.parse(config, RepositoryConfigSchema.NAMESPACE);
+			config.close();
+
+			// Retrieve the repository node as a resource
+			Resource repositoryNode =  Models.subject(graph
+					.filter(null, RDF.TYPE, RepositoryConfigSchema.REPOSITORY))
+					.orElseThrow(() -> new RuntimeException(
+								"Oops, no <http://www.openrdf.org/config/repository#> subject found!"));
+
+			// Create a repository configuration object and add it to the repositoryManager		
+			RepositoryConfig repositoryConfig = RepositoryConfig.create(graph, repositoryNode);
+			this.repositoryManager.addRepositoryConfig(repositoryConfig);
+
+			// Get the repository from repository manager, note the repository id set in configuration .ttl file
+//			this.findRepository(repoID);
+			
+			} 
+		catch (Throwable t) {
+				logger.error(WTF_MARKER, t.getMessage(), t);
+			}		
+	}
+	
+	/////////////////////////////////////////
+	////////    LOAD ZIPPED FILEs    ////////
+	/////////////////////////////////////////
+	
 	public void loadZippedFile(InputStream in, RDFFormat format) {
         try {
             MyRdfInserter inserter = new MyRdfInserter(this.repositoryConnection);
-            RDFLoader loader = 
+            RDFLoader loader =
                     new RDFLoader(this.repositoryConnection.getParserConfig(), this.repositoryConnection.getValueFactory());
-            loader.load(in, "", RDFFormat.NTRIPLES, inserter);
+            loader.load(in, "", format, inserter);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -89,6 +169,11 @@ public class GraphDBserverManager {
             rdfInserter.handleStatement(st);
         }
     }
+    
+    /// Load Multiple files from directory
+    public void loadRDFdirectory(String dir) {
+    	
+    }
 	
 	public void add_data_to_rdf_nt(String filename) {
 		try {
@@ -109,6 +194,9 @@ public class GraphDBserverManager {
 		}		
 	}
 	
+	///////////////////////////////////////
+	////  SHUTTING DOWN THE REPOSITORY  ///
+	///////////////////////////////////////
 	
 	public void turnoff() {
 		// Shutdown connection, repository and manager
@@ -124,93 +212,71 @@ public class GraphDBserverManager {
 		}		
 	}
 	
+	///////////////////////////////////////
+	////     CONSTRUCTOR METHODS     //////
+	///////////////////////////////////////
 	
 	public GraphDBserverManager() {
-		this.createGraphDBRepo();
-  
+		String repoID = "graphdb-pubchem";
+		this.createGraphDBRepo(repoID);
+		this.findRepository(repoID);
+		this.establish_connection();
 	}
 	
 	public GraphDBserverManager(String repoID) {
 		this.initialize_repository_manager(repoID);
+		this.findRepository(repoID);
+		this.establish_connection();
 	}
 	
-	//Create a New GraphDB repository
-	public void createGraphDBRepo() {
-		try {		
-			Path path = Paths.get(".").toAbsolutePath().normalize();
-			String strRepositoryConfig = path.toFile().getAbsolutePath() + "/src/main/resources/graphDB.ttl";
-//			String strRepositoryConfig = "/graphDB.ttl"; 
-//			String strServerUrl = 
-			String repoID = "graphdb-repo";
-			this.initialize_repository_manager(repoID);
-//		// Instantiate a local repository manager and initialize it
-//			RepositoryManager repositoryManager  = RepositoryProvider.getRepositoryManager(this.strServerUrl);
-//			repositoryManager.initialize();
-//			repositoryManager.getAllRepositories();
-
-			// Instantiate a repository graph model
-			TreeModel graph = new TreeModel();
-
-			// Read repository configuration file
-			InputStream config = new FileInputStream(strRepositoryConfig);
-			RDFParser rdfParser = Rio.createParser(RDFFormat.TURTLE);
-			rdfParser.setRDFHandler(new StatementCollector(graph));
-			rdfParser.parse(config, RepositoryConfigSchema.NAMESPACE);
-			config.close();
-
-			// Retrieve the repository node as a resource
-			Resource repositoryNode =  Models.subject(graph
-					.filter(null, RDF.TYPE, RepositoryConfigSchema.REPOSITORY))
-					.orElseThrow(() -> new RuntimeException(
-								"Oops, no <http://www.openrdf.org/config/repository#> subject found!"));
-
-			
-			// Create a repository configuration object and add it to the repositoryManager		
-			RepositoryConfig repositoryConfig = RepositoryConfig.create(graph, repositoryNode);
-			this.repositoryManager.addRepositoryConfig(repositoryConfig);
-
-			// Get the repository from repository manager, note the repository id set in configuration .ttl file
-			this.repository = repositoryManager.getRepository("graphdb-repo");
-
-			// Open a connection to this repository
-			this.repositoryConnection = repository.getConnection();
-			return;
-			
-			} 
-		catch (Throwable t) {
-				logger.error(WTF_MARKER, t.getMessage(), t);
-			}		
-	}
+	///////////////////////////////////////
+	//////  MAIN CALLER FUNCTION    ///////
+	///////////////////////////////////////
 	
 	public static void main(String[] args) {
-		GraphDBserverManager pcatrdf = new GraphDBserverManager("graphdb-repo");
+		GraphDBserverManager pcatrdf = new GraphDBserverManager("graphdb-pubchem");
 		Scanner reader = new Scanner(System.in);
 		try {
-			while(true) {
-				System.out.println("1. Add a new RDF file.\n"
-								  +"2. Query the RDF File.\n"
+			String filename = "/Volumes/EXTERNAL/ftp.ncbi.nlm.nih.gov/pubchem/RDF/compound/general/pc_compound_role.ttl";
+			dance: while(true) {
+				System.out.println("1. Add a new RDF file. (Zipped Files)\n"
+								  +"2. Add a directory with RDF Files. (Zipped Files)\n"
+								  +"3. Query the RDF File.\n"
+								  +"4. Add data using chunker.\n"
+								  +"9. Adios amigo?\n"
 								  + "Enter a number: ");
 				int choice = reader.nextInt();
 				switch(choice) {
 				case 1:
-					System.out.println("Enter the Zipped FIle");
-					String filename = reader.nextLine();
-					System.out.println("Enter the Triple Format");;
+//					System.out.println("Enter the Zipped File: ");
+//					String filename = reader.nextLine();
+//					Path path = Paths.get(".").toAbsolutePath().normalize();
+//					String filename = path.toFile().getAbsolutePath() + "/src/main/resources/graphDB.ttl";
+//					String filename = 
+//					String filename = "/Volumes/EXTERNAL/ftp.ncbi.nlm.nih.gov/pubchem/RDF/compound/general/pc_compound_role.ttl.gz";
+//					System.out.println("Enter the Triple Format");
 					pcatrdf.loadZippedFile(new FileInputStream(filename), RDFFormat.TURTLE);
 					break;
 				case 2:
-//					this.submit_query();
+					System.out.println("Enter the directory path: ");
+					String dir = reader.nextLine();
+					pcatrdf.loadRDFdirectory(dir);
+					break;
+				case 4:
+					
+					pcatrdf.add_data_to_rdf_nt(filename);
 					break;
 				case 9:
-					
-					break;
+					System.out.println("Initiating exit now");
+					break dance;
 				default:
 					System.out.println("Try Again!");
 					break;
 				}
 			}
 			
-		} catch (FileNotFoundException e) {
+		} 
+		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
