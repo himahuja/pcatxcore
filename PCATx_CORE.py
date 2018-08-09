@@ -7,6 +7,7 @@ Created on Fri Jul  6 14:10:12 2018
 import parser, pickle, difflib, nltk
 from webcrawlAll import crawlerWrapper
 from PCATParser import *
+import google_sub
 from knowledge_management.WebResourceManager import *
 from knowledge_management.ProfileManager import *
 from gensim import models
@@ -22,12 +23,18 @@ def PCATx_CORE():
         foundInDatabase = True
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
+        driver = google_sub.setDriver()
+        sub_list = google_sub.get_sub(name, driver)
     else:
         yon = input("Did you mean this company? (y/n) {}   ".format(wiki[2]))
         if yon.lower() == "y":
             query = { 'name' : newName }
+            driver = google_sub.setDriver()
+            sub_list = google_sub.get_sub(newName, driver)
         else:
             query = { 'name' : name }
+            driver = google_sub.setDriver()
+            sub_list = google_sub.get_sub(name, driver)
         matches = difflib.get_close_matches(name, pm.get_aliases(), cutoff = .4) + difflib.get_close_matches(newName, pm.get_aliases(), cutoff = .4)
         if len(matches) > 0:
             print("0. None of the below")
@@ -55,7 +62,7 @@ def PCATx_CORE():
     wrm.read_in_from_iterator(parser_iter(query['name'], url_list))
     if(len(wrm) > 0):
         wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
-    generate_HTML_output(wrm, wiki[4], resources, query['name'])
+    generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
 #        wrm.train_classifier()
 #        wrm.rank_by_relevance()
     
@@ -89,10 +96,12 @@ def basic_relevance_filter(document):
     return new_doc      
         
         
-def generate_HTML_output(wrm, table, dbresources, name):
-    html = '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n<title>{}</title>\n<meta charset="iso-8859-1">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<!--<link rel="stylesheet" href="../styles/layout.css" type="text/css">-->\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n</head>\n<body>\n<center>{}</center>\n'.format(name, table)
+def generate_HTML_output(wrm, table, sub_list, dbresources, name):
+    html = '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n<title>{}</title>\n<meta charset="iso-8859-1">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<!--<link rel="stylesheet" href="../styles/layout.css" type="text/css">-->\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n</head>\n<body>\n<center>{}</center>\n<h2>We found this list of subsidiaries:</h2>\n<ul>\n'.format(name, table)
+    for item in sub_list:
+        html+='<li>{}</li>\n'.format(item)
     for item in wrm:
-        html+='<div width="100%" style="display:block; clear:both">\n<iframe float: src="{}" style="width:49%; height:100%; min-height:600px; float:left; style:block"></iframe>\n<div style="width:49%; float:right; style:block">'.format(item['url'])
+        html+='</ul>\n\n<div width="100%" style="display:block; clear:both">\n<iframe float: src="{}" style="width:49%; height:100%; min-height:600px; float:left; style:block"></iframe>\n<div style="width:49%; float:right; style:block">'.format(item['url'])
         for sent in basic_relevance_filter(nltk.sent_tokenize(item['text'])):
             html+='\n<p>{}</p>\n'.format(sent)
         html+='\n</div>\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n\n<div width="100%" style="display:block; clear:both"></div>\n\n'
