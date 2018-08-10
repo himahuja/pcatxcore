@@ -4,16 +4,15 @@ Created on Fri Jul  6 14:10:12 2018
 
 @author: alex
 """
-import parser, pickle, difflib, nltk
+import parser, pickle, difflib, nltk, json, queue, re
 from webcrawlAll import crawlerWrapper
 from PCATParser import *
 import google_sub
 from knowledge_management.WebResourceManager import *
 from knowledge_management.ProfileManager import *
 from gensim import models
-import logging, re
 
-def PCATx_CORE():
+def PCATx_CORE_supervised():
     name = input("What company would you like to crawl for?   ")
     pm = ProfileManager()
     wiki = wikiParser(name)
@@ -50,15 +49,15 @@ def PCATx_CORE():
         url_list = pickle.load(handle)
     wrm = WebResourceManager()
     if foundInDatabase:
-        #list of tuples (link, text)
+        #list of tuples (text, link)
         if pm.get(name) != None:
             resources = pm.get_resources_by_company(pm.get(name))
         else:
             resources = pm.get_resources_by_company(pm.get(newName))
-        resources.append((wiki[3], str(wiki[0]) + str(wiki[1])))
+        resources.append((str(wiki[0]), wiki[3]))
     else:
         resources = []
-        resources.append((wiki[3], str(wiki[0])))
+        resources.append((str(wiki[0]), wiki[3]))
     wrm.read_in_from_iterator(parser_iter(query['name'], url_list))
     if(len(wrm) > 0):
         wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
@@ -66,27 +65,33 @@ def PCATx_CORE():
 #        wrm.train_classifier()
 #        wrm.rank_by_relevance()
     
+def PCATx_CORE_unsupervised(list_of_companies):
+    company_queue = queue.Queue()
+    
+    for company in list_of_companies:
+        company_queue.put(company)
+    
+    while not company_queue.empty():
+        name = company_queue.get()
+        pm = ProfileManager()
+        wiki = wikiParser(name)
+        query = { 'name' : name }
+        print("Currently web crawling: {}".format(name))
+        driver = google_sub.setDriver()
+        sub_list = google_sub.get_sub(name, driver)
+        for company in sub_list:
+            company_queue.put(company)
+        crawlerWrapper(query, "google", headless = True)
+        with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
+            url_list = pickle.load(handle)
+        wrm = WebResourceManager()
+        resources = []
+        wrm.read_in_from_iterator(parser_iter(query['name'], url_list))
+        if(len(wrm) > 0):
+            wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
+        generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
+    
 def basic_relevance_filter(document):
-#    rankings = []
-#    bad_phrases = ['about me', 'navigation', 'all rights reserved', 'learn more', 'privacy policy', 'terms of use', 'contact us', 'subscribe']
-#    good_phrases = ['produc', 'manufactur', 'chemical', 'hazard', 'activit']
-#    for sentence in document:
-#        count = 0
-#        for word in bad_phrases:
-#            if word in sentence:
-#                count-=1
-#        for word in good_phrases:
-#            if word in sentence:
-#                count+=1
-#        rankings.append((count, sentence))
-#    for i in range(1, len(rankings)):
-#        key = rankings[i][0]
-#        j = i-1
-#        while j >=0 and key < rankings[j][0] :
-#                rankings[j+1][0] = rankings[j][0]
-#                j -= 1
-#        rankings[j+1][0] = key
-#    return rankings
     new_doc = []
     for sentence in document:
         words = sentence.split()
@@ -97,26 +102,32 @@ def basic_relevance_filter(document):
         
         
 def generate_HTML_output(wrm, table, sub_list, dbresources, name):
-    html = '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n<title>{}</title>\n<meta charset="iso-8859-1">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<!--<link rel="stylesheet" href="../styles/layout.css" type="text/css">-->\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n</head>\n<body>\n<center>{}</center>\n<h2>We found this list of subsidiaries:</h2>\n<ul>\n'.format(name, table)
+    html = '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n<title>{}</title>\n<meta charset="iso-8859-1">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<!--<link rel="stylesheet" href="../styles/layout.css" type="text/css">-->\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n</head>\n<body>\n<div style="width:49%; float:left; style:block"><center>{}</center></div>\n<div style="width:49%; float:right; style:block">\n<center><h2>We found this list of subsidiaries:</h2>\n<ul>\n'.format(name, table)
     for item in sub_list:
-        html+='<li>{}</li>\n'.format(item)
+        html+='<a href="{}.html"><li>{}</li></a>\n'.format(item, item)
+    html+='</center>\n</ul>\n</div>'
     for item in wrm:
-        html+='</ul>\n\n<div width="100%" style="display:block; clear:both">\n<iframe float: src="{}" style="width:49%; height:100%; min-height:600px; float:left; style:block"></iframe>\n<div style="width:49%; float:right; style:block">'.format(item['url'])
+        html+='\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n<center><a href="{}"><h2>{}</h2></a></center>\n<div width="100%" style="display:block; clear:both"></div>\n\n\n<div style="width:49%; height:100%; min-height:600px; float:left; style:block">\n<iframe float: src="{}" style="width:100%; min-height:600px; style:block"></iframe>'.format(item['url'], item['url'], item['url'])
+        if item['id'][-3:] == 'pdf':
+            html+='\n\n<iframe float: src="../source/{}.pdf" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; float:right; style:block">'.format(item['id'])
+        else:
+            html+='\n\n<iframe float: src="../source/{}.html" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; overflow:auto; height:1200px; float:right; style:block">'.format(item['id'])
         for sent in basic_relevance_filter(nltk.sent_tokenize(item['text'])):
             html+='\n<p>{}</p>\n'.format(sent)
-        html+='\n</div>\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n\n<div width="100%" style="display:block; clear:both"></div>\n\n'
+        html+='</div>'
     for item in dbresources:
-        html+='<div width="100%" style="display:block; clear:both">\n<iframe float: src="../source/{}" style="width:49%; height:100%; min-height:600px; float:left; style:block"></iframe>\n<div style="width:49%; float:right; style:block">'.format(item[0])
-        for sent in basic_relevance_filter(nltk.sent_tokenize(item[1])):
+        html+='\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n<center><a href="{}"><h2>{}</h2></a></center>\n<div width="100%" style="display:block; clear:both"></div>\n\n\n<div style="width:49%; height:100%; min-height:600px; float:left; style:block">\n<iframe float: src="{}" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; overflow:auto; height:1200px; float:right; style:block">'.format(item[1], item[1], item[1])
+        for sent in basic_relevance_filter(nltk.sent_tokenize(item[0])):
             html+='\n<p>{}</p>\n'.format(sent)
-        html+='\n</div>\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n\n<div width="100%" style="display:block; clear:both"></div>\n\n'
+        html+='</div>'        
     html+='</body>\n</html>'
     file = open("data/wrm_html_outputs/{}.html".format(name), "w")
     file.write(html)
     file.close()
         
 def main():
-    PCATx_CORE()
+    company_list = json.loads(open("data/praedicat_data/target_companies_with_aliases.json").read())
+    PCATx_CORE_unsupervised(company_list)
     
 if __name__ == "__main__" :
     main()

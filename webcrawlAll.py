@@ -124,7 +124,7 @@ def search_sec10k(url, driver):
 #      ██ ██         ██        ██   ██ ██   ██ ██  ██  ██  ██      ██   ██
 # ███████ ███████    ██        ██████  ██   ██ ██   ████   ███████ ██   ██
 
-def setDriver():
+def setDriver(headless = False):
     if sys.platform == 'darwin':
         type_chromedriver = "chromedriver_darwin"
     elif sys.platform == 'linux':
@@ -133,7 +133,8 @@ def setDriver():
         type_chromedriver = "chromedriver_win32.exe"
     path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), type_chromedriver)
     options = Options()
-    # options.add_argument("--headless") # Runs Chrome in headless mode.
+    if headless:
+        options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
@@ -149,7 +150,7 @@ def setDriver():
     # ██      ██   ██ ██   ██ ██ ███ ██ ██      ██      ██   ██     ██ ███ ██ ██   ██ ██   ██ ██
     #  ██████ ██   ██ ██   ██  ███ ███  ███████ ███████ ██   ██      ███ ███  ██   ██ ██   ██ ██
 
-def crawlerWrapper(search_query, engine):
+def crawlerWrapper(search_query, engine, headless = False):
     """
         Takes in the query to search for on a portal
         Currently supported portals:
@@ -166,7 +167,7 @@ def crawlerWrapper(search_query, engine):
             Returns nothing
             Saves a pickle file with the name: search_query
     """
-    driver = setDriver()
+    driver = setDriver(headless)
 
     #  ██████   ██████   ██████   ██████  ██      ███████
     # ██       ██    ██ ██    ██ ██       ██      ██

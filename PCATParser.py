@@ -237,7 +237,7 @@ def wikiParser(company):
         page = wiki.page(title = company)
     except:
         print("Reading the wiki page, {} was not possible".format(company))
-        return (wiki_page, wiki_table)
+        return (wiki_page, wiki_table, "", "", "<ul></ul>")
     secs = page.sections
     for sec in secs:
         wiki_page[sec] = page.section(sec)

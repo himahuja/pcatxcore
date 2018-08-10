@@ -58,7 +58,7 @@ Along the same lines, the graph structure allows us to infer new facts through t
 
 #### Homophily
 
-Besides mathematical/computer science theorems such as transitivity, there are "softer" patterns that can be exploited in graph representations of data. Among them is homophily or autocorrelation, or the tendency of individuals to associate and bond with similar others. This is also knows as link-based clustering or community detection. This is helpful for us because we can cluster entities based on links and from there infer links based on the what is known about similar entities. Social media does this when they realize that you and 30 other people all like the same 10 bands, so the social media platform recommends a band to you that the other 30 people also all like.
+Besides mathematical/computer science theorems such as transitivity, there are "softer" patterns that can be exploited in graph representations of data. Among them is homophily or autocorrelation, or the tendency of individuals to associate and bond with others who are similar. This is also knows as link-based clustering or community detection. This is helpful for us because we can cluster entities based on links and from there infer links based on the what is known about similar entities. Social media does this when they realize that you and 30 other people all like the same 10 bands, so the social media platform recommends a band to you that the other 30 people also all like.
 
 #### Block Structures
 
