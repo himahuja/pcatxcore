@@ -492,6 +492,7 @@ class ProfileManager(object):
             file = open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w")
             file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
             file.close()
+        
 
 def divvy_up_da_thiccedgars(instances, num_edgars):
     mod = num_edgars % instances
@@ -523,6 +524,14 @@ def divvy_up_wikipedia(profile_manager, instances):
             wiki_lists[i].append(item['cik'])
     return wiki_lists
     
+def zip_for_stephen(profile_manager, instances, iam):
+    my_dict = {}
+    for item in profile_manager.__iter__(instances, iam):
+        my_dict[item['cik']] = item
+    file = open("../data/for_stephen/profiles_part{}".format(str(iam)), "w")
+    file.write(json.dumps(my_dict, sort_keys = True, indent = 4))
+    file.close()
+    
 def stem_and_lemmatize(wordlist):
     lmtzr = WordNetLemmatizer()
     ps = PorterStemmer()
@@ -536,7 +545,11 @@ def main():
 #    pm.generate_profiles()
 #    wiki_lists = divvy_up_wikipedia(pm,6)
 #    pm.parse_wikipedia(wiki_lists[5])
-    pm.write_EX21s_to_raw_text()
+    zip_for_stephen(pm, 5,0)
+    zip_for_stephen(pm, 5,1)
+    zip_for_stephen(pm, 5,2)
+    zip_for_stephen(pm, 5,3)
+    zip_for_stephen(pm, 5,4)
 #    
 if __name__ == "__main__" :
     main()

@@ -121,7 +121,7 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
             html+='\n<p>{}</p>\n'.format(sent)
         html+='</div>'        
     html+='</body>\n</html>'
-    file = open("data/wrm_html_outputs/{}.html".format(name), "w")
+    file = open("data/wrm_html_outputs/{}.html".format(re.sub('[^0-9A-Za-z-]+', '', name)), "w")
     file.write(html)
     file.close()
         
