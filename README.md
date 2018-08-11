@@ -127,3 +127,19 @@ Some of the helper modules are as follows:
 1. `search_google`: returns the search results from google for a particular query.
 
 1. `search_sec10k`: [*Deprecated*] searches the SEC websites for the 10-K based on CIK
+
+[hazard_to_company.py](/hazard_to_company.py) is a site crawler for NPIRS(http://npirspublic.ceris.purdue.edu/ppis/) that gets all companies that use certain ingredients the user is looking for.
+
+
+|Function | Input        | Processing           | Output  |
+|-----   | ------------- |:-------------:| -----:|
+|hazard_to_company(chemical,driver)    | ingredient name, chrome webdriver     | search NPIRS by entering ingredient name and get company names| a list of companies that use the ingredient |
+|setDriver()   |  None   | set chrome driver used to automatically crawl websites | driver|
+|get_comp_name(text)    |  an unfiltered string in html tags  | extract relevant content | a string of the exact company name
+|remove_null(comp_list)| a list of company names | remove null values | a clean list of company names|
+
+Usage:
+1. call `driver = setDriver()` to set chrome driver for crawling
+1. call `hazard_to_company(chemical, driver)` to get a list of companies
+
+
