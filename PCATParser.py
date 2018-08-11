@@ -66,39 +66,6 @@ def get_PDF_content(query_string, link, linkList=None, name=None):
         content = " ".join(content.replace("\xa0", " ").strip().split())
     return content
 
-def parser(query_string, linkList):
-    for link in linkList:
-        if link[-4:] != '.pdf':
-            try:
-                file_name = query_string+str(linkList.index(link)) + ".txt"
-                text_file = open(os.path.join("data/sentences", file_name), "w")
-                html_file = open(os.path.join("data/source", file_name+".html"), "w")
-                html = urllib.request.urlopen(link).read()
-                html_file.write(html.decode("utf-8", "ignore"))
-                text_list = sentence_filter(nltk.sent_tokenize(text_from_html(html)))
-                text_file = open(os.path.join("data/sentences", file_name), "w")
-                text_file.write(link + "\n")
-                for i in range(len(text_list)):
-                    text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
-                    text_file.write(text_list[i].strip() + "\n")
-                text_file.close()
-            except Exception as e:
-                print(link + " threw the following exception " + str(e))
-        else:
-            try:
-                content = get_PDF_content(query_string, link, linkList=linkList)
-                file_name = query_string+str(linkList.index(link))+".txt"
-                text_list = sentence_filter(nltk.sent_tokenize(content))
-                text_file = open(os.path.join("data/sentences", file_name), "w")
-                text_file.write(link + "\n")
-                for i in range(len(text_list)):
-                    text_list[i] = bytes(text_list[i], 'utf-8').decode('utf-8', 'ignore')
-                    text_file.write(text_list[i].strip() + "\n")
-                text_file.close()
-            except Exception as e:
-                print(link + " threw the following exception " + str(e))
-        print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
-
 def parse_single_page(link):
     if link[-4:] != '.pdf':
             try:
@@ -114,15 +81,18 @@ def parse_single_page(link):
 
 def parser_iter(query_string, linkList):
     for link in linkList:
+        print("...{:.2f}% done, processing link {}: {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link), link))
         doc = {'url' : link, 'query': query_string }
         if link[-4:] != '.pdf':
-            try:
-                html = urllib.request.urlopen(link).read()
-                doc['html'] = html
-                doc['text'] = bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore')
-                yield doc
-            except Exception as e:
-                print(link + " threw the following exception " + str(e))
+            #this website breaks urllib for some reason????
+            if link[:42] != "http://www.royalcaribbean.com/findacruise/":
+                try:
+                    html = urllib.request.urlopen(link).read()
+                    doc['html'] = html
+                    doc['text'] = bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore')
+                    yield doc
+                except Exception as e:
+                    print(link + " threw the following exception " + str(e))
         else:
             try:
                 content = get_PDF_content(query_string, link, linkList)
@@ -131,7 +101,7 @@ def parser_iter(query_string, linkList):
                 yield doc
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
-        print("...{:.2f}% done, processing link {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link)))
+        
 
 def contain(sent,word_list):
     for i in range(len(word_list)):

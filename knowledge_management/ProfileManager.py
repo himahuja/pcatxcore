@@ -16,6 +16,29 @@ from nltk.stem import PorterStemmer
 class ProfileManager(object):
     
     def __init__(self, rel_path=None):
+        """
+        Constructor
+    
+        Sets the **rel_path** variable and reads in various mappings including:
+        * CIK (Central Index Key) to name
+        * Name to CIK (Central Index Key)
+        * Name to (a list of) aliases
+        * NAICS (North American Industry Classification System) to description of classification
+        * SIC (Standard Industrial Classification) to description of Classification
+        * NAICS to SIC
+        * SIC to NAICS
+
+    
+        Parameters
+        ----------
+        rel_path : string
+            the relative path from the script to the parent folder of where your data will be housed. ProfileManager always assumes that data will be held in "data/profilemanager/data" and profiles will be held in "data/profilemanager/profiles" so this allows you to orient your ProfileManager instance to your data source.
+    
+        Returns
+        -------
+        None
+    
+        """
         self.rel_path = rel_path
         if rel_path == None:
             #identify the Profile
@@ -59,6 +82,23 @@ class ProfileManager(object):
             self.save_aliases()
         
     def __contains__(self, key):
+        """
+        Returns true if the instance contains the key
+    
+        Checks the list of CIK numbers, names, and aliases for matches.
+
+    
+        Parameters
+        ----------
+        key : string
+            can be a CIK (Central Index Key) code, name, or alias
+    
+        Returns
+        -------
+        bool
+            True if found, else False
+    
+        """
         if key in self.cik_name:
             return True
         elif key in self.name_cik:
@@ -70,6 +110,20 @@ class ProfileManager(object):
         return False
     
     def __getitem__(self, key):
+        """
+        Gets profile identified by the key
+  
+        Parameters
+        ----------
+        key : string
+            can be a CIK (Central Index Key) code, name, or alias
+    
+        Returns
+        -------
+        dict
+            A dictionary which is the profile if found, else None
+    
+        """
         key = key.lower()
         if key in self.cik_name:
             if self.rel_path == None:
@@ -92,7 +146,24 @@ class ProfileManager(object):
                             return json.loads(open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(self.name_cik[name_alias.keys()[i]])), "r").read())
                         # open name_cik[name_alias.keys()[i]]
         
-    def __iter__(self, instances=1, iam = 1):
+    def __iter__(self, instances=1, iam = 0):
+        """
+        An iterator function with the ability to be accessed by multiple instances at once in a safe way.
+
+    
+        Parameters
+        ----------
+        instances : int
+            the number of instances using the iterator (default = 1)
+        iam : int
+            the current instance's assignment [0-*instances*) (default = 0)
+    
+        Returns
+        -------
+        dict
+            A dictionary which is the profile if found, else None (Yields)
+    
+        """
         if instances == 1:
             for cik in self.cik_name:
                 yield self.get(cik)
@@ -102,17 +173,48 @@ class ProfileManager(object):
                     yield self.get(list(self.cik_name.keys())[i])
         
     def __len__(self):
+        '''
+        Returns the number of CIK (Central Index Key) codes in the instance.
+        
+        Returns
+        -------
+        int
+            number of CIK (Central Index Key) codes in the instance
+        '''
         return len(self.cik_name)
         
     def __repr__(self):
-        return json.dumps(self.cik_name, sort_keys = True, indent = 4)
+        '''
+        Returns a sorted and indented dictionary of CIK (Central Index Key) codes to names of the profiles contained.
+        
+        Returns
+        -------
+        string
+            a sorted and indented representation of the CIK (Central Index Key) to names map
+        '''
+        return str(json.dumps(self.cik_name, sort_keys = True, indent = 4))
         
     def __str__(self):
-        return json.dumps(self.cik_name, sort_keys = True, indent = 4)
+        '''
+        Returns a sorted and indented dictionary of CIK (Central Index Key) codes to names of the profiles contained.
+        
+        Returns
+        -------
+        string
+            a sorted and indented representation of the CIK (Central Index Key) to names map
+        '''
+        return str(json.dumps(self.cik_name, sort_keys = True, indent = 4))
     
     #def alias_to_cik(self, alias):
     
     def build_aliases(self):
+        '''
+        Builds an internal list of aliases from the contained items' names and aliases fields.
+        
+        Returns
+        -------
+        None
+        '''
         self.aliases = []
         for item in self:
             item['name'] = item['name'].lower()
@@ -125,48 +227,136 @@ class ProfileManager(object):
                 pass
     
     def cik_to_alias(self, cik):
+        """
+        Returns a list of aliases of the business entity identified by the CIK (Central Index Key) code.
+
+    
+        Parameters
+        ----------
+        cik : string
+            the CIK (Central Index Key) code of a business
+    
+        Returns
+        -------
+        list of strings
+            a list of aliases associated with the CIK code
+    
+        """
         return self.name_alias[self.cik_name[cik]]
         
     def cik_to_description(self, cik):
-        return self.naics_description[self.get(cik).naics] + self.sic_description[self.get(cik).sic]
+        """
+        Returns a list of business activities associated with the CIK code.
+        
+        Returns a list of descriptions of the industries of the NAICS (North American Industry Classification System) and SIC (Standard Industrial Classification) codes of the business entity identified by the CIK (Central Index Key) code.
+
+    
+        Parameters
+        ----------
+        cik : string
+            the CIK (Central Index Key) code of a business
+    
+        Returns
+        -------
+        list of strings
+            a list of descriptions of business activities associated with the CIK code
+    
+        """
+        return self.naics_description[self.get(cik)['naics']] + self.sic_description[self.get(cik)['sic']]
         
     def cik_to_naics(self, cik):
+        """
+        Returns the NAICS (North American Industry Classification System) codes of the business entity identified by the CIK (Central Index Key) code.
+    
+        Parameters
+        ----------
+        cik : string
+            the CIK (Central Index Key) code of a business
+    
+        Returns
+        -------
+        list of strings
+            the NAICS codes associated with the CIK code
+    
+        """
         return self.get(cik)['naics']
         
     def cik_to_name(self, cik):
+        """
+        Returns the name of the business entity identified by the CIK (Central Index Key) code.
+    
+        Parameters
+        ----------
+        cik : string
+            the CIK (Central Index Key) code of a business
+    
+        Returns
+        -------
+        string
+            the name associated with the CIK code
+    
+        """
         return self.cik_name[cik]
     
     def cik_to_sic(self, cik):
+        """
+        Returns the SIC (Standard Industrial Classification) codes of the business entity identified by the CIK (Central Index Key) code.
+    
+        Parameters
+        ----------
+        cik : string
+            the CIK (Central Index Key) code of a business
+    
+        Returns
+        -------
+        list of strings
+            the SIC codes associated with the CIK code
+    
+        """
         return self.get(cik)['sic']
 
     def clean_financial_statements(self):
+        """
+        Removes the text fields of SEC documents in the profiles.
+        
+        Removes the text field of all ten_k's, eight_k's, and EX21's which are either the empty string or None.
+    
+    
+        Returns
+        -------
+        None
+    
+        """
         for company in self:
             if company['ten_ks'] != None:
                 for elem in company['ten_ks']:
-                    try:
-                        del elem['txt']
-                    except:
-                        pass
                     if elem['text'] == "" or elem['text'] == None:
                         del elem['text']
             if company['eight_ks'] != None:
                 for elem in company['eight_ks']:
-                    try:
-                        del elem['txt']
-                    except:
-                        pass
                     if elem['text'] == "" or elem['text'] == None:
                         del elem['text']
             if company['EX21S'] != None:
                 for elem in company['EX21s']:
-                    try:
-                        del elem['txt']
-                    except:
-                        pass
                     if elem['text'] == "" or elem['text'] == None:
                         del elem['text']
                     
     def generate_profiles(self):
+        """
+        Populates the Profile Manager with profiles.
+        
+        Currently the code uses two additional JSON files to generate profiles:
+        * a map from CIK (Central Index Key) to SIC (Standard Industrial Classification)
+        * a map from SIC (Standard Industrial Classification) to NAICS (North American Industrial Classification System)
+
+        The code uses the various mappings to aggregate the information into one profile for each business entity.
+    
+    
+        Returns
+        -------
+        None
+    
+        """
         if self.rel_path == None:
             cik_to_sic = json.loads(open("data/profilemanager/data/cik_to_sic.json", "r").read())
             sic_to_naics = json.loads(open("data/profilemanager/data/sic_to_naics.json", "r").read())
@@ -187,6 +377,20 @@ class ProfileManager(object):
             self.update_profile(this)
         
     def get(self, key):
+        """
+        Gets profile identified by the key
+  
+        Parameters
+        ----------
+        key : string
+            can be a CIK (Central Index Key) code, name, or alias
+    
+        Returns
+        -------
+        dict
+            A dictionary which is the profile if found, else None
+    
+        """
         if key in self.cik_name:
             if self.rel_path == None:
                 return json.loads(open("data/profilemanager/profiles/{}.json".format(key), "r").read())
@@ -209,6 +413,15 @@ class ProfileManager(object):
                         # open name_cik[name_alias.keys()[i]]
     
     def get_aliases(self):
+        """
+        A getter function for the the list of aliases
+
+        Returns
+        -------
+        list of strings
+            a list of names and aliases of entities in the instance
+    
+        """
         return self.aliases
         
     def get_docs_by_sentence(self, instances, iam):

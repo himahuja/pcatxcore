@@ -127,6 +127,7 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
         
 def main():
     company_list = json.loads(open("data/praedicat_data/target_companies_with_aliases.json").read())
+    company_list.reverse()
     PCATx_CORE_unsupervised(company_list)
     
 if __name__ == "__main__" :
