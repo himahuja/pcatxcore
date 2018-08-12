@@ -3,10 +3,35 @@
 
 from bs4 import BeautifulSoup
 from bs4.element import Comment
-import urllib.request, os, webbrowser, PyPDF2, nltk, pdfkit, re, wikipedia, json, sys, unicodedata, requests
+import urllib.request, os, webbrowser, PyPDF2, nltk, pdfkit, re, wikipedia, json, sys, unicodedata, requests, time, signal
 import wikipedia as wiki
 sys.path.append
 from knowledge_management.ProfileManager import *
+
+class Timeout(Exception): 
+    pass 
+
+def try_one(func, link, query_string, t):
+    def timeout_handler(signum, frame):
+        raise Timeout()
+
+    old_handler = signal.signal(signal.SIGALRM, timeout_handler) 
+    signal.alarm(t) # triger alarm in 3 seconds
+
+    try: 
+        t1=time.clock()
+        func(link, query_string=query_string)
+        t2=time.clock()
+
+    except Timeout:
+        print('{}({}) timed out after {} seconds'.format(func.__name__,link,t))
+        return None
+    finally:
+        signal.signal(signal.SIGALRM, old_handler) 
+
+    signal.alarm(0)
+    print(str(t2-t1))
+    return None
 
 def tag_visible(element):
     """
@@ -66,7 +91,7 @@ def get_PDF_content(query_string, link, linkList=None, name=None):
         content = " ".join(content.replace("\xa0", " ").strip().split())
     return content
 
-def parse_single_page(link):
+def parse_single_page(link, query_string = "test"):
     if link[-4:] != '.pdf':
             try:
                 html = urllib.request.urlopen(link).read()
@@ -75,7 +100,7 @@ def parse_single_page(link):
                 print(link + " threw the following exception " + str(e))
     else:
             try:
-                return get_PDF_content("test", link, name=link)
+                return get_PDF_content(query_string, link, name=link)
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
 
@@ -83,24 +108,7 @@ def parser_iter(query_string, linkList):
     for link in linkList:
         print("...{:.2f}% done, processing link {}: {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link), link))
         doc = {'url' : link, 'query': query_string }
-        if link[-4:] != '.pdf':
-            #this website breaks urllib for some reason????
-            if link[:42] != "http://www.royalcaribbean.com/findacruise/":
-                try:
-                    html = urllib.request.urlopen(link).read()
-                    doc['html'] = html
-                    doc['text'] = bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore')
-                    yield doc
-                except Exception as e:
-                    print(link + " threw the following exception " + str(e))
-        else:
-            try:
-                content = get_PDF_content(query_string, link, linkList)
-                doc['pdf'] = urllib.request.urlopen(link).read()
-                doc['text'] = content
-                yield doc
-            except Exception as e:
-                print(link + " threw the following exception " + str(e))
+        try_one(parse_single_page, link, query_string, 60)
         
 
 def contain(sent,word_list):
