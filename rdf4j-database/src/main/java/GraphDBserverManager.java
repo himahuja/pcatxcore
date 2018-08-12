@@ -1,15 +1,18 @@
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Scanner;
+import java.util.zip.GZIPInputStream;
 
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
+import org.eclipse.rdf4j.model.URI;
 import org.eclipse.rdf4j.model.impl.TreeModel;
+import org.eclipse.rdf4j.model.impl.URIImpl;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.repository.Repository;
@@ -20,12 +23,13 @@ import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryProvider;
 import org.eclipse.rdf4j.repository.util.RDFInserter;
 import org.eclipse.rdf4j.repository.util.RDFLoader;
-import org.eclipse.rdf4j.rio.DatatypeHandler;
+import org.eclipse.rdf4j.rio.ParserConfig;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParser;
 import org.eclipse.rdf4j.rio.Rio;
-import org.eclipse.rdf4j.rio.RioSetting;
+import org.eclipse.rdf4j.rio.datatypes.DBPediaDatatypeHandler;
 import org.eclipse.rdf4j.rio.helpers.AbstractRDFHandler;
+import org.eclipse.rdf4j.rio.helpers.BasicParserSettings;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +51,31 @@ public class GraphDBserverManager {
 	RepositoryConnection repositoryConnection;
 	
 	// RDF Data Handlers
-	private static final RioSetting<List<DatatypeHandler>> allDatatypeHandling[] = new RioSetting<List<DatatypeHandler>> {
-		BasicParser
-	}
-    private static final RDFParser.DatatypeHandling allDatatypeHandling[] = new RDFParser.DatatypeHandling[] {
-            RDFParser.DatatypeHandling.IGNORE, RDFParser.DatatypeHandling.NORMALIZE, RDFParser.DatatypeHandling.VERIFY
-    };
+//	private static final List<RioSetting<List<DatatypeHandler>>> allDatatypeHandling = new List<RioSetting<>> ();
+
+//	
+	DBPediaDatatypeHandler dbpedia = new DBPediaDatatypeHandler();
+	
+//	Rio.DataTypeHandler
+//	@SuppressWarnings("deprecation")
+//	private static final RDFParser.DatatypeHandling allDatatypeHandling[] = new RDFParser.DatatypeHandling[] {
+//            RDFParser.DatatypeHandling.IGNORE, RDFParser.DatatypeHandling.NORMALIZE, RDFParser.DatatypeHandling.VERIFY,
+//            
+//    };
+	
+	///////////////////////////////////////////
+	/////////     Datatype Handling    ////////
+	///////////////////////////////////////////
+	
+//	private static 
+	
+	private static RDFParser.DatatypeHandling stringToDatatypeHandling(String strHandling) {
+        for (RDFParser.DatatypeHandling handling : allDatatypeHandling) {
+            if (handling.name().equalsIgnoreCase(strHandling))
+                return handling;
+        }
+        throw new IllegalArgumentException("Datatype handling strategy for parsing '" + strHandling + "' is not recognised");
+    }
 	
 	///////////////////////////////////////////
 	////   INITIALIZING THE REPOSITORY     ////
@@ -65,7 +88,8 @@ public class GraphDBserverManager {
 		}
 		catch (Throwable t) {
 			logger.error(WTF_MARKER, t.getMessage(), t);
-		}	
+			System.out.println("Failed to establish the connection");
+		}
 	}
 	
 	private void initialize_repository_manager(String repoID) {
@@ -175,23 +199,89 @@ public class GraphDBserverManager {
     	
     }
 	
-	public void add_data_to_rdf_nt(String filename) {
-		try {
-			  // start an explicit transaction to avoid each individual statement being committed
-			  this.repositoryConnection.begin();
-//			  String fileName = "/path/to/example.rdf";
-			  RDFParser parser = Rio.createParser(Rio.getParserFormatForFileName(filename).orElse(null));
-			  // add our own custom RDFHandler to the parser. This handler takes care of adding
-			  // triples to our repository and doing intermittent commits
-			  parser.setRDFHandler(new ChunkCommitter(this.repositoryConnection));
-			  File file = new File(filename);
-			  FileInputStream is = new FileInputStream(file);
-			  parser.parse(is, "file://" + file.getCanonicalPath());
-			  this.repositoryConnection.commit();
-			}
-		catch(Throwable t) {
-			logger.error(WTF_MARKER, t.getMessage(), t);
-		}		
+	public long loadFileChunked(File file) {
+		System.out.print("Loading " + file.getName() + " ");
+
+        RDFFormat format = Rio.getParserFormatForFileName(file.getName()).orElse(null);
+
+        if(format == null) {
+            System.out.println();
+            System.out.println("Unknown RDF format for file: " + file);
+            return 0;
+        }
+
+        URI dumyBaseUrl = new URIImpl(file.toURI().toString());
+
+        URI context = null;
+        if(!format.equals(RDFFormat.NQUADS) && !format.equals(RDFFormat.TRIG) && ! format.equals(RDFFormat.TRIX)) {
+            String contextParam = null;//parameters.get(PARAM_CONTEXT);
+
+            if (contextParam == null) {
+                context = new URIImpl(file.toURI().toString());
+            } else {
+                if (contextParam.length() > 0) {
+                    context = new URIImpl(contextParam);
+                }
+            }
+        }
+
+        InputStream reader = null;
+        try {
+            if(file.getName().endsWith("gz")) {
+                reader = new GZIPInputStream(new BufferedInputStream(new FileInputStream(file), 256 * 1024));
+            }
+            else {
+                reader = new BufferedInputStream(new FileInputStream(file), 256 * 1024);
+            }
+
+            boolean verifyData = true;//isTrue(PARAM_VERIFY);
+            boolean stopAtFirstError = true;//isTrue(PARAM_STOP_ON_ERROR);
+            boolean preserveBnodeIds = true;//isTrue(PARAM_PRESERVE_BNODES);
+            RDFParser.DatatypeHandling datatypeHandling = stringToDatatypeHandling( Parameters.get(Parameters.PARAM_DATATYPE_HANDLING));
+            long chunkSize = Long.parseLong(Parameters.get(Parameters.PARAM_CHUNK_SIZE));
+
+//            ParserConfig config = new ParserConfig(verifyData, stopAtFirstError, preserveBnodeIds, datatypeHandling);
+            ParserConfig config = new ParserConfig();
+            config.addNonFatalError(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES);
+            config.addNonFatalError(BasicParserSettings.VERIFY_DATATYPE_VALUES);
+            config.addNonFatalError(nextNonFatalError)
+            
+            
+//            		verifyData, stopAtFirstError, preserveBnodeIds, datatypeHandling);
+            // set the parser configuration for our connection
+            repositoryConnection.setParserConfig(config);
+            RDFParser parser = Rio.createParser(format);
+
+            // add our own custom RDFHandler to the parser. This handler takes care of adding
+            // triples to our repository and doing intermittent commits
+            ChunkCommitter handler = new ChunkCommitter(this.repositoryConnection, context, chunkSize);
+            parser.setRDFHandler(handler);
+            parser.parse(reader, context == null ? dumyBaseUrl.toString() : context.toString());
+            this.repositoryConnection.commit();
+            long statementsLoaded = handler.getStatementCount();
+            System.out.println( " " + statementsLoaded + " statements");
+            return statementsLoaded;
+        } catch (Throwable t) {
+            repositoryConnection.rollback();
+            logger.error(WTF_MARKER, t.getMessage(), t);
+            return 0;
+        }
+//		try {
+////			  // start an explicit transaction to avoid each individual statement being committed
+////			  this.repositoryConnection.begin();
+//////			  String fileName = "/path/to/example.rdf";
+////			  RDFParser parser = Rio.createParser(Rio.getParserFormatForFileName(filename).orElse(null));
+////			  // add our own custom RDFHandler to the parser. This handler takes care of adding
+////			  // triples to our repository and doing intermittent commits
+////			  parser.setRDFHandler(new ChunkCommitter(this.repositoryConnection));
+////			  File file = new File(filename);
+////			  FileInputStream is = new FileInputStream(file);
+////			  parser.parse(is, "file://" + file.getCanonicalPath());
+////			  this.repositoryConnection.commit();
+//			}
+//		catch(Throwable t) {
+//			logger.error(WTF_MARKER, t.getMessage(), t);
+//		}		
 	}
 	
 	///////////////////////////////////////
@@ -243,6 +333,7 @@ public class GraphDBserverManager {
 								  +"2. Add a directory with RDF Files. (Zipped Files)\n"
 								  +"3. Query the RDF File.\n"
 								  +"4. Add data using chunker.\n"
+								  +"5. Handle DBPedia database.\n"
 								  +"9. Adios amigo?\n"
 								  + "Enter a number: ");
 				int choice = reader.nextInt();
@@ -263,8 +354,12 @@ public class GraphDBserverManager {
 					pcatrdf.loadRDFdirectory(dir);
 					break;
 				case 4:
-					
-					pcatrdf.add_data_to_rdf_nt(filename);
+					File file = new File("path/to/File");
+					pcatrdf.loadFileChunked(file);
+					break;
+				case 5:
+					File file = new File("path/to/DbpediaFile");
+					pcatrdf.loadFileChunkedDBPedia(file);
 					break;
 				case 9:
 					System.out.println("Initiating exit now");
@@ -277,7 +372,6 @@ public class GraphDBserverManager {
 			
 		} 
 		catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally {
