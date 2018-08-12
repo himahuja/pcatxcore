@@ -17,10 +17,11 @@ def try_one(func, link, query_string, t):
 
     old_handler = signal.signal(signal.SIGALRM, timeout_handler) 
     signal.alarm(t) # triger alarm in 3 seconds
+    parsed_page = None
 
     try: 
         t1=time.clock()
-        func(link, query_string=query_string)
+        parsed_page = func(link, query_string=query_string)
         t2=time.clock()
 
     except Timeout:
@@ -30,8 +31,7 @@ def try_one(func, link, query_string, t):
         signal.signal(signal.SIGALRM, old_handler) 
 
     signal.alarm(0)
-    print(str(t2-t1))
-    return None
+    return parsed_page
 
 def tag_visible(element):
     """
@@ -95,12 +95,13 @@ def parse_single_page(link, query_string = "test"):
     if link[-4:] != '.pdf':
             try:
                 html = urllib.request.urlopen(link).read()
-                return bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore')
+                return (html, bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore'))
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
     else:
             try:
-                return get_PDF_content(query_string, link, name=link)
+                html = urllib.request.urlopen(link).read()
+                return (html, get_PDF_content(query_string, link, name=link))
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
 
@@ -108,8 +109,15 @@ def parser_iter(query_string, linkList):
     for link in linkList:
         print("...{:.2f}% done, processing link {}: {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link), link))
         doc = {'url' : link, 'query': query_string }
-        try_one(parse_single_page, link, query_string, 60)
-        
+        parsed_page = try_one(parse_single_page, link, query_string, 60)
+        if parsed_page != None:
+            if link[-4:] != '.pdf':
+                doc['html'] = parsed_page[0]
+                doc['text'] = parsed_page[1]
+            else:
+                doc['pdf'] = parsed_page[0]
+                doc['text'] = parsed_page[1]
+            yield doc
 
 def contain(sent,word_list):
     for i in range(len(word_list)):
