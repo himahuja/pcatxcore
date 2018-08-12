@@ -8,7 +8,7 @@ Created on Tue Aug  7 14:07:32 2018
 
 import time
 from selenium import webdriver
-import pickle
+import pickle, os, sys
 from selenium.webdriver.chrome.options import Options
 
 def setDriver():
@@ -20,7 +20,7 @@ def setDriver():
         type_chromedriver = "chromedriver_win32.exe"
     path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), type_chromedriver)
     options = Options()
-    options.add_argument("--headless") # Runs Chrome in headless mode.
+    # options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
@@ -41,8 +41,8 @@ def get_comp_name(text):
             name += char
         if char == '\n':
             start = True
-            count +=1     
-            
+            count +=1
+
 def remove_null(comp_list):
     for comp in comp_list:
         if comp == '':
@@ -53,13 +53,13 @@ def hazard_to_company(chemical,driver):
     try:
         driver.get('http://npirspublic.ceris.purdue.edu/ppis/')
         driver.find_element_by_xpath("//input[@id='ContentPlaceHolder1_active']").click()
-    
-        driver.find_element_by_xpath("//input[@class='inputbox nonepa indentLeft' and @id='ContentPlaceHolder1_TextBoxInput']").send_keys(chemical)
-    
+
+        driver.find_element_by_xpath("//input[@id='ContentPlaceHolder1_TextBoxInput2']").send_keys(chemical)
+
         driver.find_element_by_xpath("//input[@type='submit']").click()
         company = driver.find_element_by_xpath("//input[@type='submit' and @value='Display Companies']")
         chem_info = {}
-    
+
         company.click()
         pc_code = driver.find_element_by_xpath("//span[@style='color:Black;font-weight:bold;']").text
         chem_name = driver.find_element_by_xpath("//span[@style='color:black;font-weight:bold']").text
@@ -78,11 +78,10 @@ def hazard_to_company(chemical,driver):
     except:
         print('Unable to find companies for the hazard')
         return []
-    
+
 if __name__ == "__main__":
-    # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl 
+    # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl
     name = input("Please enter a hazard name: ")
     driver = setDriver()
     comp_list = hazard_to_company(name, driver)
     print(comp_list)
-    
