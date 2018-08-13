@@ -574,25 +574,25 @@ def main(part_number):
     # search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
     # search_query['name'] = 'dow-products'
     # crawlerWrapper(search_query, 'sitespecific')
-    
+
     """ Using the TRI for a facility report"""
     # search_query['tri_id'] = '88252JL3GS115SI'
     # crawlerWrapper(search_query, 'tri')
 
     """ Using the google for subsidiaries"""
     # search_query['name'] = 'samsung'
-    # crawlerWrapper(search_query, 'google-subs')    
-    
+    # crawlerWrapper(search_query, 'google-subs')
+
     """ using the cik to get the E-21 of the company / subsidary structure, ultimate parent [top node] """
 
     # """ Mergers and acquisition """
     # search_query['name'] = "3M Subsidaries"
     # crawlerWrapper(search_query, 'google-subs')
-    search_query['part'] = part_number
-    # starting_point = 1000
-    search_query['starting_point'] = 1000 * (search_query['part'])
-    search_query['ending_point'] = search_query['starting_point'] + 1999
-    crawlerWrapper(search_query, 'everything-all')
+    # search_query['part'] = part_number
+    # # starting_point = 1000
+    # search_query['starting_point'] = 1000 * (search_query['part'])
+    # search_query['ending_point'] = search_query['starting_point'] + 1999
+    # crawlerWrapper(search_query, 'everything-all')
 if __name__ == "__main__":
-    part_number = int(sys.argv[1])
-    main(part_number)
+    # part_number = int(sys.argv[1])
+    # main(part_number)
