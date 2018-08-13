@@ -20,14 +20,37 @@ class WebResourceManager(object):
         #read in the file
         self.rel_path = rel_path
         self.url_to_uuid = {}
-        if rel_path == None:
-            self.classifier = Doc2Vec.load("data/doc2vec_model")
+#        if rel_path == None:
+#            self.classifier = Doc2Vec.load("data/doc2vec_model")
+#        else:
+#            self.classifier = Doc2Vec.load(os.path.join(self.rel_path, "data/doc2vec_model"))
+    
+
+    def __iter__(self, instances=1, iam = 0):
+        """
+        An iterator function with the ability to be accessed by multiple instances at once in a safe way.
+
+    
+        Parameters
+        ----------
+        instances : int
+            the number of instances using the iterator (default = 1)
+        iam : int
+            the current instance's assignment [0-*instances*) (default = 0)
+    
+        Returns
+        -------
+        dict
+            A dictionary which is the profile if found, else None (Yields)
+    
+        """
+        if instances == 1:
+            for elem in self.url_to_uuid.values():
+                yield self.get(elem)
         else:
-            self.classifier = Doc2Vec.load(os.path.join(self.rel_path, "data/doc2vec_model"))
-        
-    def __iter__(self):
-        for elem in self.url_to_uuid.values():
-            yield self.get(elem)
+            for i in range(len(self.url_to_uuid.values())):
+                if i % instances == iam:
+                    yield self.get(list(self.url_to_uuid.values().keys())[i])
         
     #get the file with the UUID
     def __getitem__(self, key):
@@ -61,8 +84,9 @@ class WebResourceManager(object):
             else:
                 file = open(os.path.join(self.rel_path, "data/docs/{}.json").format(key))
             return json.loads(file.read())
-        except:
-            pass
+        except Exception as e:
+            print(self.rel_path)
+            print("Error while getting {}: {}".format(key, str(e)))
         
     def get_corpus(self, process_all=False):
         corpus_list = []
@@ -109,6 +133,15 @@ class WebResourceManager(object):
         print("...100.00% done, processing document {} of {}".format(len(self),len(self)))
         return corpus_list
         
+    def get_docs_by_sentence(self, instances=1, iam=0):
+        for item in self.__iter__(instances=1, iam=0):
+            try:
+                sent_list = nltk.sent_tokenize(item['text'])
+                for i in range(len(sent_list)):
+                    yield (sent_list[i], str(item['id'] + "_" + str(i)))
+            except Exception as e:
+                print("{} threw the following exception while yielding text: {}".format(item['id'], str(e)))
+        
     def get_relevance_score(self, document):
         pass
     
@@ -142,11 +175,27 @@ class WebResourceManager(object):
             pass
         
     def rank_by_relevance(self):
+        model = Doc2Vec.load("../data/doc2vec_model")
         for item in self:
-            item['relevance_score'] = self.get_relevance_score(item['text'])
-            file = open(os.path.join("data/docs", item['id']+".json"), "w")
-            file.write(json.dumps(item, sort_keys=True, indent=4))
-            file.close()
+            sent_list = nltk.sent_tokenize(item['text'])
+            doc_tags = []
+            tag2sent = {}
+            tag2vec = {}
+            for i in range(len(sent_list)):
+                doc_tags.append(str(item['id'] + "_" + str(i)))
+                tag2sent[item['id'] + "_" + str(i)] = i
+                tag2vec[item['id'] + "_" + str(i)] = TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list(str(str(item['id'] + "_" + str(i)))))
+            model.train(list(tag2vec.values()), total_examples=model.corpus_count, epochs=model.iter)
+            tuples = []
+            for doc_vec in doc_tags:
+                tuples.append((model.docvecs.similarity('bad',doc_vec), tag2vec[doc_vec]))
+            mergeSortTuples(tuples)
+            temp_text = ""
+            for i in range(len(doc_tags)//2):
+                temp_text+=sent_list[tag2sent[vec]] + "\n"
+            item['classifier'] = temp_text
+            self.update_profile(item)
+            
     
     #DOES NOT USE REL_PATH
     def read_in_from_directory(self, directory):
@@ -198,23 +247,57 @@ class WebResourceManager(object):
 #    def train_classifier(self):
 #        self.classifier.fit_transform(self.get_texts())
 
+    def update_profile(self, item):
+        if self.rel_path == None:
+            file = open("data/docs/{}.json".format(item['id']), "w")
+            file.write(json.dumps(item, sort_keys = True, indent = 4))
+            file.close()
+        else:
+            file = open(os.path.join(self.rel_path, "data/docs/{}.json".format(item['id'])), "w")
+            file.write(json.dumps(item, sort_keys = True, indent = 4)) 
+            file.close()
+
+def convert_to_corpus(doc):
+    ps = PorterStemmer()  
+    lmtzr = WordNetLemmatizer()
+    text = re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", doc.lower())).splitlines()
+    doc_list = []
+    for line in text:
+        words = line.split()
+        for word in words:
+            doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
+    return doc_list
             
-def insertionSort(arr):
- 
-    # Traverse through 1 to len(arr)
-    for i in range(1, len(arr)):
- 
-        key = arr[i]['relevance_score']
- 
-        # Move elements of arr[0..i-1], that are
-        # greater than key, to one position ahead
-        # of their current position
-        j = i-1
-        while j >=0 and key < arr[j]['relevance_score'] :
-                arr[j+1]['relevance_score'] = arr[j]['relevance_score']
-                j -= 1
-        arr[j+1]['relevance_score'] = key
-    return arr
+def mergeSortTuples(alist):
+    if len(alist)>1:
+        mid = len(alist)//2
+        lefthalf = alist[:mid]
+        righthalf = alist[mid:]
+
+        mergeSort(lefthalf)
+        mergeSort(righthalf)
+
+        i=0
+        j=0
+        k=0
+        while i < len(lefthalf) and j < len(righthalf):
+            if lefthalf[i][0] < righthalf[j][0]:
+                alist[k]=lefthalf[i]
+                i=i+1
+            else:
+                alist[k]=righthalf[j]
+                j=j+1
+            k=k+1
+
+        while i < len(lefthalf):
+            alist[k]=lefthalf[i]
+            i=i+1
+            k=k+1
+
+        while j < len(righthalf):
+            alist[k]=righthalf[j]
+            j=j+1
+            k=k+1
             
 def main():
     with open("../kpm/data/articles.txt") as f:

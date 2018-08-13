@@ -107,16 +107,16 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
         html+='<a href="{}.html"><li>{}</li></a>\n'.format(item, item)
     html+='</center>\n</ul>\n</div>'
     for item in wrm:
-        html+='\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n<center><a href="{}"><h2>{}</h2></a></center>\n<div width="100%" style="display:block; clear:both"></div>\n\n\n<div style="width:49%; height:100%; min-height:600px; float:left; style:block">\n<iframe float: src="{}" style="width:100%; min-height:600px; style:block"></iframe>'.format(item['url'], item['url'], item['url'])
+        html+='\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n<center><a href="{}"><h2>{}</h2></a></center>\n<div width="100%" style="display:block; clear:both"></div>\n\n\n<div style="width:49%; height:100%; float:left; min-height:600px; style:block">\n<iframe src="{}" style="width:100%; min-height:600px; style:block"></iframe>'.format(item['url'], item['url'], item['url'])
         if item['id'][-3:] == 'pdf':
-            html+='\n\n<iframe float: src="../source/{}.pdf" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; float:right; style:block">'.format(item['id'])
+            html+='\n\n<iframe src="../source/{}.pdf" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; overflow:auto; height:1200px; float:right; style:block">'.format(item['id'])
         else:
-            html+='\n\n<iframe float: src="../source/{}.html" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; overflow:auto; height:1200px; float:right; style:block">'.format(item['id'])
+            html+='\n\n<iframe src="../source/{}.html" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; overflow:auto; height:1200px; float:right; style:block">'.format(item['id'])
         for sent in basic_relevance_filter(nltk.sent_tokenize(item['text'])):
             html+='\n<p>{}</p>\n'.format(sent)
         html+='</div>'
     for item in dbresources:
-        html+='\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n<center><a href="{}"><h2>{}</h2></a></center>\n<div width="100%" style="display:block; clear:both"></div>\n\n\n<div style="width:49%; height:100%; min-height:600px; float:left; style:block">\n<iframe float: src="{}" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; overflow:auto; height:1200px; float:right; style:block">'.format(item[1], item[1], item[1])
+        html+='\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n<center><a href="{}"><h2>{}</h2></a></center>\n<div width="100%" style="display:block; clear:both"></div>\n\n\n<div style="width:49%; height:100%; min-height:600px; float:left; style:block">\n<iframe src="{}" style="width:100%; min-height:600px; style:block"></iframe>\n</div>\n<div style="width:49%; overflow:auto; height:1200px; float:right; style:block">'.format(item[1], item[1], item[1])
         for sent in basic_relevance_filter(nltk.sent_tokenize(item[0])):
             html+='\n<p>{}</p>\n'.format(sent)
         html+='</div>'        
@@ -126,9 +126,16 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
     file.close()
         
 def main():
+    instances, iam = 4, 0
     company_list = json.loads(open("data/praedicat_data/target_companies_with_aliases.json").read())
-    company_list.reverse()
-    PCATx_CORE_unsupervised(company_list)
+    my_list = []
+    for i in range(len(company_list)):
+        if i % instances == iam:
+            my_list.append(company_list[i])
+    for i in range(len(company_list)):
+        if i % instances != iam:
+            my_list.append(company_list[i])
+    PCATx_CORE_unsupervised(my_list)
     
 if __name__ == "__main__" :
     main()
