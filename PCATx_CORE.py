@@ -81,7 +81,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
         sub_list = google_sub.get_sub(name, driver)
         for company in sub_list:
             company_queue.put(company)
-        crawlerWrapper(query, "google", headless = True)
+        crawlerWrapper(query, "google", headless = False)
         with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
             url_list = pickle.load(handle)
         wrm = WebResourceManager()
@@ -126,16 +126,8 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
     file.close()
         
 def main():
-    instances, iam = 4, 0
     company_list = json.loads(open("data/praedicat_data/target_companies_with_aliases.json").read())
-    my_list = []
-    for i in range(len(company_list)):
-        if i % instances == iam:
-            my_list.append(company_list[i])
-    for i in range(len(company_list)):
-        if i % instances != iam:
-            my_list.append(company_list[i])
-    PCATx_CORE_unsupervised(my_list)
+    PCATx_CORE_unsupervised(company_list)
     
 if __name__ == "__main__" :
     main()

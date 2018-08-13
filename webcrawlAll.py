@@ -69,8 +69,8 @@ def search_google(query, driver, number_of_pages):
         try:
             next_page = driver.find_element_by_css_selector('a#pnnext.pn')
             next_page.click()
-        except:
-            print("There are no more pages to parse.")
+        except Exception as e:
+            print("There are no more pages to parse. {}".format(str(e)))
             break
     return link_href
 
@@ -118,7 +118,7 @@ def search_sec10k(url, driver):
             break
     return link_href
 
-# ███████ ███████ ████████     ██████  ██████  z██ ██    ██ ███████ ██████
+# ███████ ███████ ████████     ██████  ██████  ██ ██    ██ ███████ ██████
 # ██      ██         ██        ██   ██ ██   ██ ██ ██    ██ ██      ██   ██
 # ███████ █████      ██        ██   ██ ██████  ██ ██    ██ █████   ██████
 #      ██ ██         ██        ██   ██ ██   ██ ██  ██  ██  ██      ██   ██
