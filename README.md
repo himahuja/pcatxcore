@@ -101,6 +101,7 @@ It can
 
 ### Web Crawler
 ---------------
+IMPORTANT NOTE: All web crawlers are subject to deprecation once a website is updated
 
 <div align="center">
   <img alt="Diagram of PCATx Core's Web Crawler" src="/img/WebCrawler.jpg">
@@ -142,4 +143,47 @@ Usage:
 1. call `driver = setDriver()` to set chrome driver for crawling
 1. call `hazard_to_company(chemical, driver)` to get a list of companies
 
+[google_sub_all_level.py](/google_sub_all_level.py) is a google crawler to find subsidiaries directly returned by google for a search query "COMPANY_NAME+subsidiaries". 
 
+
+|Function | Input        | Processing           | Output  |
+|-----   | ------------- |:-------------:| -----:|
+|get_sub_list(company, driver)    | company name, chrome webdriver     | search "COMPANY_NAME+subsidiaries" on google| a list of subsidiaries that is directly returned by google on the top|
+|get_sub_dict(sub, sub_list)    |  a company name, a list of subsidiaries found for that company  | build a dictionary that maps a company name to its subsidiaries | a dictionary of company name to a list of subsidiaries|
+|get_list_of_dict(comp_name,driver)| company name, chrome webdriver | go one level down in subsidiary list and find sub-subsidiaries | a mixed list of subsidiaries together with dictionaries of sub-subsidiaries once found for a subsidiary|
+|all_level_down(list_of_dict)    |  a mixed list of strings together with dictionaries  | go all level down to find subsidiaries | a mixed list of subsidiaries together with dictionaries of all-level subsidiaries once found for a subsidiary|
+
+Usage:
+1. call `driver = setDriver()` to set chrome driver for crawling
+1. call `sub_list = get_list_of_dict(comp_name,driver)` to get a one-level-down list of subsidiaries
+1. call `all_level_down(sub_list)` to get all-level-down list of subsidiaries
+
+[tri_facility_info.py](/tri_facility_info.py) is a site crawler for TRI Facility(https://www.epa.gov/enviro/tri-search) that gets all facility information with a tri id the user provides
+
+
+|Function | Input        | Processing           | Output  |
+|-----   | ------------- |:-------------:| -----:|
+|get_tri_dict(tri_id, driver)    | tri facility id, chrome webdriver     | open facility report page and scrape information into a dictionary| a dictionary of facility information|
+
+Usage:
+1. call `driver = setDriver()` to set chrome driver for crawling
+1. call `get_tri_dict(tri_id,driver)` to get a dictionary of facility information
+
+
+[ewg_ingredient.py](/ewg_ingredient.py) is a site crawler for EWG Skindeep Database(https://www.ewg.org/skindeep/#.W3H8HNJKiUk) that gets product and ingredient information for a company in their database
+
+
+|Function | Input        | Processing           | Output  |
+|-----   | ------------- |:-------------:| -----:|
+|company_to_product(company,driver)    | company name, chrome webdriver     | search company name on EWG and get all products| a dictionary of a company to a list of products|
+|product_to_ingredient(comp_prod_dict,driver)    | company-product dictionay, chrome webdriver     | search product name and get all ingredients| a dictionary of company to products to ingredients|
+
+
+Usage:
+
+IMPORTANT NOTE: the driver needs to be set in a NON-HEADLESS mode. The user needs to manually close pop-up ads at the beginning for the crawler to function.
+
+
+1. call `driver = setDriver()` to set chrome driver for crawling
+1. call `comp_prod_dict = company_to_product(company,driver)` to get a dictionary of company to products
+1. call `product_to_ingredient(comp_prod_dict,driver)` to get a dictionary of company to products to ingredients
