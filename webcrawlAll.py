@@ -544,7 +544,7 @@ def crawlerWrapper(search_query, engine, headless = False):
     return links
 
 
-def main(part_number):
+def main():
     search_query = {}
     """ Using the google crawler"""
     # search_query['name'] = "whatever you want to query on google"
@@ -596,3 +596,4 @@ def main(part_number):
 if __name__ == "__main__":
     # part_number = int(sys.argv[1])
     # main(part_number)
+    main()
