@@ -144,6 +144,8 @@ Usage:
 1. call `hazard_to_company(chemical, driver)` to get a list of companies
 
 [google_sub_all_level.py](/google_sub_all_level.py) is a google crawler to find subsidiaries directly returned by google for a search query "COMPANY_NAME+subsidiaries". 
+
+
 |Function | Input        | Processing           | Output  |
 |-----   | ------------- |:-------------:| -----:|
 |get_sub_list(company, driver)    | company name, chrome webdriver     | search "COMPANY_NAME+subsidiaries" on google| a list of subsidiaries that is directly returned by google on the top|
@@ -157,6 +159,8 @@ Usage:
 1. call `all_level_down(sub_list)` to get all-level-down list of subsidiaries
 
 [tri_facility_info.py](/tri_facility_info.py) is a site crawler for TRI Facility(https://www.epa.gov/enviro/tri-search) that gets all facility information with a tri id the user provides
+
+
 |Function | Input        | Processing           | Output  |
 |-----   | ------------- |:-------------:| -----:|
 |get_tri_dict(tri_id, driver)    | tri facility id, chrome webdriver     | open facility report page and scrape information into a dictionary| a dictionary of facility information|
