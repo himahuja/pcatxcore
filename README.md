@@ -170,5 +170,17 @@ Usage:
 1. call `get_tri_dict(tri_id,driver)` to get a dictionary of facility information
 
 
+[ewg_ingredient.py](/ewg_ingredient.py) is a site crawler for EWG Skindeep Database(https://www.ewg.org/skindeep/#.W3H8HNJKiUk) that gets product and ingredient information for a company in their database
 
 
+|Function | Input        | Processing           | Output  |
+|-----   | ------------- |:-------------:| -----:|
+|company_to_product(company,driver)    | company name, chrome webdriver     | search company name on EWG and get all products| a dictionary of a company to a list of products|
+|product_to_ingredient(comp_prod_dict,driver)    | company-product dictionay, chrome webdriver     | search product name and get all ingredients| a dictionary of company to products to ingredients|
+
+
+Usage:
+1. call `driver = setDriver()` to set chrome driver for crawling
+IMPORTANT NOTE: the driver needs to be set in a NON-HEADLESS mode. The user needs to manually close pop-up ads at the beginning for the crawler to function.
+1. call `comp_prod_dict = company_to_product(company,driver)` to get a dictionary of company to products
+1. call `product_to_ingredient(comp_prod_dict,driver)` to get a dictionary of company to products to ingredients
