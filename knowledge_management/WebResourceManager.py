@@ -10,6 +10,7 @@ sys.path.append("..")
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.stem import PorterStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from PCATParser import *
 import json, os, uuid, nltk, re, time
 import numpy as np
@@ -20,6 +21,7 @@ class WebResourceManager(object):
         #read in the file
         self.rel_path = rel_path
         self.url_to_uuid = {}
+        self.classifier = TfidfVectorizer(stop_words='english')
 #        if rel_path == None:
 #            self.classifier = Doc2Vec.load("data/doc2vec_model")
 #        else:
@@ -143,7 +145,26 @@ class WebResourceManager(object):
                 print("{} threw the following exception while yielding text: {}".format(item['id'], str(e)))
         
     def get_relevance_score(self, document):
-        pass
+        response = self.classifier.transform([document])
+        feature_names = self.classifier.get_feature_names()
+    
+        score_dict = {}
+        for col in response.nonzero()[1]:
+            score_dict[feature_names[col]] = response[0,col]
+    
+        word_list = nltk.word_tokenize(document)
+        total_score = 0
+        count_keywords = 0
+        for word in word_list:
+            if word in score_dict:
+                total_score += score_dict[word]
+                count_keywords += 1
+        if (count_keywords != 0):   
+            score = total_score / count_keywords
+        else:
+            score = 0
+        print(score)
+        return score
     
     def get_TaggedDocuments(self):
         for file in self:
@@ -188,12 +209,21 @@ class WebResourceManager(object):
             model.train(list(tag2vec.values()), total_examples=model.corpus_count, epochs=model.iter)
             tuples = []
             for doc_vec in doc_tags:
-                tuples.append((model.docvecs.similarity('bad',doc_vec), tag2vec[doc_vec]))
+                tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
             mergeSortTuples(tuples)
             temp_text = ""
-            for i in range(len(doc_tags)//2):
-                temp_text+=sent_list[tag2sent[vec]] + "\n"
-            item['classifier'] = temp_text
+            for i in range(len(tuples)//2):
+                temp_text+=tuples[1] + "\n"
+            item['ss_classifier'] = temp_text
+            
+            tfidf_tuples = []
+            for i in range(len(sent_list)):
+                tfidf_tuples.append(self.get_relevance_score(item['text']), sent_list[i])
+            mergeSortTuples(tuples)
+            for i in range(len(tuples)//2):
+                temp_text+=tuples[1] + "\n"
+            item['tfidf_classifier'] = temp_text
+            
             self.update_profile(item)
             
     
@@ -244,8 +274,8 @@ class WebResourceManager(object):
         file.write(json.dumps(this, sort_keys = True, indent = 4))
         file.close
 
-#    def train_classifier(self):
-#        self.classifier.fit_transform(self.get_texts())
+    def train_classifier(self):
+        self.classifier.fit_transform(self.get_texts())
 
     def update_profile(self, item):
         if self.rel_path == None:
