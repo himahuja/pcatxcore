@@ -147,7 +147,7 @@ Usage:
 |Function | Input        | Processing           | Output  |
 |-----   | ------------- |:-------------:| -----:|
 |get_sub_list(company, driver)    | company name, chrome webdriver     | search "COMPANY_NAME+subsidiaries" on google| a list of subsidiaries that is directly returned by google on the top|
-|get_sub_dict(sub, sub_list)    |  a company name, a list of subsidiaries found for that company  | build a dictionary that maps a company name to its subsidiaries | a dictionary of company name to a list of subsidiaries
+|get_sub_dict(sub, sub_list)    |  a company name, a list of subsidiaries found for that company  | build a dictionary that maps a company name to its subsidiaries | a dictionary of company name to a list of subsidiaries|
 |get_list_of_dict(comp_name,driver)| company name, chrome webdriver | go one level down in subsidiary list and find sub-subsidiaries | a mixed list of subsidiaries together with dictionaries of sub-subsidiaries once found for a subsidiary|
 |all_level_down(list_of_dict)    |  a mixed list of strings together with dictionaries  | go all level down to find subsidiaries | a mixed list of subsidiaries together with dictionaries of all-level subsidiaries once found for a subsidiary|
 
