@@ -98,10 +98,10 @@ if __name__ == "__main__":
     # print result of all subsidiaries as a list
     print(all_level_down(sub_list))
     # example output:
-     '''{'ABC-MART,INC.': ['ABC-Mart Korea Co,. Ltd',
-  {'LaCrosse Footwear': ['Danner Inc',
-    "White's Boots",
-    'LaCrosse Europe ApS',
-    'Environmentally Neutral Design Outdoor, Inc.',
-    'LaCrosse Europe Inc',
-    'LaCrosse International, Inc']}]'''
+  #{'ABC-MART,INC.': ['ABC-Mart Korea Co,. Ltd',
+  #{'LaCrosse Footwear': ['Danner Inc',
+   # "White's Boots",
+    #'LaCrosse Europe ApS',
+    #'Environmentally Neutral Design Outdoor, Inc.',
+    #'LaCrosse Europe Inc',
+    #'LaCrosse International, Inc']}]
