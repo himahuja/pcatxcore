@@ -181,6 +181,7 @@ Usage:
 
 Usage:
 1. call `driver = setDriver()` to set chrome driver for crawling
-1. IMPORTANT NOTE: the driver needs to be set in a NON-HEADLESS mode. The user needs to manually close pop-up ads at the beginning for the crawler to function.
+
+IMPORTANT NOTE: the driver needs to be set in a NON-HEADLESS mode. The user needs to manually close pop-up ads at the beginning for the crawler to function.
 1. call `comp_prod_dict = company_to_product(company,driver)` to get a dictionary of company to products
 1. call `product_to_ingredient(comp_prod_dict,driver)` to get a dictionary of company to products to ingredients
