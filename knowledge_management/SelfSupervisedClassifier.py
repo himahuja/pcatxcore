@@ -23,40 +23,43 @@ def convert_to_corpus(doc):
             doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
     return doc_list
 
-def get_TaggedDocuments(manager, instances, iam):
+def get_TaggedDocuments(manager):
         bad = []
         idk = []
         count = 0
         numPerList = 1000000
-        for text, tag in manager.get_docs_by_sentence(instances, iam):
+        for item in manager:
             tagged = False
-            words = text.split()
-            letters_in_sentence = sum([len(w) for w in words])
-            if letters_in_sentence > 750 or letters_in_sentence < 50:
-                tagged = True
-                bad.append(TaggedDocument(words=convert_to_corpus(str(text)), tags=list({tag, "bad"})))
-            if not tagged:
-                for word in ['skip to main content',  'remember my device', "toggle menu", "user agreement" "privacy statement", "terms of service", "javascript", "footer", "header", "subscribe",  "contact us", "usage has been flagged"]:
-                    if not tagged and word in text or len(text) < 3:
-                        tagged = True
-                        bad.append(TaggedDocument(words=convert_to_corpus(str(text)), tags=list({tag, "bad"})))
-            if not tagged:
-                idk.append(TaggedDocument(words=convert_to_corpus(str(text)), tags=list({tag})))
-            count = count + 1
-            if count % numPerList == 0:
-                file = open("../data/TaggedDocuments/Labeled/{}_{}_{}.json".format("bad_sentences", iam, count//numPerList), "w")
-                file.write(json.dumps(bad, sort_keys = True, indent = 4))
-                file.close()
-                file = open("../data/TaggedDocuments/Labeled/{}_{}_{}.json".format("idk_sentences", iam, count//numPerList), "w")
-                file.write(json.dumps(idk, sort_keys = True, indent = 4))
-                file.close()
-                bad = []
-                idk = []
+            sent_list = nltk.sent_tokenize(item['text'])
+            for i in range(len(sent_list)):
+                words = sent_list[i].split()
+                tag = "{:06d}{:04d}".format(count, i)
+                letters_in_sentence = sum([len(w) for w in words])
+                if letters_in_sentence > 750 or letters_in_sentence < 50:
+                    tagged = True
+                    bad.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list({tag, "bad"})))
+                if not tagged:
+                    for word in ['skip to main content',  'remember my device', "toggle menu", "user agreement" "privacy statement", "terms of service", "javascript", "footer", "header", "subscribe",  "contact us", "usage has been flagged"]:
+                        if not tagged and word in sent_list[i] or len(sent_list[i]) < 3:
+                            tagged = True
+                            bad.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list({tag, "bad"})))
+                if not tagged:
+                    idk.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list({tag})))
+                count = count + 1
+                if count % numPerList == 0:
+                    file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("bad_sentences", count//numPerList), "w")
+                    file.write(json.dumps(bad, sort_keys = True, indent = 4))
+                    file.close()
+                    file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("idk_sentences", count//numPerList), "w")
+                    file.write(json.dumps(idk, sort_keys = True, indent = 4))
+                    file.close()
+                    bad = []
+                    idk = []
                 
-        file = open("../data/TaggedDocuments/Labeled/{}_{}_{}.json".format("bad_sentences", iam, count//numPerList), "w")
+        file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("bad_sentences",count//numPerList), "w")
         file.write(json.dumps(bad, sort_keys = True, indent = 4))
         file.close()
-        file = open("../data/TaggedDocuments/Labeled/{}_{}_{}.json".format("idk_sentences", iam, count//numPerList), "w")
+        file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("idk_sentences",  count//numPerList), "w")
         file.write(json.dumps(idk, sort_keys = True, indent = 4))
         file.close()
 
@@ -67,7 +70,7 @@ def train_model():
         if filename.endswith(".json"):
             file = json.loads(open(os.path.join("../data/TaggedDocuments/Labeled", filename), "r").read())
             for td in file:
-                docs.append(TaggedDocument(words=td[0], tags=list(td[1])))
+                docs.append(TaggedDocument(words=td[0], tags=[x for x in td[1]]))
     try:
         model = Doc2Vec.load("../data/doc2vec_model")
 
@@ -84,7 +87,7 @@ def main():
         wrm = WebResourceManager(rel_path = "..")
         wrm.load(os.path.join("../data/webresourcemanagers", file))
         wrm.rel_path = ".."
-        get_TaggedDocuments(wrm, 1, 0)
+        get_TaggedDocuments(wrm)
     train_model()
     for file in os.listdir("../data/webresourcemanagers"):
         wrm = WebResourceManager(rel_path = "..")

@@ -135,12 +135,12 @@ class WebResourceManager(object):
         print("...100.00% done, processing document {} of {}".format(len(self),len(self)))
         return corpus_list
         
-    def get_docs_by_sentence(self, instances=1, iam=0):
-        for item in self.__iter__(instances=1, iam=0):
+    def get_docs_by_sentence(self):
+        for item in self:
             try:
                 sent_list = nltk.sent_tokenize(item['text'])
                 for i in range(len(sent_list)):
-                    yield (sent_list[i], str(item['id'] + "_" + str(i)))
+                    yield sent_list[i]
             except Exception as e:
                 print("{} threw the following exception while yielding text: {}".format(item['id'], str(e)))
         
@@ -167,9 +167,12 @@ class WebResourceManager(object):
         return score
     
     def get_TaggedDocuments(self):
-        for file in self:
-            #if query is a list this will throw errors, keep that in mind if the future
-            yield TaggedDocument(words=file['corpus'], tags=list({file['id'], file['query']}))
+        doc_count = -1
+        for item in self:
+            doc_count+=1
+            sent_list = nltk.sent_tokenize(item['text'])
+            for i in range(len(sent_list)):
+                yield TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i)))
     
     def get_texts(self):
         for file in self:
@@ -197,16 +200,25 @@ class WebResourceManager(object):
         
     def rank_by_relevance(self):
         model = Doc2Vec.load("../data/doc2vec_model")
+        doc_list = []
+        doc_count = -1
         for item in self:
+            doc_count+=1
+            sent_list = nltk.sent_tokenize(item['text'])
+            for i in range(len(sent_list)):
+                doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i))))
+        model.train(doc_list, total_examples=model.corpus_count, epochs=model.iter)
+        model.save("../data/doc2vec_model")
+        doc_count = -1
+        for item in self:
+            doc_count+=1
             sent_list = nltk.sent_tokenize(item['text'])
             doc_tags = []
             tag2sent = {}
-            tag2vec = {}
             for i in range(len(sent_list)):
-                doc_tags.append(str(item['id'] + "_" + str(i)))
-                tag2sent[item['id'] + "_" + str(i)] = i
-                tag2vec[item['id'] + "_" + str(i)] = TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list(str(str(item['id'] + "_" + str(i)))))
-            model.train(list(tag2vec.values()), total_examples=model.corpus_count, epochs=model.iter)
+                tag = "{:06d}{:04d}".format(doc_count, i)
+                doc_tags.append(tag)
+                tag2sent[tag] = i
             tuples = []
             for doc_vec in doc_tags:
                 tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
@@ -216,15 +228,17 @@ class WebResourceManager(object):
                 temp_text+=tuples[1] + "\n"
             item['ss_classifier'] = temp_text
             
+            self.train_classifier()
             tfidf_tuples = []
             for i in range(len(sent_list)):
-                tfidf_tuples.append(self.get_relevance_score(item['text']), sent_list[i])
+                tfidf_tuples.append((self.get_relevance_score(item['text']), sent_list[i]))
             mergeSortTuples(tuples)
             for i in range(len(tuples)//2):
                 temp_text+=tuples[1] + "\n"
             item['tfidf_classifier'] = temp_text
             
             self.update_profile(item)
+            print("Finished item {}".format(item['id']))
             
     
     #DOES NOT USE REL_PATH
