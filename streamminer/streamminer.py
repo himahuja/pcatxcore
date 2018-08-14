@@ -52,14 +52,59 @@ from algorithms.relklinker.rel_closure import relational_closure as relclosure
 from algorithms.klinker.closure import closure
 ##############################################
 
+###################################################################
+################# DATABASE and RELSIM SETUP #######################
+###################################################################
+# KG - DBpedia
+HOME = abspath(expanduser('~/Documents/pcatxcore/knowledgestream/data/'))
+if not exists(HOME):
+	print 'Data directory not found: %s' % HOME
+	print 'Download data per instructions on:'
+	print '\thttps://github.com/shiralkarprashant/knowledgestream#data'
+	print 'and enter the directory path below.'
+	data_dir = raw_input('\nPlease enter data directory path: ')
+	if data_dir != '':
+		data_dir = abspath(expanduser(data_dir))
+	if not os.path.isdir(data_dir):
+		raise Exception('Entered path "%s" not a directory.' % data_dir)
+	if not exists(data_dir):
+		raise Exception('Directory does not exist: %s' % data_dir)
+	HOME = data_dir
+	# raise Exception('Please set HOME to data directory in algorithms/__main__.py')
+PATH = join(HOME, 'kg/_undir/')
+assert exists(PATH)
+SHAPE = (6060993, 6060993, 663)
+# WTFN = 'logdegree'
+WTFN = 'logdegree'
 
-# ██████  ██████  ██     ██ ██████   █████  ██████
-# ██   ██ ██   ██ ██     ██ ██   ██ ██   ██ ██   ██
-# ██████  ██████  ██  █  ██ ██████  ███████ ██████
-# ██      ██      ██ ███ ██ ██   ██ ██   ██ ██
-# ██      ██       ███ ███  ██   ██ ██   ██ ██
+# # relational similarity using TF-IDF representation and cosine similarity
+# RELSIMPATH = join(HOME, 'relsim/coo_mat_sym_2016-10-24_log-tf_tfidf.npy')
+# assert exists(RELSIMPATH)
+##############################################################
+RELSIMPATH = join(HOME, 'relsim/coo_mat_sym_2016-10-24_log-tf_tfidf.npy')
+assert exists(RELSIMPATH)
+##############################################################
+# relational similarity using TF-IDF representation and cosine similarity
 
-def train_model(G, triples, use_interpretable_features=False, cv=10):
+# relsim = np.load(RELSIMPATH)
+
+# Date
+DATE = '{}'.format(date.today())
+
+# data types for int and float
+_short = np.int16
+_int = np.int32
+_int64 = np.int64
+_float = np.float
+
+
+#######################################################################
+#######################################################################
+
+
+
+
+def predpath_train_model(G, triples, use_interpretable_features=False, cv=10):
 	"""
 	Entry point for building a fact-checking classifier.
 	Performs three steps:
@@ -161,15 +206,6 @@ def train_model(G, triples, use_interpretable_features=False, cv=10):
 
 	return vec, model
 
-
-
-# ██████  ██████      ██████  ██████  ███████ ██████
-# ██   ██ ██   ██     ██   ██ ██   ██ ██      ██   ██
-# ██████  ██████      ██████  ██████  █████   ██   ██
-# ██      ██          ██      ██   ██ ██      ██   ██
-# ██      ██          ██      ██   ██ ███████ ██████
-
-
 def predict(G, triples, vec, model):
 	"""
 	Predicts unseen triples using previously built PredPath (PP) model.
@@ -206,13 +242,6 @@ def predict(G, triples, vec, model):
 	print 'Time taken: {:.2f}s'.format(time() - t1)
 	print ''
 	return pred
-
-
-# ██████  ██████      ███████ ██   ██ ██████   █████  ████████ ██   ██
-# ██   ██ ██   ██     ██       ██ ██  ██   ██ ██   ██    ██    ██   ██
-# ██████  ██████      █████     ███   ██████  ███████    ██    ███████
-# ██      ██          ██       ██ ██  ██      ██   ██    ██    ██   ██
-# ██      ██          ███████ ██   ██ ██      ██   ██    ██    ██   ██
 
 def extract_paths(G, triples, y, length=3, features=None):
 	"""
@@ -275,13 +304,6 @@ def extract_paths(G, triples, y, length=3, features=None):
 		return features, pos_features, neg_features, measurements
 	return measurements
 
-
-# ██████  ██████       ██████  ███████ ████████     ██████
-# ██   ██ ██   ██     ██       ██         ██        ██   ██
-# ██████  ██████      ██   ███ █████      ██        ██████
-# ██      ██          ██    ██ ██         ██        ██
-# ██      ██           ██████  ███████    ██        ██
-
 def get_paths(G, s, p, o, length=3):
 	"Returns all paths of length `length` starting at s and ending in o."
 	path_stack = [[s]]
@@ -307,13 +329,6 @@ def get_paths(G, s, p, o, length=3):
 			path_stack.append(curr_path + [nbr])
 			relpath_stack.append(curr_relpath + [rel])
 	return discoverd_paths
-
-
-# ██████  ██████      ███    ███  ██████  ██████  ███████ ██
-# ██   ██ ██   ██     ████  ████ ██    ██ ██   ██ ██      ██
-# ██████  ██████      ██ ████ ██ ██    ██ ██   ██ █████   ██
-# ██      ██          ██  ██  ██ ██    ██ ██   ██ ██      ██
-# ██      ██          ██      ██  ██████  ██████  ███████ ███████
 
 def find_best_model(X, y, scoring='roc_auc', cv=10):
 	"""
@@ -441,14 +456,18 @@ def compute_relklinker(G, relsim, subs, preds, objs):
 	# set weights
 	indegsim = weighted_degree(G.indeg_vec, weight=WTFN).reshape((1, G.N))
 	indegsim = indegsim.ravel()
+	print 'G.N is :{}'.format(G.N)
 	targets = G.csr.indices % G.N
+	print 'targets is: {}, size of targets is: {}'.format(targets, targets.shape)
 	specificity_wt = indegsim[targets] # specificity
 	G.csr.data = specificity_wt.copy()
+	print 'Shape of CSR.data is: {}'.format(G.csr.data.shape)
 
 	# relation vector
 	###########################################
 	# THIS IS DIFFERENT THAN USUAL KL
 	relations = (G.csr.indices - targets) / G.N
+	print '{}'.format(relations)
 	###########################################
 	# back up
 	data = G.csr.data.copy()
@@ -545,54 +564,15 @@ def main(args=None):
 			dest='dataset', help='Dataset to test on.')
 	parser.add_argument('-o', type=str, required=True,
 			dest='outdir', help='Path to the output directory.')
-
+	parser.add_argument('-m', type=str, required=True,
+			dest='method', help='Method to use: stream, relklinker, klinker, \
+			predpath, streamminer')
 	args = parser.parse_args()
-
-	# KG - DBpedia
-	HOME = abspath(expanduser('~/Documents/pcatxcore/knowledgestream/data/'))
-	if not exists(HOME):
-		print 'Data directory not found: %s' % HOME
-		print 'Download data per instructions on:'
-		print '\thttps://github.com/shiralkarprashant/knowledgestream#data'
-		print 'and enter the directory path below.'
-		data_dir = raw_input('\nPlease enter data directory path: ')
-		if data_dir != '':
-			data_dir = abspath(expanduser(data_dir))
-		if not os.path.isdir(data_dir):
-			raise Exception('Entered path "%s" not a directory.' % data_dir)
-		if not exists(data_dir):
-			raise Exception('Directory does not exist: %s' % data_dir)
-		HOME = data_dir
-		# raise Exception('Please set HOME to data directory in algorithms/__main__.py')
-	PATH = join(HOME, 'kg/_undir/')
-	assert exists(PATH)
-	SHAPE = (6060993, 6060993, 663)
-	# WTFN = 'logdegree'
-	WTFN = 'relsim-logdegree'
-
-	# # relational similarity using TF-IDF representation and cosine similarity
-	# RELSIMPATH = join(HOME, 'relsim/coo_mat_sym_2016-10-24_log-tf_tfidf.npy')
-	# assert exists(RELSIMPATH)
-	##############################################################
-	RELSIMPATH = join(HOME, 'relsim/coo_mat_sym_2016-10-24_log-tf_tfidf.npy')
-	assert exists(RELSIMPATH)
-
-	##############################################################
-	# relational similarity using TF-IDF representation and cosine similarity
-
-
-	# Date
-	DATE = '{}'.format(date.today())
-
-	# data types for int and float
-	_short = np.int16
-	_int = np.int32
-	_int64 = np.int64
-	_float = np.float
 
 	# logging
 	disable_logging(log.DEBUG)
 
+	relsim = np.load(RELSIMPATH)
 
 	outdir = abspath(expanduser(args.outdir))
 	assert exists(outdir)
@@ -600,7 +580,7 @@ def main(args=None):
 	datafile = abspath(expanduser(args.dataset))
 	assert exists(datafile)
 	args.dataset = datafile
-	log.info('Launching PredPath..')
+	log.info('Launching {}..'.format(args.method))
 	log.info('Dataset: {}'.format(basename(args.dataset)))
 	log.info('Output dir: {}'.format(args.outdir))
 
@@ -618,18 +598,72 @@ def main(args=None):
 
 	base = splitext(basename(args.dataset))[0]
 	t1 = time()
-	vec, model = train_model(G, spo_df) # train
-	print 'Time taken: {:.2f}s\n'.format(time() - t1)
-	# save model
-	predictor = { 'dictvectorizer': vec, 'model': model }
-	try:
-		outpkl = join(args.outdir, 'out_predpath_{}_{}.pkl'.format(base, DATE))
-		with open(outpkl, 'wb') as g:
-			pkl.dump(predictor, g, protocol=pkl.HIGHEST_PROTOCOL)
-		print 'Saved: {}'.format(outpkl)
-	except IOError, e:
-		raise e
 
+	if args.method == 'stream': # KNOWLEDGE STREAM (KS)
+		# compute min. cost flow
+		log.info('Computing KS for {} triples..'.format(spo_df.shape[0]))
+		with warnings.catch_warnings():
+			warnings.simplefilter("ignore")
+			outjson = join(args.outdir, 'out_kstream_{}_{}.json'.format(base, DATE))
+			outcsv = join(args.outdir, 'out_kstream_{}_{}.csv'.format(base, DATE))
+			mincostflows, times = compute_mincostflow(G, relsim, subs, preds, objs, outjson)
+			# save the results
+			spo_df['score'] = mincostflows
+			spo_df['time'] = times
+			spo_df = normalize(spo_df)
+			spo_df.to_csv(outcsv, sep=',', header=True, index=False)
+			log.info('* Saved results: %s' % outcsv)
+		log.info('Mincostflow computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
+	elif args.method == 'relklinker': # RELATIONAL KNOWLEDGE LINKER (KL-REL)
+		log.info('Computing KL-REL for {} triples..'.format(spo_df.shape[0]))
+		scores, paths, rpaths, times = compute_relklinker(G, relsim, subs, preds, objs)
+		# save the results
+		spo_df['score'] = scores
+		spo_df['path'] = paths
+		spo_df['rpath'] = rpaths
+		spo_df['time'] = times
+		spo_df = normalize(spo_df)
+		outcsv = join(args.outdir, 'out_relklinker_{}_{}.csv'.format(base, DATE))
+		spo_df.to_csv(outcsv, sep=',', header=True, index=False)
+		log.info('* Saved results: %s' % outcsv)
+		log.info('Relatioanal KL computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
+	elif args.method == 'klinker':
+		log.info('Computing KL for {} triples..'.format(spo_df.shape[0]))
+		scores, paths, rpaths, times = compute_klinker(G, subs, preds, objs)
+		# save the results
+		spo_df['score'] = scores
+		spo_df['path'] = paths
+		spo_df['rpath'] = rpaths
+		spo_df['time'] = times
+		spo_df = normalize(spo_df)
+		outcsv = join(args.outdir, 'out_klinker_{}_{}.csv'.format(base, DATE))
+		spo_df.to_csv(outcsv, sep=',', header=True, index=False)
+		log.info('* Saved results: %s' % outcsv)
+		log.info('KL computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
+	elif args.method == 'predpath': # PREDPATH
+		vec, model = predpath_train_model(G, spo_df) # train
+		print 'Time taken: {:.2f}s\n'.format(time() - t1)
+		# save model
+		predictor = { 'dictvectorizer': vec, 'model': model }
+		try:
+			outpkl = join(args.outdir, 'out_predpath_{}_{}.pkl'.format(base, DATE))
+			with open(outpkl, 'wb') as g:
+				pkl.dump(predictor, g, protocol=pkl.HIGHEST_PROTOCOL)
+			print 'Saved: {}'.format(outpkl)
+		except IOError, e:
+			raise e
+	elif args.method == 'streamminer':
+		vec, model = predpath_train_model(G, spo_df) # train
+		print 'Time taken: {:.2f}s\n'.format(time() - t1)
+		# save model
+		predictor = { 'dictvectorizer': vec, 'model': model }
+		try:
+			outpkl = join(args.outdir, 'out_predpath_{}_{}.pkl'.format(base, DATE))
+			with open(outpkl, 'wb') as g:
+				pkl.dump(predictor, g, protocol=pkl.HIGHEST_PROTOCOL)
+			print 'Saved: {}'.format(outpkl)
+		except IOError, e:
+			raise e
 	print '\nDone!\n'
 
 if __name__ == '__main__':
