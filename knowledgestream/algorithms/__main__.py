@@ -198,8 +198,10 @@ def compute_relklinker(G, relsim, subs, preds, objs):
 	G.csr.data = specificity_wt.copy()
 
 	# relation vector
+	# THIS IS DIFFERENT THAN KL
+	############################################
 	relations = (G.csr.indices - targets) / G.N
-
+	############################################
 	# back up
 	data = G.csr.data.copy()
 	indices = G.csr.indices.copy()
@@ -210,10 +212,13 @@ def compute_relklinker(G, relsim, subs, preds, objs):
 		print '{}. Working on {}..'.format(idx+1, (s, p, o)),
 		ts = time()
 		# set relational weight
+		# THIS IS DIFFERENT THAN KL
+		#######################################################################
 		G.csr.data[targets == o] = 1 # no cost for target t => max. specificity.
 		relsimvec = relsim[p, :] # specific to predicate p
 		relsim_wt = relsimvec[relations] # graph weight
 		G.csr.data = np.multiply(relsim_wt, G.csr.data)
+		#######################################################################
 
 		rp = relclosure(G, s, p, o, kind='metric', linkpred=True)
 		tend = time()
