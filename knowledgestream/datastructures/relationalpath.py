@@ -25,9 +25,9 @@ class RelationalPath:
 
 	def pretty(self, nodes=None, relations=None):
 		"""
-		Prints path information. 
+		Prints path information.
 
-		Note: Throws an exception if node and relation is 
+		Note: Throws an exception if node and relation is
 		not found in the respective input dictionaries.
 
 		Parameters:
@@ -40,12 +40,12 @@ class RelationalPath:
 		"""
 		terminal = ""
 		print "SPO: [ {} {} {}], Score: {}, Path ({}):".format(
-			self.source, self.relation, self.target, 
+			self.source, self.relation, self.target,
 			round(self.score, ROUND_DIGITS), self.pathlen
 		),
 		for i in xrange(1 + self.pathlen):
 			node = self.path[i]
-			
+
 			# print node
 			node_name = str(node)
 			if nodes is not None:
@@ -61,4 +61,3 @@ class RelationalPath:
 				wt = ' ({})'.format(np.round(self.weights[i+1], 2))
 				terminal += rel_delim.format(relation_name + wt)
 		return terminal
-

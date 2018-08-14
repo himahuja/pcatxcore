@@ -46,7 +46,7 @@ cpdef get_paths(G, s, p, o, length=3, maxpaths=-1):
 @cython.initializedcheck(False)
 @cython.cdivision(True)
 cdef object enumerate_paths(
-		double[:] data, long[:] indices, int[:] indptr, 
+		double[:] data, long[:] indices, int[:] indptr,
 		int s, int p, int o, int length=3, int maxpaths=-1
 	):
 	"Workhorse function for path enumeration."
@@ -92,4 +92,3 @@ cdef object enumerate_paths(
 			relpath_stack.push(curr_relpath)
 			curr_relpath.pop_back()
 	return discovered_paths, discovered_relpaths
-
