@@ -24,7 +24,7 @@ warnings.simplefilter(action = "ignore", category = FutureWarning)
 class Graph(object):
 	"""Graph data structure by wide CSR matrix."""
 	def __init__(
-		self, adj, shape, values=None, sym=True, save_csc=False, save_indeg_vec=True, 
+		self, adj, shape, values=None, sym=True, save_csc=False, save_indeg_vec=True,
 		save_indeg_mat=False, display=True, reconstruct=False
 	):
 		if reconstruct:
@@ -73,19 +73,19 @@ class Graph(object):
 		return self.csr.indices[self.csr.indptr[i]:self.csr.indptr[i+1]]
 
 	def __getitem__(self, idx):
-		if len(idx) != 3: 
+		if len(idx) != 3:
 			raise ValueError('Incorrect number of indices specified.')
 		i, j, k = idx
 		self._check_bounds(i, j, k)
 		return self.csr[i, self.N * k + j]
 
 	def __setitem__(self, idx, val):
-		if len(idx) != 3: 
+		if len(idx) != 3:
 			raise ValueError('Incorrect number of indices specified.')
 		i, j, k = idx
 		self._check_bounds(i, j, k)
 		self.csr[i, self.N * k + j] = val
-		
+
 	def getrow(self, i, k, boundscheck=True):
 		"""
 		Returns indices of elements in i'th row under k'th relation.
@@ -98,7 +98,7 @@ class Graph(object):
 
 	def get_neighbors(self, i, k=-1):
 		"""
-		Returns a 2 x M dimensional array, where the first row 
+		Returns a 2 x M dimensional array, where the first row
 		indicates the relations of the neighbors located in the second row.
 		If k = -1, neighbors across all relations are returned.
 		"""
@@ -153,7 +153,7 @@ class Graph(object):
 			self.csc = csc_matrix((data, (ii, indices)), shape=self.shape)
 			if self.display:
 				print '==> wide-CSC matrix created: {:.4f} secs.'.format(time() - t1)
-		
+
 		# indegree of a node (node-based), i.e. no. of neighboring nodes
 		if self.save_indeg_vec:
 			t1 = time()
@@ -171,10 +171,10 @@ class Graph(object):
 
 	def save_graph(self, dirpath=os.curdir):
 		"""
-		Saves data structures representing this graph 
+		Saves data structures representing this graph
 		at the specified directory. If the graph is undirected,
 		i.e. sym = True, then all saved files are prefixed with 'undir_'.
-		
+
 		Saved data structures:
 		* data: [undir_]data.npy
 		* indptr: [undir_]indptr.npy
@@ -273,11 +273,11 @@ def make_graph(adj, shape, values=None, **kwargs):
 	Other keyword arguments such as sym, etc. may be provided.
 	"""
 	G = Graph(
-		adj, shape, values, 
-		sym=kwargs.get('sym', True), 
+		adj, shape, values,
+		sym=kwargs.get('sym', True),
 		save_csc=kwargs.get('save_csc', False),
-		save_indeg_vec=kwargs.get('save_indeg_vec', True), 
-		save_indeg_mat=kwargs.get('save_indeg_mat', False), 
+		save_indeg_vec=kwargs.get('save_indeg_vec', True),
+		save_indeg_mat=kwargs.get('save_indeg_mat', False),
 		display=kwargs.get('display', True)
 	)
 	return G
@@ -324,7 +324,7 @@ def unique_rows(data, order):
 		An input matrix, 2-D array.
 
 	order: array
-		A sequence representing the column order to use for 
+		A sequence representing the column order to use for
 		sorting the output matrix.
 
 	Returns:
@@ -346,7 +346,7 @@ def unique_rows(data, order):
 def clean_adjacency(d, values, sym=True, display=True):
 	"""
 	Makes input adjacency symmetric, eliminates duplicates
-	and returns the same after sorting by sub, relation and object 
+	and returns the same after sorting by sub, relation and object
 	in that order.
 	"""
 	if display:
