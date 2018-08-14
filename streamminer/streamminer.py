@@ -419,6 +419,122 @@ def compute_mincostflow(G, relsim, subs, preds, objs, flowfile):
 			np.copyto(cost_vec, cost_vec_bak)
 	return mincostflows, times
 
+
+def compute_relklinker(G, relsim, subs, preds, objs):
+	"""
+	Parameters:
+	-----------
+	G: rgraph
+		See `datastructures`.
+	relsim: ndarray
+		A square matrix containing relational similarity scores.
+	subs, preds, objs: sequence
+		Sequences representing the subject, predicate and object of
+		input triples.
+
+	Returns:
+	--------
+	scores, paths, rpaths, times: sequence
+		One sequence each for the proximity scores, shortest path in terms of
+		nodes, shortest path in terms of relation sequence, and times taken.
+	"""
+	# set weights
+	indegsim = weighted_degree(G.indeg_vec, weight=WTFN).reshape((1, G.N))
+	indegsim = indegsim.ravel()
+	targets = G.csr.indices % G.N
+	specificity_wt = indegsim[targets] # specificity
+	G.csr.data = specificity_wt.copy()
+
+	# relation vector
+	###########################################
+	# THIS IS DIFFERENT THAN USUAL KL
+	relations = (G.csr.indices - targets) / G.N
+	###########################################
+	# back up
+	data = G.csr.data.copy()
+	indices = G.csr.indices.copy()
+	indptr = G.csr.indptr.copy()
+
+	scores, paths, rpaths, times = [], [], [], []
+	for idx, (s, p, o) in enumerate(zip(subs, preds, objs)):
+		print '{}. Working on {}..'.format(idx+1, (s, p, o)),
+		ts = time()
+		# set relational weight
+
+		######################################
+		# THIS IS DIFFERENT THAN USUAL KL
+		G.csr.data[targets == o] = 1 # no cost for target t => max. specificity.
+		relsimvec = relsim[p, :] # specific to predicate p
+		relsim_wt = relsimvec[relations] # graph weight
+		G.csr.data = np.multiply(relsim_wt, G.csr.data)
+		######################################
+
+		rp = relclosure(G, s, p, o, kind='metric', linkpred=True)
+		tend = time()
+		print 'time: {:.2f}s'.format(tend - ts)
+		times.append(tend - ts)
+		scores.append(rp.score)
+		paths.append(rp.path)
+		rpaths.append(rp.relational_path)
+
+		# reset graph
+		G.csr.data = data.copy()
+		G.csr.indices = indices.copy()
+		G.csr.indptr = indptr.copy()
+		sys.stdout.flush()
+	log.info('')
+	return scores, paths, rpaths, times
+
+# ================= KNOWLEDGE LINKER ALGORITHM ============
+
+def compute_klinker(G, subs, preds, objs):
+	"""
+	Parameters:
+	-----------
+	G: rgraph
+		See `datastructures`.
+	subs, preds, objs: sequence
+		Sequences representing the subject, predicate and object of
+		input triples.
+
+	Returns:
+	--------
+	scores, paths, rpaths, times: sequence
+		One sequence each for the proximity scores, shortest path in terms of
+		nodes, shortest path in terms of relation sequence, and times taken.
+	"""
+	# set weights
+	indegsim = weighted_degree(G.indeg_vec, weight=WTFN).reshape((1, G.N))
+	indegsim = indegsim.ravel()
+	targets = G.csr.indices % G.N
+	specificity_wt = indegsim[targets] # specificity
+	G.csr.data = specificity_wt.copy()
+
+	# back up
+	data = G.csr.data.copy()
+	indices = G.csr.indices.copy()
+	indptr = G.csr.indptr.copy()
+
+	# compute closure
+	scores, paths, rpaths, times = [], [], [], []
+	for idx, (s, p, o) in enumerate(zip(subs, preds, objs)):
+		print '{}. Working on {}..'.format(idx+1, (s, p, o)),
+		ts = time()
+		rp = closure(G, s, p, o, kind='metric', linkpred=True)
+		tend = time()
+		print 'time: {:.2f}s'.format(tend - ts)
+		times.append(tend - ts)
+		scores.append(rp.score)
+		paths.append(rp.path)
+		rpaths.append(rp.relational_path)
+
+		# reset graph
+		G.csr.data = data.copy()
+		G.csr.indices = indices.copy()
+		G.csr.indptr = indptr.copy()
+		sys.stdout.flush()
+	log.info('')
+	return scores, paths, rpaths, times
 # ================== MAIN CALLING FUNCTION ==================== #
 def main(args=None):
 	parser = argparse.ArgumentParser(
