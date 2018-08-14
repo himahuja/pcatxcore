@@ -33,7 +33,7 @@ def get_TaggedDocuments(manager):
             sent_list = nltk.sent_tokenize(item['text'])
             for i in range(len(sent_list)):
                 words = sent_list[i].split()
-                tag = "{:6d}{:4d}".format(count, i)
+                tag = "{:06d}{:04d}".format(count, i)
                 letters_in_sentence = sum([len(w) for w in words])
                 if letters_in_sentence > 750 or letters_in_sentence < 50:
                     tagged = True

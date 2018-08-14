@@ -172,7 +172,7 @@ class WebResourceManager(object):
             doc_count+=1
             sent_list = nltk.sent_tokenize(item['text'])
             for i in range(len(sent_list)):
-                yield TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:6d}{:4d}".format(doc_count, i)))
+                yield TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i)))
     
     def get_texts(self):
         for file in self:
@@ -206,7 +206,7 @@ class WebResourceManager(object):
             doc_count+=1
             sent_list = nltk.sent_tokenize(item['text'])
             for i in range(len(sent_list)):
-                doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:6d}{:4d}".format(doc_count, i))))
+                doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i))))
         model.train(doc_list, total_examples=model.corpus_count, epochs=model.iter)
         model.save("../data/doc2vec_model")
         doc_count = -1
@@ -216,15 +216,12 @@ class WebResourceManager(object):
             doc_tags = []
             tag2sent = {}
             for i in range(len(sent_list)):
-                tag = "{:6d}{:4d}".format(doc_count, i)
+                tag = "{:06d}{:04d}".format(doc_count, i)
                 doc_tags.append(tag)
                 tag2sent[tag] = i
             tuples = []
             for doc_vec in doc_tags:
-                try:
-                    tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
-                except KeyError as e:
-                    print(e)
+                tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
             mergeSortTuples(tuples)
             temp_text = ""
             for i in range(len(tuples)//2):
@@ -241,6 +238,7 @@ class WebResourceManager(object):
             item['tfidf_classifier'] = temp_text
             
             self.update_profile(item)
+            print("Finished item {}".format(item['id']))
             
     
     #DOES NOT USE REL_PATH
