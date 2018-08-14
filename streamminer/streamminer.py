@@ -451,19 +451,19 @@ def main(args=None):
 	PATH = join(HOME, 'kg/_undir/')
 	assert exists(PATH)
 	SHAPE = (6060993, 6060993, 663)
-	WTFN = 'logdegree'
+	# WTFN = 'logdegree'
+	WTFN = 'relsim-logdegree'
 
 	# # relational similarity using TF-IDF representation and cosine similarity
 	# RELSIMPATH = join(HOME, 'relsim/coo_mat_sym_2016-10-24_log-tf_tfidf.npy')
 	# assert exists(RELSIMPATH)
 	##############################################################
-
-
+	RELSIMPATH = join(HOME, 'relsim/coo_mat_sym_2016-10-24_log-tf_tfidf.npy')
+	assert exists(RELSIMPATH)
 
 	##############################################################
 	# relational similarity using TF-IDF representation and cosine similarity
-	RELSIMPATH = join(HOME, 'relsim/coo_mat_sym_2016-10-24_log-tf_tfidf.npy')
-	assert exists(RELSIMPATH)
+
 
 	# Date
 	DATE = '{}'.format(date.today())
