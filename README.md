@@ -101,7 +101,7 @@ It can
 
 ### Web Crawler
 ---------------
-IMPORTANT NOTE: All web crawlers are subject to deprecation once a website is updated
+IMPORTANT NOTE: All web crawlers are subject to deprecation once a website changes its layout
 
 <div align="center">
   <img alt="Diagram of PCATx Core's Web Crawler" src="/img/WebCrawler.jpg">

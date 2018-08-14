@@ -1,13 +1,13 @@
 """
 PredPath (PP) model building and prediction.
 
-Source: 'Discriminative Predicate Path Mining for Fact-Checking 
+Source: 'Discriminative Predicate Path Mining for Fact-Checking
 in Knowledge Graphs' by Baoxu Shi and Tim Weninger.
 
 Performs three things:
-- Path extraction: Extracts anchored predicate paths as features, and constructs feature matrix 
+- Path extraction: Extracts anchored predicate paths as features, and constructs feature matrix
 for a given set of triples.
-- Path selection: Computes mutual information / information gain between features and label 
+- Path selection: Computes mutual information / information gain between features and label
 for identifying discriminative predicate paths.
 - Model building: Trains a logistic regression model that optimizes AUROC and empirically
 sets a threshold 'delta' for retaining most informative feature paths.
@@ -41,7 +41,7 @@ def train_model(G, triples, use_interpretable_features=False, cv=10):
 	2a. Path selection using information gain
 	2b. Filtering most informative discriminative predicate paths
 	3. Building logistic regression model
-	
+
 	Parameters:
 	-----------
 	G: rgraph
@@ -53,7 +53,7 @@ def train_model(G, triples, use_interpretable_features=False, cv=10):
 		Whether or not to perform 2b.
 	cv: int
 		Number of cross-validation folds.
-	
+
 	Returns:
 	--------
 	vec: DictVectorizer
@@ -70,7 +70,7 @@ def train_model(G, triples, use_interpretable_features=False, cv=10):
 	pid = triples[0]['pid']
 	print '=> Removing predicate {} from KG.'.format(pid)
 	eraseedges_mask = ((G.csr.indices - (G.csr.indices % G.N)) / G.N) == pid
-	G.csr.data[eraseedges_mask] = 0 
+	G.csr.data[eraseedges_mask] = 0
 	print ''
 
 	# Path extraction
@@ -83,7 +83,7 @@ def train_model(G, triples, use_interpretable_features=False, cv=10):
 	n, m = X.shape
 	print 'Time taken: {:.2f}s'.format(time() - t1)
 	print ''
-	
+
 	# Path selection
 	print '=> Path selection..'
 	t1 = time()
@@ -124,7 +124,7 @@ def train_model(G, triples, use_interpretable_features=False, cv=10):
 		)
 		print 'Time taken: {:.2f}s'.format(time() - t1)
 		print ''
- 
+
 	# Model creation
 	print '=> Model building..'
 	t1 = time()
@@ -139,7 +139,7 @@ def train_model(G, triples, use_interpretable_features=False, cv=10):
 def predict(G, triples, vec, model):
 	"""
 	Predicts unseen triples using previously built PredPath (PP) model.
-	
+
 	Parameters:
 	-----------
 	G: rgraph
@@ -153,7 +153,7 @@ def predict(G, triples, vec, model):
 		A dictionary containing 'clf' as the built model,
 		and two other key-value pairs, including best parameter
 		and best AUROC score.
-	
+
 	Returns:
 	--------
 	pred: array
@@ -178,7 +178,7 @@ def predict(G, triples, vec, model):
 def extract_paths(G, triples, y, length=3, features=None):
 	"""
 	Extracts anchored predicate paths for a given sequence of triples.
-	
+
 	Parameters:
 	-----------
 	G: rgraph
@@ -218,6 +218,7 @@ def extract_paths(G, triples, y, length=3, features=None):
 			paths = c_get_paths(G, sid, pid, oid, length=m, maxpaths=200) # cythonized
 			for pth in paths:
 				ff = tuple(pth.relational_path) # feature
+				print 'FF was this: {}'.format(ff)
 				if ff not in features:
 					features.add(ff)
 					if label == 1:
@@ -234,7 +235,7 @@ def extract_paths(G, triples, y, length=3, features=None):
 	if return_features:
 		return features, pos_features, neg_features, measurements
 	return measurements
-	
+
 def get_paths(G, s, p, o, length=3):
 	"Returns all paths of length `length` starting at s and ending in o."
 	path_stack = [[s]]
@@ -268,7 +269,7 @@ def find_best_model(X, y, scoring='roc_auc', cv=10):
 	"""
 	Fits a logistic regression classifier to the input data (X, y),
 	and returns the best model that maximizes `scoring` (e.g. AUROC).
-	
+
 	Parameters:
 	-----------
 	X: sparse matrix
@@ -279,11 +280,11 @@ def find_best_model(X, y, scoring='roc_auc', cv=10):
 		A string indicating the evaluation criteria to use. e.g. ROC curve.
 	cv: int
 		No. of folds in cross-validation.
-	
+
 	Returns:
 	--------
 	best: dict
-		Best model key-value pairs. e.g. classifier, best score on 
+		Best model key-value pairs. e.g. classifier, best score on
 		left out data, optimal parameter.
 	"""
 	steps = [('clf', LogisticRegression())]
@@ -292,7 +293,7 @@ def find_best_model(X, y, scoring='roc_auc', cv=10):
 	grid_search = GridSearchCV(pipe, param_grid=params, cv=cv, refit=True, scoring=scoring)
 	grid_search.fit(X, y)
 	best = {
-		'clf': grid_search.best_estimator_, 
+		'clf': grid_search.best_estimator_,
 		'best_score': grid_search.best_score_,
 		'best_param': grid_search.best_params_
 	}

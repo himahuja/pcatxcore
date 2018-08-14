@@ -49,7 +49,7 @@ def test_graph1_creation():
 
 def test_graph2_creation():
 	# shape of an example graph.
-	shape = (8, 8, 6)
+	shape = (8, 8, 6) 
 
 	# adjacency
 	adj = np.array([
