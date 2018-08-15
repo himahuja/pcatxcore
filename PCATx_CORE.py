@@ -72,14 +72,14 @@ def PCATx_CORE_unsupervised(list_of_companies):
     for company in list_of_companies:
         company_queue.put(company)
 
-    driver = setDriver(False)
+    driver = setDriver()
     while not company_queue.empty():
         name = company_queue.get()
         pm = ProfileManager()
         wiki = wikiParser(name)
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
-        sub_list = google_sub.get_sub(name, driver)
+        sub_list = google_sub_all_level.get_sub(name, driver)
         for company in sub_list:
             company_queue.put(company)
         try:
@@ -93,7 +93,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
                 wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
             generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
         except:
-            driver = setDriver(False)
+            driver = setDriver()
             company_queue.put(name)
             save_list = []
             while not company_queue.empty():
