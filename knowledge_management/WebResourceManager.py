@@ -221,7 +221,10 @@ class WebResourceManager(object):
                 tag2sent[tag] = i
             tuples = []
             for doc_vec in doc_tags:
-                tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
+                try:
+                    tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
+                except KeyError as e:
+                    print(e)
             mergeSortTuples(tuples)
             temp_text = ""
             for i in range(len(tuples)//2):
@@ -231,7 +234,7 @@ class WebResourceManager(object):
             self.train_classifier()
             tfidf_tuples = []
             for i in range(len(sent_list)):
-                tfidf_tuples.append((self.get_relevance_score(item['text']), sent_list[i]))
+                tfidf_tuples.append((self.get_relevance_score(sent_list[i]), sent_list[i]))
             mergeSortTuples(tuples)
             for i in range(len(tuples)//2):
                 temp_text+=tuples[1] + "\n"
@@ -254,8 +257,8 @@ class WebResourceManager(object):
     def read_in_from_iterator(self, iterator_of_docs):
         for item in iterator_of_docs:
             item['id'] = str(self.string_to_uuid(item['url'])) + "--" + re.sub('[^A-Za-z0-9]+', '', item['url'])
-            if len(item['id']) > 245:
-                item['id'] = item['id'][:245]
+            if len(item['id']) > 100:
+                item['id'] = item['id'][:100]
             self.url_to_uuid[item['url']] = item['id']
             try:
                 html = item['html']

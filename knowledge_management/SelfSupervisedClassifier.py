@@ -33,7 +33,7 @@ def get_TaggedDocuments(manager):
             sent_list = nltk.sent_tokenize(item['text'])
             for i in range(len(sent_list)):
                 words = sent_list[i].split()
-                tag = "{:06d}{:04d}".format(count, i)
+                tag = "{:06d}{:4d}".format(count, i)
                 letters_in_sentence = sum([len(w) for w in words])
                 if letters_in_sentence > 750 or letters_in_sentence < 50:
                     tagged = True
@@ -87,7 +87,10 @@ def main():
         wrm = WebResourceManager(rel_path = "..")
         wrm.load(os.path.join("../data/webresourcemanagers", file))
         wrm.rel_path = ".."
-        get_TaggedDocuments(wrm)
+        try:
+            get_TaggedDocuments(wrm)
+        except Exception as e:
+            print(file)
     train_model()
     for file in os.listdir("../data/webresourcemanagers"):
         wrm = WebResourceManager(rel_path = "..")
