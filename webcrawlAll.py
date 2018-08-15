@@ -150,7 +150,7 @@ def setDriver(headless = False):
     # ██      ██   ██ ██   ██ ██ ███ ██ ██      ██      ██   ██     ██ ███ ██ ██   ██ ██   ██ ██
     #  ██████ ██   ██ ██   ██  ███ ███  ███████ ███████ ██   ██      ███ ███  ██   ██ ██   ██ ██
 
-def crawlerWrapper(search_query, engine, headless = False):
+def crawlerWrapper(search_query, engine, headless = False, doSetDriver):
     """
         Takes in the query to search for on a portal
         Currently supported portals:
@@ -167,7 +167,10 @@ def crawlerWrapper(search_query, engine, headless = False):
             Returns nothing
             Saves a pickle file with the name: search_query
     """
-    driver = setDriver(headless)
+    if doSetDriver == None:
+        driver = setDriver(headless)
+    else:
+        driver = doSetDriver
 
     #  ██████   ██████   ██████   ██████  ██      ███████
     # ██       ██    ██ ██    ██ ██       ██      ██
@@ -545,10 +548,11 @@ def crawlerWrapper(search_query, engine, headless = False):
 
 
 def main():
+    driver = setDriver(True)
     search_query = {}
     """ Using the google crawler"""
     # search_query['name'] = "whatever you want to query on google"
-    # crawlerWrapper('Hello I am Himanshu Ahuja what is python we love code wtf', 'google')
+    # crawlerWrapper(search_query, 'google', driver)
     """
     Using the SEC CIK 10k engine on one of the CIKs
     """
