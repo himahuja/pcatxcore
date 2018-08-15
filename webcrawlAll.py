@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+@author: Himanshu, Melody, Alex
+"""
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 # to set the browser options
@@ -543,7 +546,7 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
     else:
         print("Engine hasn't been defined yet.")
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
-    driver.quit()
+    # driver.quit()
     return links
 
 
