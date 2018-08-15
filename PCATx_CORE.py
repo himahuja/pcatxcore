@@ -71,13 +71,13 @@ def PCATx_CORE_unsupervised(list_of_companies):
     for company in list_of_companies:
         company_queue.put(company)
     
+    driver = google_sub.setDriver()
     while not company_queue.empty():
         name = company_queue.get()
         pm = ProfileManager()
         wiki = wikiParser(name)
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
-        driver = google_sub.setDriver()
         sub_list = google_sub.get_sub(name, driver)
         for company in sub_list:
             company_queue.put(company)
