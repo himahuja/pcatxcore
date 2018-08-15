@@ -391,6 +391,8 @@ def compute_mincostflow(G, relsim, subs, preds, objs, flowfile):
 		'indices': G.csr.indices.copy(),
 		'indptr': G.csr.indptr.copy()
 	}
+	# Uses the log of indegree to calculate the costs of the successive shortest paths
+	## Change this to another metric
 	cost_vec_bak = np.log(G.indeg_vec).copy()
 
 	# some set up
