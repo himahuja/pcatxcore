@@ -7,7 +7,7 @@ Created on Fri Jul  6 14:10:12 2018
 import parser, pickle, difflib, nltk, json, queue, re
 from webcrawlAll import crawlerWrapper
 from PCATParser import *
-import google_sub
+import google_sub_all_level_all_level
 from knowledge_management.WebResourceManager import *
 from knowledge_management.ProfileManager import *
 from gensim import models
@@ -22,18 +22,18 @@ def PCATx_CORE_supervised():
         foundInDatabase = True
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
-        driver = google_sub.setDriver()
-        sub_list = google_sub.get_sub(name, driver)
+        driver = google_sub_all_level.setDriver()
+        sub_list = google_sub_all_level.get_sub_list(name, driver)
     else:
         yon = input("Did you mean this company? (y/n) {}   ".format(wiki[2]))
         if yon.lower() == "y":
             query = { 'name' : newName }
-            driver = google_sub.setDriver()
-            sub_list = google_sub.get_sub(newName, driver)
+            driver = google_sub_all_level.setDriver()
+            sub_list = google_sub_all_level.get_sub(newName, driver)
         else:
             query = { 'name' : name }
-            driver = google_sub.setDriver()
-            sub_list = google_sub.get_sub(name, driver)
+            driver = google_sub_all_level.setDriver()
+            sub_list = google_sub_all_level.get_sub_list(name, driver)
         matches = difflib.get_close_matches(name, pm.get_aliases(), cutoff = .4) + difflib.get_close_matches(newName, pm.get_aliases(), cutoff = .4)
         if len(matches) > 0:
             print("0. None of the below")
@@ -77,8 +77,8 @@ def PCATx_CORE_unsupervised(list_of_companies):
         wiki = wikiParser(name)
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
-        driver = google_sub.setDriver()
-        sub_list = google_sub.get_sub(name, driver)
+        driver = google_sub_all_level.setDriver()
+        sub_list = google_sub_all_level.get_sub(name, driver)
         for company in sub_list:
             company_queue.put(company)
         crawlerWrapper(query, "google", headless = False)

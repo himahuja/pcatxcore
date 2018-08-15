@@ -11,8 +11,16 @@ import pickle
 import json, os, re, sys, subprocess
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
+import requests
 
 def setDriver():
+    if sys.platform == 'darwin':
+        type_chromedriver = "chromedriver_darwin"
+    elif sys.platform == 'linux':
+        type_chromedriver = "chromedriver_linux"
+    elif sys.platform == 'win32':
+        type_chromedriver = "chromedriver_win32.exe"
+    path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), type_chromedriver)
     options = Options()
     options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
@@ -20,7 +28,7 @@ def setDriver():
     options.add_argument('start-maximized') #
     options.add_argument('disable-infobars')
     options.add_argument("--disable-extensions")
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(path_chromedriver, chrome_options=options)
     return driver
 
 def get_sub_list(company, driver):
