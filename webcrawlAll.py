@@ -150,7 +150,7 @@ def setDriver(headless = False):
     # ██      ██   ██ ██   ██ ██ ███ ██ ██      ██      ██   ██     ██ ███ ██ ██   ██ ██   ██ ██
     #  ██████ ██   ██ ██   ██  ███ ███  ███████ ███████ ██   ██      ███ ███  ██   ██ ██   ██ ██
 
-def crawlerWrapper(search_query, engine, headless = False, doSetDriver):
+def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
     """
         Takes in the query to search for on a portal
         Currently supported portals:
