@@ -31,7 +31,7 @@ def setDriver():
     driver = webdriver.Chrome(path_chromedriver, chrome_options=options)
     return driver
 
-def get_sub_list(company, driver):
+def get_sub(company, driver):
     query = company+"+subsidiaries"
     goog_search = "https://www.google.co.uk/search?q=" + query
 

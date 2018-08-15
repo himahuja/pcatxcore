@@ -7,7 +7,7 @@ Created on Fri Jul  6 14:10:12 2018
 import parser, pickle, difflib, nltk, json, queue, re
 from webcrawlAll import crawlerWrapper
 from PCATParser import *
-import google_sub_all_level_all_level
+import google_sub_all_level
 from knowledge_management.WebResourceManager import *
 from knowledge_management.ProfileManager import *
 from gensim import models
