@@ -102,8 +102,6 @@ _float = np.float
 #######################################################################
 
 
-
-
 def predpath_train_model(G, triples, use_interpretable_features=False, cv=10):
 	"""
 	Entry point for building a fact-checking classifier.
@@ -393,6 +391,8 @@ def compute_mincostflow(G, relsim, subs, preds, objs, flowfile):
 		'indices': G.csr.indices.copy(),
 		'indptr': G.csr.indptr.copy()
 	}
+	# Uses the log of indegree to calculate the costs of the successive shortest paths
+	## Change this to another metric
 	cost_vec_bak = np.log(G.indeg_vec).copy()
 
 	# some set up
@@ -456,7 +456,7 @@ def compute_relklinker(G, relsim, subs, preds, objs):
 	# set weights
 	indegsim = weighted_degree(G.indeg_vec, weight=WTFN).reshape((1, G.N))
 	indegsim = indegsim.ravel()
-	print 'G.N is :{}'.format(G.N)
+	print 'G.N is : {}'.format(G.N)
 	targets = G.csr.indices % G.N
 	print 'targets is: {}, size of targets is: {}'.format(targets, targets.shape)
 	specificity_wt = indegsim[targets] # specificity
@@ -467,6 +467,7 @@ def compute_relklinker(G, relsim, subs, preds, objs):
 	###########################################
 	# THIS IS DIFFERENT THAN USUAL KL
 	relations = (G.csr.indices - targets) / G.N
+	print 'G.csr.indices has a size: {}'.format(G.csr.indices.shape)
 	print '{}'.format(relations)
 	###########################################
 	# back up
@@ -555,6 +556,12 @@ def compute_klinker(G, subs, preds, objs):
 	log.info('')
 	return scores, paths, rpaths, times
 # ================== MAIN CALLING FUNCTION ==================== #
+
+def normalize(df):
+	softmax = lambda x: np.exp(x) / float(np.exp(x).sum())
+	df['softmaxscore'] = df[['sid','score']].groupby(by=['sid'], as_index=False).transform(softmax)
+	return df
+
 def main(args=None):
 	parser = argparse.ArgumentParser(
 		description=__doc__,
