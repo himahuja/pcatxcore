@@ -81,15 +81,26 @@ def PCATx_CORE_unsupervised(list_of_companies):
         sub_list = google_sub.get_sub(name, driver)
         for company in sub_list:
             company_queue.put(company)
-        crawlerWrapper(query, "google", headless = False)
-        with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
-            url_list = pickle.load(handle)
-        wrm = WebResourceManager()
-        resources = []
-        wrm.read_in_from_iterator(parser_iter(query['name'], url_list))
-        if(len(wrm) > 0):
-            wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
-        generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
+        try:
+            crawlerWrapper(query, "google", headless = True)
+            with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
+                url_list = pickle.load(handle)
+            wrm = WebResourceManager()
+            resources = []
+            wrm.read_in_from_iterator(parser_iter(query['name'], url_list))
+            if(len(wrm) > 0):
+                wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
+            generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
+        except:
+            company_queue.put(name)
+            save_list = []
+            while not company_queue.empty():
+                save_list.append(company_queue.get())
+            file = open("PCATx_CORE_unsupervised_save_list.json", "w")
+            file.write(json.dumps(save_list, sort_keys = True, indent = 4))
+            file.close()
+
+
 
 def basic_relevance_filter(document):
     new_doc = []
