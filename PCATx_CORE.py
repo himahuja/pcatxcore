@@ -7,7 +7,7 @@ Created on Fri Jul  6 14:10:12 2018
 import parser, pickle, difflib, nltk, json, queue, re
 from webcrawlAll import crawlerWrapper, setDriver
 from PCATParser import *
-import google_sub_all_level
+import Site_Crawler_Parser_All
 from knowledge_management.WebResourceManager import *
 from knowledge_management.ProfileManager import *
 from gensim import models
@@ -23,18 +23,16 @@ def PCATx_CORE_supervised():
         foundInDatabase = True
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
-        driver = google_sub_all_level.setDriver()
-        sub_list = google_sub_all_level.get_sub_list(name, driver)
+        driver = Site_Crawler_Parser_All.setDriver(True)
+        sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
     else:
         yon = input("Did you mean this company? (y/n) {}   ".format(wiki[2]))
         if yon.lower() == "y":
             query = { 'name' : newName }
-            # driver = google_sub_all_level.setDriver()
-            sub_list = google_sub_all_level.get_sub(newName, driver)
+            sub_list = Site_Crawler_Parser_All.get_sub(newName, driver)
         else:
             query = { 'name' : name }
-            # driver = google_sub_all_level.setDriver()
-            sub_list = google_sub_all_level.get_sub_list(name, driver)
+            sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
         matches = difflib.get_close_matches(name, pm.get_aliases(), cutoff = .4) + difflib.get_close_matches(newName, pm.get_aliases(), cutoff = .4)
         if len(matches) > 0:
             print("0. None of the below")
@@ -79,7 +77,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
         wiki = wikiParser(name)
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
-        sub_list = google_sub_all_level.get_sub(name, driver)
+        sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
         for company in sub_list:
             company_queue.put(company)
         try:

@@ -15,29 +15,24 @@ from selenium.webdriver.support.ui import Select
 import queue
 
 
-
-# EWG driver is non-headless
-def setDriver_EWG():
-    options = Options()
-    #options.add_argument("--headless") # Runs Chrome in headless mode.
-    options.add_argument('--no-sandbox') # Bypass OS security model
-    options.add_argument('--disable-gpu')  # applicable to windows os only
-    options.add_argument('start-maximized') #
-    options.add_argument('disable-infobars')
-    options.add_argument("--disable-extensions")
-    driver = webdriver.Chrome(chrome_options=options)
-    return driver
-
 # set driver for all other engines
-def setDriver():
+def setDriver(headless = False):
+    if sys.platform == 'darwin':
+        type_chromedriver = "chromedriver_darwin"
+    elif sys.platform == 'linux':
+        type_chromedriver = "chromedriver_linux"
+    elif sys.platform == 'win32':
+        type_chromedriver = "chromedriver_win32.exe"
+    path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), type_chromedriver)
     options = Options()
-    options.add_argument("--headless") # Runs Chrome in headless mode.
+    if headless:
+        options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
     options.add_argument('disable-infobars')
     options.add_argument("--disable-extensions")
-    driver = webdriver.Chrome(chrome_options=options)
+    driver = webdriver.Chrome(path_chromedriver, chrome_options=options)
     return driver
 
 # get TRI Dictionary
@@ -388,7 +383,7 @@ if __name__ == "__main__":
     print('4. NPIRS Hazard to Companies(NPIRS)')
     
     engine = input("Please enter your choice (TRI/GOOGLE/EWG/NPIRS): ")
-    driver = setDriver()
+    driver = setDriver(True)
     
     if engine == 'TRI':       
         # example tri id: 46402SSGRYONENO, 89319BHPCP7MILE, 70070MNSNTRIVER
@@ -407,7 +402,7 @@ if __name__ == "__main__":
     elif engine == 'EWG':
         # example ewg company name: Advanced Research Laboratories, Advanced Beauty, Inc.
         company = input('Please enter a company name: ')
-        driver = setDriver_EWG()
+        driver = setDriver(False)
         comp_prod_dict = company_to_product(company,driver)
         print(product_to_ingredient(comp_prod_dict,driver))
         # example output:
