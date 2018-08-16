@@ -10,6 +10,7 @@ sys.path.append("..")
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from nltk.stem import PorterStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from PCATParser import *
 import json, os, uuid, nltk, re, time
 import numpy as np
@@ -20,14 +21,38 @@ class WebResourceManager(object):
         #read in the file
         self.rel_path = rel_path
         self.url_to_uuid = {}
-        if rel_path == None:
-            self.classifier = Doc2Vec.load("data/doc2vec_model")
+        self.classifier = TfidfVectorizer(stop_words='english')
+#        if rel_path == None:
+#            self.classifier = Doc2Vec.load("data/doc2vec_model")
+#        else:
+#            self.classifier = Doc2Vec.load(os.path.join(self.rel_path, "data/doc2vec_model"))
+    
+
+    def __iter__(self, instances=1, iam = 0):
+        """
+        An iterator function with the ability to be accessed by multiple instances at once in a safe way.
+
+    
+        Parameters
+        ----------
+        instances : int
+            the number of instances using the iterator (default = 1)
+        iam : int
+            the current instance's assignment [0-*instances*) (default = 0)
+    
+        Returns
+        -------
+        dict
+            A dictionary which is the profile if found, else None (Yields)
+    
+        """
+        if instances == 1:
+            for elem in self.url_to_uuid.values():
+                yield self.get(elem)
         else:
-            self.classifier = Doc2Vec.load(os.path.join(self.rel_path, "data/doc2vec_model"))
-        
-    def __iter__(self):
-        for elem in self.url_to_uuid.values():
-            yield self.get(elem)
+            for i in range(len(self.url_to_uuid.values())):
+                if i % instances == iam:
+                    yield self.get(list(self.url_to_uuid.values().keys())[i])
         
     #get the file with the UUID
     def __getitem__(self, key):
@@ -61,8 +86,9 @@ class WebResourceManager(object):
             else:
                 file = open(os.path.join(self.rel_path, "data/docs/{}.json").format(key))
             return json.loads(file.read())
-        except:
-            pass
+        except Exception as e:
+            print(self.rel_path)
+            print("Error while getting {}: {}".format(key, str(e)))
         
     def get_corpus(self, process_all=False):
         corpus_list = []
@@ -109,13 +135,44 @@ class WebResourceManager(object):
         print("...100.00% done, processing document {} of {}".format(len(self),len(self)))
         return corpus_list
         
+    def get_docs_by_sentence(self):
+        for item in self:
+            try:
+                sent_list = nltk.sent_tokenize(item['text'])
+                for i in range(len(sent_list)):
+                    yield sent_list[i]
+            except Exception as e:
+                print("{} threw the following exception while yielding text: {}".format(item['id'], str(e)))
+        
     def get_relevance_score(self, document):
-        pass
+        response = self.classifier.transform([document])
+        feature_names = self.classifier.get_feature_names()
+    
+        score_dict = {}
+        for col in response.nonzero()[1]:
+            score_dict[feature_names[col]] = response[0,col]
+    
+        word_list = nltk.word_tokenize(document)
+        total_score = 0
+        count_keywords = 0
+        for word in word_list:
+            if word in score_dict:
+                total_score += score_dict[word]
+                count_keywords += 1
+        if (count_keywords != 0):   
+            score = total_score / count_keywords
+        else:
+            score = 0
+        print(score)
+        return score
     
     def get_TaggedDocuments(self):
-        for file in self:
-            #if query is a list this will throw errors, keep that in mind if the future
-            yield TaggedDocument(words=file['corpus'], tags=list({file['id'], file['query']}))
+        doc_count = -1
+        for item in self:
+            doc_count+=1
+            sent_list = nltk.sent_tokenize(item['text'])
+            for i in range(len(sent_list)):
+                yield TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i)))
     
     def get_texts(self):
         for file in self:
@@ -142,11 +199,47 @@ class WebResourceManager(object):
             pass
         
     def rank_by_relevance(self):
+        model = Doc2Vec.load("../data/doc2vec_model")
+        doc_list = []
+        doc_count = -1
         for item in self:
-            item['relevance_score'] = self.get_relevance_score(item['text'])
-            file = open(os.path.join("data/docs", item['id']+".json"), "w")
-            file.write(json.dumps(item, sort_keys=True, indent=4))
-            file.close()
+            doc_count+=1
+            sent_list = nltk.sent_tokenize(item['text'])
+            for i in range(len(sent_list)):
+                doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i))))
+        model.train(doc_list, total_examples=model.corpus_count, epochs=model.iter)
+        model.save("../data/doc2vec_model")
+        doc_count = -1
+        for item in self:
+            doc_count+=1
+            sent_list = nltk.sent_tokenize(item['text'])
+            doc_tags = []
+            tag2sent = {}
+            for i in range(len(sent_list)):
+                tag = "{:06d}{:04d}".format(doc_count, i)
+                doc_tags.append(tag)
+                tag2sent[tag] = i
+            tuples = []
+            for doc_vec in doc_tags:
+                tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
+            mergeSortTuples(tuples)
+            temp_text = ""
+            for i in range(len(tuples)//2):
+                temp_text+=tuples[1] + "\n"
+            item['ss_classifier'] = temp_text
+            
+            self.train_classifier()
+            tfidf_tuples = []
+            for i in range(len(sent_list)):
+                tfidf_tuples.append((self.get_relevance_score(item['text']), sent_list[i]))
+            mergeSortTuples(tuples)
+            for i in range(len(tuples)//2):
+                temp_text+=tuples[1] + "\n"
+            item['tfidf_classifier'] = temp_text
+            
+            self.update_profile(item)
+            print("Finished item {}".format(item['id']))
+            
     
     #DOES NOT USE REL_PATH
     def read_in_from_directory(self, directory):
@@ -195,26 +288,60 @@ class WebResourceManager(object):
         file.write(json.dumps(this, sort_keys = True, indent = 4))
         file.close
 
-#    def train_classifier(self):
-#        self.classifier.fit_transform(self.get_texts())
+    def train_classifier(self):
+        self.classifier.fit_transform(self.get_texts())
 
+    def update_profile(self, item):
+        if self.rel_path == None:
+            file = open("data/docs/{}.json".format(item['id']), "w")
+            file.write(json.dumps(item, sort_keys = True, indent = 4))
+            file.close()
+        else:
+            file = open(os.path.join(self.rel_path, "data/docs/{}.json".format(item['id'])), "w")
+            file.write(json.dumps(item, sort_keys = True, indent = 4)) 
+            file.close()
+
+def convert_to_corpus(doc):
+    ps = PorterStemmer()  
+    lmtzr = WordNetLemmatizer()
+    text = re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", doc.lower())).splitlines()
+    doc_list = []
+    for line in text:
+        words = line.split()
+        for word in words:
+            doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
+    return doc_list
             
-def insertionSort(arr):
- 
-    # Traverse through 1 to len(arr)
-    for i in range(1, len(arr)):
- 
-        key = arr[i]['relevance_score']
- 
-        # Move elements of arr[0..i-1], that are
-        # greater than key, to one position ahead
-        # of their current position
-        j = i-1
-        while j >=0 and key < arr[j]['relevance_score'] :
-                arr[j+1]['relevance_score'] = arr[j]['relevance_score']
-                j -= 1
-        arr[j+1]['relevance_score'] = key
-    return arr
+def mergeSortTuples(alist):
+    if len(alist)>1:
+        mid = len(alist)//2
+        lefthalf = alist[:mid]
+        righthalf = alist[mid:]
+
+        mergeSort(lefthalf)
+        mergeSort(righthalf)
+
+        i=0
+        j=0
+        k=0
+        while i < len(lefthalf) and j < len(righthalf):
+            if lefthalf[i][0] < righthalf[j][0]:
+                alist[k]=lefthalf[i]
+                i=i+1
+            else:
+                alist[k]=righthalf[j]
+                j=j+1
+            k=k+1
+
+        while i < len(lefthalf):
+            alist[k]=lefthalf[i]
+            i=i+1
+            k=k+1
+
+        while j < len(righthalf):
+            alist[k]=righthalf[j]
+            j=j+1
+            k=k+1
             
 def main():
     with open("../kpm/data/articles.txt") as f:

@@ -69,8 +69,8 @@ def search_google(query, driver, number_of_pages):
         try:
             next_page = driver.find_element_by_css_selector('a#pnnext.pn')
             next_page.click()
-        except:
-            print("There are no more pages to parse.")
+        except Exception as e:
+            print("There are no more pages to parse. {}".format(str(e)))
             break
     return link_href
 
@@ -124,7 +124,7 @@ def search_sec10k(url, driver):
 #      ██ ██         ██        ██   ██ ██   ██ ██  ██  ██  ██      ██   ██
 # ███████ ███████    ██        ██████  ██   ██ ██   ████   ███████ ██   ██
 
-def setDriver():
+def setDriver(headless = False):
     if sys.platform == 'darwin':
         type_chromedriver = "chromedriver_darwin"
     elif sys.platform == 'linux':
@@ -133,7 +133,8 @@ def setDriver():
         type_chromedriver = "chromedriver_win32.exe"
     path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), type_chromedriver)
     options = Options()
-    # options.add_argument("--headless") # Runs Chrome in headless mode.
+    if headless:
+        options.add_argument("--headless") # Runs Chrome in headless mode.
     options.add_argument('--no-sandbox') # Bypass OS security model
     options.add_argument('--disable-gpu')  # applicable to windows os only
     options.add_argument('start-maximized') #
@@ -149,7 +150,7 @@ def setDriver():
     # ██      ██   ██ ██   ██ ██ ███ ██ ██      ██      ██   ██     ██ ███ ██ ██   ██ ██   ██ ██
     #  ██████ ██   ██ ██   ██  ███ ███  ███████ ███████ ██   ██      ███ ███  ██   ██ ██   ██ ██
 
-def crawlerWrapper(search_query, engine):
+def crawlerWrapper(search_query, engine, headless = False):
     """
         Takes in the query to search for on a portal
         Currently supported portals:
@@ -166,7 +167,7 @@ def crawlerWrapper(search_query, engine):
             Returns nothing
             Saves a pickle file with the name: search_query
     """
-    driver = setDriver()
+    driver = setDriver(headless)
 
     #  ██████   ██████   ██████   ██████  ██      ███████
     # ██       ██    ██ ██    ██ ██       ██      ██
@@ -543,7 +544,7 @@ def crawlerWrapper(search_query, engine):
     return links
 
 
-def main(part_number):
+def main():
     search_query = {}
     """ Using the google crawler"""
     # search_query['name'] = "whatever you want to query on google"
@@ -573,25 +574,26 @@ def main(part_number):
     # search_query['url'] = 'https://www.dow.com/en-us/search#t=Products'
     # search_query['name'] = 'dow-products'
     # crawlerWrapper(search_query, 'sitespecific')
-    
+
     """ Using the TRI for a facility report"""
     # search_query['tri_id'] = '88252JL3GS115SI'
     # crawlerWrapper(search_query, 'tri')
 
     """ Using the google for subsidiaries"""
     # search_query['name'] = 'samsung'
-    # crawlerWrapper(search_query, 'google-subs')    
-    
+    # crawlerWrapper(search_query, 'google-subs')
+
     """ using the cik to get the E-21 of the company / subsidary structure, ultimate parent [top node] """
 
     # """ Mergers and acquisition """
     # search_query['name'] = "3M Subsidaries"
     # crawlerWrapper(search_query, 'google-subs')
-    search_query['part'] = part_number
-    # starting_point = 1000
-    search_query['starting_point'] = 1000 * (search_query['part'])
-    search_query['ending_point'] = search_query['starting_point'] + 1999
-    crawlerWrapper(search_query, 'everything-all')
+    # search_query['part'] = part_number
+    # # starting_point = 1000
+    # search_query['starting_point'] = 1000 * (search_query['part'])
+    # search_query['ending_point'] = search_query['starting_point'] + 1999
+    # crawlerWrapper(search_query, 'everything-all')
 if __name__ == "__main__":
-    part_number = int(sys.argv[1])
-    main(part_number)
+    # part_number = int(sys.argv[1])
+    # main(part_number)
+    main()
