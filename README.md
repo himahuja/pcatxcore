@@ -104,15 +104,13 @@ Usage:
 
 |Function | Input        | Processing           | Output  |
 |-----   | ------------- |:-------------:| -----:|
-|get_sub_list(company, driver)    | company name, chrome webdriver     | search "COMPANY_NAME+subsidiaries" on google| a list of subsidiaries that is directly returned by google on the top|
-|get_sub_dict(sub, sub_list)    |  a company name, a list of subsidiaries found for that company  | build a dictionary that maps a company name to its subsidiaries | a dictionary of company name to a list of subsidiaries|
-|get_list_of_dict(comp_name,driver)| company name, chrome webdriver | go one level down in subsidiary list and find sub-subsidiaries | a mixed list of subsidiaries together with dictionaries of sub-subsidiaries once found for a subsidiary|
-|all_level_down(list_of_dict)    |  a mixed list of strings together with dictionaries  | go all level down to find subsidiaries | a mixed list of subsidiaries together with dictionaries of all-level subsidiaries once found for a subsidiary|
+|get_sub(company, driver)    | company name, chrome webdriver     | search "COMPANY_NAME+subsidiaries" on google| a list of subsidiaries that is directly returned by google on the top|
+|get_recursive_sub(company, driver)    |  a company name, chrome webdriver  | search subsidiaries recursively on google | build a dictionary that maps a company name to its parent company and a list of subsidiaries|
+
 
 Usage:
 1. call `driver = setDriver()` to set chrome driver for crawling
-1. call `sub_list = get_list_of_dict(comp_name,driver)` to get a one-level-down list of subsidiaries
-1. call `all_level_down(sub_list)` to get all-level-down list of subsidiaries
+1. call `master_google_sub = get_recursive_sub(company,driver)` to get a all-level-down subsidiaries for a company
 
 [tri_facility_info.py](/tri_facility_info.py) is a site crawler for TRI Facility(https://www.epa.gov/enviro/tri-search) that gets all facility information with a tri id the user provides
 
