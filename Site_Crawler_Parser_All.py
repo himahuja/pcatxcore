@@ -14,6 +14,21 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 import queue
 
+
+
+# EWG driver is non-headless
+def setDriver_EWG():
+    options = Options()
+    #options.add_argument("--headless") # Runs Chrome in headless mode.
+    options.add_argument('--no-sandbox') # Bypass OS security model
+    options.add_argument('--disable-gpu')  # applicable to windows os only
+    options.add_argument('start-maximized') #
+    options.add_argument('disable-infobars')
+    options.add_argument("--disable-extensions")
+    driver = webdriver.Chrome(chrome_options=options)
+    return driver
+
+# set driver for all other engines
 def setDriver():
     options = Options()
     options.add_argument("--headless") # Runs Chrome in headless mode.
@@ -190,9 +205,7 @@ def get_recursive_sub(company,driver):
         
     while not company_queue.empty():
         try:
-            time.sleep(2)
             name = company_queue.get()
-            runned_list.append(name)
             try:
                 parent = master_parent_child_dict[name]
             except:
@@ -262,7 +275,7 @@ def company_to_product(company,driver):
                     if a.text == 'Next>':
                         found = True
                         a.click()
-                        time.sleep(2)
+                        
                 if not found:
                     print(company+' products attached.')
                     break
@@ -271,11 +284,11 @@ def company_to_product(company,driver):
         # map a company to a product list once found
         if prod_list != []:
             comp_prod_dict[company] = prod_list
-        time.sleep(4)
+        
         
     except:
         print(company+' not found')
-        time.sleep(4)
+        
     return comp_prod_dict
 
 # find ingredients for all products
@@ -306,11 +319,11 @@ def product_to_ingredient(comp_prod_dict,driver):
                 if ingredient_list != []:
                     prod_ingredient_dict[prod] = ingredient_list
                     print(prod+' ingredient found')
-                time.sleep(4)
+                
     
             except:
                 print(prod+' ingredient not found')
-                time.sleep(4)
+                
         if prod_ingredient_dict != {}:
             comp_prod_ingredient_dict[key] = prod_ingredient_dict
     return comp_prod_ingredient_dict
@@ -368,10 +381,9 @@ def hazard_to_company(chemical,driver):
         return []
 
 if __name__ == "__main__":
-    # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl
     print('Please select an engine:')
     print('1. TRI Facility Information(TRI)')
-    print('2. Recursive Google Subsidiaries(Google)')
+    print('2. Recursive Google Subsidiaries(GOOGLE)')
     print('3. EWG Skin Deep Cosmetics(EWG)')
     print('4. NPIRS Hazard to Companies(NPIRS)')
     
@@ -380,26 +392,22 @@ if __name__ == "__main__":
     
     if engine == 'TRI':       
         # example tri id: 46402SSGRYONENO, 89319BHPCP7MILE, 70070MNSNTRIVER
-        tri_id = input('Please enter tri id: ')
+        tri_id = input('Please enter a tri id: ')
         print(get_tri_dict(tri_id,driver))
         # example output
-        #{'fac_name': 'USS GARY WORKS', 'tri_id': '46402SSGRYONENO', 'address': '1 N BROADWAY 
+        #{'fac_name': 'ROBINSON NEVADA MINING CO', 'tri_id': '89319BHPCP7MILE', 'address': '4232 W WHITE PINE CO RD 44 RUTH, NV, 89319', 'frs_id': '110042080832', 'mailing_name': 'ROBINSON NEVADA MINING CO', 'mailing_address': 'PO BOX 382 RUTH, NV, 89319', 'parent_company': 'NA', 'county': 'WHITE PINE', 'pub_contact': 'AMANDA HILTON', 'region': '9', 'phone': '(775) 289-7045', 'latitude': '39.27083', 'tribe': 'NA', 'longitude': '-115.0125', 'bia_tribal_code': 'NA', 'naics': 'NA', 'sic': 'NA', 'last_form': 'NA'}
     elif engine == 'GOOGLE':
+        # example company: ABC-MART,INC.
         company = input('Enter a company name: ')
         master_google_sub = get_recursive_sub(company,driver)
         # print result of all subsidiaries as a list
         print(master_google_sub)
         # example output:
-          #{'ABC-MART,INC.': ['ABC-Mart Korea Co,. Ltd',
-          #{'LaCrosse Footwear': ['Danner Inc',
-           # "White's Boots",
-        #'LaCrosse Europe ApS',
-        #'Environmentally Neutral Design Outdoor, Inc.',
-        #'LaCrosse Europe Inc',
-        #'LaCrosse International, Inc']}]
+        #{'ABC-MART,INC.': {'parent': 'NA', 'children': ['ABC-Mart Korea Co,. Ltd', 'LaCrosse Footwear']}, 'LaCrosse Footwear': {'parent': 'ABC-MART,INC.', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc', 'LaCrosse International, Inc']}, 'LaCrosse International, Inc': {'parent': 'LaCrosse Footwear', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc']}}
     elif engine == 'EWG':
         # example ewg company name: Advanced Research Laboratories, Advanced Beauty, Inc.
         company = input('Please enter a company name: ')
+        driver = setDriver_EWG()
         comp_prod_dict = company_to_product(company,driver)
         print(product_to_ingredient(comp_prod_dict,driver))
         # example output:
