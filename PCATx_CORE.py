@@ -5,7 +5,7 @@ Created on Fri Jul  6 14:10:12 2018
 @author: alex
 """
 import parser, pickle, difflib, nltk, json, queue, re
-from webcrawlAll import crawlerWrapper
+from webcrawlAll import crawlerWrapper, setDriver
 from PCATParser import *
 import google_sub_all_level
 from knowledge_management.WebResourceManager import *
@@ -18,6 +18,7 @@ def PCATx_CORE_supervised():
     wiki = wikiParser(name)
     newName = wiki[2]
     foundInDatabase = False
+    driver = setDriver()
     if pm.get(name) != None or pm.get(newName) != None:
         foundInDatabase = True
         query = { 'name' : name }
@@ -28,11 +29,11 @@ def PCATx_CORE_supervised():
         yon = input("Did you mean this company? (y/n) {}   ".format(wiki[2]))
         if yon.lower() == "y":
             query = { 'name' : newName }
-            driver = google_sub_all_level.setDriver()
+            # driver = google_sub_all_level.setDriver()
             sub_list = google_sub_all_level.get_sub(newName, driver)
         else:
             query = { 'name' : name }
-            driver = google_sub_all_level.setDriver()
+            # driver = google_sub_all_level.setDriver()
             sub_list = google_sub_all_level.get_sub_list(name, driver)
         matches = difflib.get_close_matches(name, pm.get_aliases(), cutoff = .4) + difflib.get_close_matches(newName, pm.get_aliases(), cutoff = .4)
         if len(matches) > 0:
@@ -43,7 +44,7 @@ def PCATx_CORE_supervised():
             if answer != 0:
                 foundInDatabase = True
                 name = matches[int(answer)]
-    crawlerWrapper(query, "google")
+    crawlerWrapper(query, "google", driver)
 #    crawlerWrapper(query, "google-subs")
     with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
         url_list = pickle.load(handle)
@@ -71,18 +72,18 @@ def PCATx_CORE_unsupervised(list_of_companies):
     for company in list_of_companies:
         company_queue.put(company)
 
-    driver = google_sub.setDriver()
+    driver = setDriver()
     while not company_queue.empty():
         name = company_queue.get()
         pm = ProfileManager()
         wiki = wikiParser(name)
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
-        sub_list = google_sub.get_sub(name, driver)
+        sub_list = google_sub_all_level.get_sub(name, driver)
         for company in sub_list:
             company_queue.put(company)
         try:
-            crawlerWrapper(query, "google", headless = True)
+            crawlerWrapper(query, "google", driver)
             with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
                 url_list = pickle.load(handle)
             wrm = WebResourceManager()
@@ -92,6 +93,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
                 wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
             generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
         except:
+            driver = setDriver()
             company_queue.put(name)
             save_list = []
             while not company_queue.empty():
