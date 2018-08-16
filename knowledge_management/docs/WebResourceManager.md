@@ -8,7 +8,9 @@
 
 ## Introduction
 
-WebResourceManager is a class for helping manage a database of web resources. WebResourceManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintain a dictionary from  URL to UUID. Using this uniform data storage system and a simple API, WebResourceManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.
+We can get a lot of information from the \textit{Web Crawling Architecture}, but it is important that the information is managed in a way that it is useful. The complexity of the architecture and variety of data types (chiefly HTML, PDF, text, URLs) render most traditional data storage solutions incapable of helping us. On the other hand, the interconnections between the modules and the need to trace information back to the source to justify assertions mean that we still need to fulfill the traditional role of a data management solution: a uniform as possible entries, queryability, and efficiency.
+
+**Web Resource Manager** was designed to meet these needs for a database of web resources. Each data entry is given a UUID (Universally Unique Identifier) and the instance saves a mapping from URL to UUID. Both the text and source for each web resource is saved using this UUID. The source document (HTML or PDF) is saved in "source/<resource_uuid>.(pdf/html)" while the text information, UUID, generating query, and URL is saved in a JSON file at "docs/<resource_uuid>.json." Using this uniform data storage system and a simple API. **Web Resource Manager** makes storing and querying the contents and source files of web resources trivial.
 
 ## Documentation
 

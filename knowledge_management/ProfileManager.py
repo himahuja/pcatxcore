@@ -425,6 +425,23 @@ class ProfileManager(object):
         return self.aliases
         
     def get_docs_by_sentence(self, instances, iam):
+        """
+        An generator function of the sentences of the documents contained with the ability to be accessed by multiple instances at once in a safe way.
+
+    
+        Parameters
+        ----------
+        instances : int
+            the number of instances using the iterator (default = 1)
+        iam : int
+            the current instance's assignment [0-*instances*) (default = 0)
+    
+        Returns
+        -------
+        list of tuples (string, string)
+            A list tuples representing the sentences of the documents contained and the IDs of the sentences (Yields)
+    
+        """
         for item in self.__iter__(instances, iam):
             try:
                 if item['ten_ks'] != None:
@@ -456,6 +473,21 @@ class ProfileManager(object):
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
 
     def get_resources_by_company(self, item):
+        """
+        A getter for the documents and associated URLs of the resources by company
+
+    
+        Parameters
+        ----------
+        item : dict
+            a profile
+    
+        Returns
+        -------
+        list of tuples (string, string)
+            A list tuples representing the text of the documents contained and the URLs of the documents
+    
+        """
         resources = []
         try:
             if item['ten_ks'] != None:
@@ -476,6 +508,16 @@ class ProfileManager(object):
         return resources
     
     def get_texts(self):
+        """
+        A getter for the documents contained
+
+    
+        Returns
+        -------
+        list of tuples (string, string)
+            A list tuples representing the text of the documents contained and the IDs of the documents (Yields)
+    
+        """
         for item in self:
             try:
                 if item['ten_ks'] != None:
@@ -499,49 +541,112 @@ class ProfileManager(object):
                 pass
             except Exception as e:
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
-                
-    def get_texts_by_company(self, item):
-        item_string = item['cik']
-        try:
-            if item['ten_ks'] != None:
-                for doc in item['ten_ks']:
-                    item_string += "\n\n" +  doc['text']
-        except KeyError as k:
-            pass
-        except Exception as e:
-            print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
-        try:
-            if item['eight_ks'] != None:
-                for doc in item['eight_ks']:
-                    item_string += "\n\n" +  doc['text']
-        except KeyError as k:
-            pass
-        except Exception as e:
-            print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
-        try:
-            item_string += "\n\n" +  str(item['wiki_page'])
-        except KeyError as k:
-            pass
-        except Exception as e:
-            print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
-        return item_string
     
     def naics_to_description(self, naics):
+        """
+        Returns a list of descriptions of the industrial code.
+        
+
+        Parameters
+        ---------
+        naics (string)
+            is a NAICS (North American Industry Classification System) code.
+        
+        Returns
+        -------
+        list of strings
+            a list of descriptions of the industrial code.
+        
+        """
         return self.naics_description[naics]
     
     def naics_to_sic(self, naics):
+        """
+        Returns the SIC (Standard Industrial Classification) most closely associated with naics.
+        
+
+        Parameters
+        ---------
+        naics (string)
+            is a NAICS (North American Industry Classification System) code.
+        
+        Returns
+        -------
+        string
+           the SIC (Standard Industrial Classification) most closely associated with naics
+        
+        """
         return self.naics_sic[naics]
     
     def name_to_aliases(self, name):
+        """
+        Returns a list of aliases of the business entity.
+        
+
+        Parameters
+        ---------
+        name (string)
+            the name of a business entity.
+        
+        Returns
+        -------
+        list of strings
+           a list of aliases associated with the business entity
+        
+        """
         return self.name_alias[name]
     
     def name_to_cik(self, name):
+        """
+        Returns the CIK (Central Index Key) of the named business entity.
+        
+
+        Parameters
+        ---------
+        name (string)
+            the name of a business entity.
+        
+        Returns
+        -------
+        string
+           the CIK (Central Index Key) of the named business entity.
+        
+        """
         return self.name_cik[name]
     
     def name_to_description(self, name):
+        """
+        Returns a list of descriptions of the industries of the named business entity.
+        
+
+        Parameters
+        ---------
+        name (string)
+            the name of a business entity.
+        
+        Returns
+        -------
+        list of strings
+           a list of descriptions of the industries of the named business entity
+        
+        """
         return self.naics_description[self.get(name).naics] + self.sic_description[self.get(name).sic]
         
     def parse_sec_docs(self, filename):
+        """
+        The code parses the filings which haven't already been parsed, iterating on the CIK codes contained in filename. This means if the CIK codes are disjoint, this method can safely be run in parallel.
+        
+
+        Parameters
+        ---------
+        filename (string)
+            the name of a JSON file in "data/profilemanager/data/edgardata/JSON". It must be a dictionary from CIK (Central Index Key) to a dictionary containing the keys "10K", "8K", and "EX21". These keys must map to a list of dictionaries each containing the keys "time_of_filing" and "url".
+        
+        Returns
+        -------
+        None
+        
+        """
         if self.rel_path == None:
             thicc_edgar = json.loads(open("data/profilemanager/data/edgardata/JSON/{}.json".format(filename), "r").read())
         else:
@@ -607,6 +712,22 @@ class ProfileManager(object):
             self.update_profile(this)
     
     def parse_wikipedia(self, parse_list):
+        """
+        Gets the information on the Wikipedia pages for the companies in parse_list
+        
+        Iterates on the companies contained and searching Wikipedia for the name field, then saves the returned page's parsed table and text in dictionaries ("wiki_table" and "wiki_page" respectively). The table is a dictionary from heading to values and the page is a dictionary from section headings to content.
+        
+
+        Parameters
+        ---------
+        parse_list (list of dicts)
+            list of profiles which you would like to get the Wikipedia information for
+        
+        Returns
+        -------
+        None
+        
+        """
         for company in parse_list:
             company = self[company]
             print("...Now parsing {}".format(company['name']))
@@ -616,38 +737,56 @@ class ProfileManager(object):
             self.update_profile(company)
             
     def save_aliases(self):
+        """
+        Saves the aliases list to "profilemanager/data/aliases.json" using rel_path
+        
+
+        Returns
+        -------
+        None
+        
+        """
         if self.rel_path == None:
             file = open("data/profilemanager/data/aliases.json", "w")
         else:
             file = open(os.path.join(self.rel_path, "data/profilemanager/data/aliases.json"), "w")
         file.write(json.dumps(self.aliases, sort_keys = True, indent = 4))
         file.close()
-            
-            
-    def write_EX21s_to_raw_text(self):
-        for item in self:
-            if self.rel_path == None:
-                if not os.path.exists("data/profilemanager/EX21s/{}".format(item['cik'])):
-                    os.makedirs("data/profilemanager/EX21s/{}".format(item['cik']))
-                try:
-                    for ex21 in item['EX21s']:
-                        file = open("data/profilemanager/EX21s/{}/EX21_{}.txt".format(item['cik'], ex21['time_of_filing']), "w+")
-                        file.write(tenk['text'])
-                        file.close()
-                except:
-                    pass
-            else:
-                if not os.path.exists(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}".format(item['cik']))):
-                    os.makedirs(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}".format(item['cik'])))
-                try:
-                    for ex21 in item['EX21s']:
-                        file = open(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}/EX21_{}.txt".format(item['cik'], ex21['time_of_filing'])), "w+")
-                        file.write(tenk['text'])
-                        file.close()
-                except:
-                    pass
+        
+    def update_profile(self, profile):
+        """
+        Writes the current instance of the profile to the JSON
+        
+
+        Parameters
+        ---------
+        profile (dict)
+            profiles which you would like update the saved version of
+        
+        Returns
+        -------
+        None
+        
+        """
+        if self.rel_path == None:
+            file = open("data/profilemanager/profiles/{}.json".format(profile['cik']), "w")
+            file.write(json.dumps(profile, sort_keys = True, indent = 4))
+            file.close()
+        else:
+            file = open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w")
+            file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
+            file.close()
     
     def write_to_raw_text(self):
+        """
+        Writes all of the contained documents to "profilemanager/raw_text"
+        
+        
+        Returns
+        -------
+        None
+        
+        """
         for item in self:
             if self.rel_path == None:
                 if not os.path.exists("data/profilemanager/raw_text/{}".format(item['cik'])):
@@ -695,16 +834,6 @@ class ProfileManager(object):
                         file.close()
                 except:
                     pass
-    
-    def update_profile(self, profile):
-        if self.rel_path == None:
-            file = open("data/profilemanager/profiles/{}.json".format(profile['cik']), "w")
-            file.write(json.dumps(profile, sort_keys = True, indent = 4))
-            file.close()
-        else:
-            file = open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w")
-            file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
-            file.close()
         
 
 def divvy_up_da_thiccedgars(instances, num_edgars):

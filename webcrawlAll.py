@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+@author: Himanshu, Melody, Alex
+"""
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 # to set the browser options
@@ -150,7 +153,7 @@ def setDriver(headless = False):
     # ██      ██   ██ ██   ██ ██ ███ ██ ██      ██      ██   ██     ██ ███ ██ ██   ██ ██   ██ ██
     #  ██████ ██   ██ ██   ██  ███ ███  ███████ ███████ ██   ██      ███ ███  ██   ██ ██   ██ ██
 
-def crawlerWrapper(search_query, engine, headless = False):
+def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
     """
         Takes in the query to search for on a portal
         Currently supported portals:
@@ -167,7 +170,10 @@ def crawlerWrapper(search_query, engine, headless = False):
             Returns nothing
             Saves a pickle file with the name: search_query
     """
-    driver = setDriver(headless)
+    if doSetDriver == None:
+        driver = setDriver(headless)
+    else:
+        driver = doSetDriver
 
     #  ██████   ██████   ██████   ██████  ██      ███████
     # ██       ██    ██ ██    ██ ██       ██      ██
@@ -540,15 +546,16 @@ def crawlerWrapper(search_query, engine, headless = False):
     else:
         print("Engine hasn't been defined yet.")
     # search_results = driver.find_element_by_xpath("//html/body/div[@id='main']/div[@id='cnt']/div[@class='mw']/div[@id='rcnt']/div[@class='col']/div[@id='center_col']/div[@id='res']/div[@id='search']//div[@id='ires']/div[@id='rso']/div[@class='bkWMgd']/div[@class='srg']/div[@class='g']")#/div[@class='rc']/div[@class='r']")
-    driver.quit()
+    # driver.quit()
     return links
 
 
 def main():
+    driver = setDriver(True)
     search_query = {}
     """ Using the google crawler"""
     # search_query['name'] = "whatever you want to query on google"
-    # crawlerWrapper('Hello I am Himanshu Ahuja what is python we love code wtf', 'google')
+    # crawlerWrapper(search_query, 'google', driver)
     """
     Using the SEC CIK 10k engine on one of the CIKs
     """
