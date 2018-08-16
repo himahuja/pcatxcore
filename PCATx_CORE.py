@@ -44,7 +44,7 @@ def PCATx_CORE_supervised():
             if answer != 0:
                 foundInDatabase = True
                 name = matches[int(answer)]
-    crawlerWrapper(query, "google", driver)
+    crawlerWrapper(query, "google", driver, headless = True)
 #    crawlerWrapper(query, "google-subs")
     with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
         url_list = pickle.load(handle)
@@ -140,7 +140,7 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
 
 def main():
     company_list = json.loads(open("data/praedicat_data/target_companies_with_aliases.json").read())
-    PCATx_CORE_unsupervised(company_list)
+    PCATx_CORE_supervised()
 
 if __name__ == "__main__" :
     main()

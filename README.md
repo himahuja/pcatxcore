@@ -18,6 +18,8 @@ PCATx CORE is currently being developed as a web crawling and artificial intelli
 
 Analysts at Praedicat, Inc., need to manually associate each company with a set of business activities. Using this information, analysts attempt to find evidence linking businesses with potentially dangerous practices, such as the use of hazardous chemicals. With a plethora of companies and business activities, manual search is a tedious process. Further, the analysis is generally performed on unstructured, non-uniform, and sporadic Internet sites which makes it difficult to algorithmically search for the information needed and complex to determine the semantic meaning of the documents even when they are found. Our work attempts to tackle these problems by building a web crawler which procures information and comparing the statements found in the documents to a credible knowledge base. Based on computational fact checking, we are hoping this approach will lead to better classification of unstructured text information on the Internet.
 
+For the ability to conform to the [Robots Exclusion Standard](https://en.wikipedia.org/wiki/Robots_exclusion_standard), we have also developed a simple set of functions in [Robots-Exclusion-Standard-Handler](https://github.com/alexandermichels/Robots-Exclusion-Standard-Handler).
+
 <div align="center">
   <img alt="Diagram of PCATx Core Architecture" src="/img/PCATxCOREArchitecture.jpg">
 </div>
@@ -68,7 +70,7 @@ WebResourceManager is a class for helping manage a database of web resources. We
 ##### ProfileManager
 
 * [ProfileManager.py](ProfileManager.py) --- [Documentation](knowledge_management/docs/ProfileManager.md)\
-ProfileManager is a class for helping manage a database of business profiles. It uses the SEC's (United States Securities and Exchange Commission) CIK codes (Central Index Key) to act as identifiers and allows the user to compile a variety of information on corporate entities in an easy to use and query format. Assisting the accessibility of information, ProfileManager supports using a series of mappings from CIK codes to names and back, names to aliases, and mappings from industry code standards and descriptions of them. The hope to provide for a flexible data solution for complex business oriented applications.
+ProfileManager is a class designed for the aggregation of information related to corporate entities to support building business profiles. It uses the United States Securities and Exchange Commission (SEC) Central Index Key (CIK) to act as universally unique identifiers (UUIDs) and allows the user to compile a variety of information on corporate entities in an easy to use and query format because each profile is a dictionary. Assisting the accessibility of information, **Profile Manager** includes a series of mappings from CIK codes to names and back, names to aliases, and mappings from industry codes (namely The North American Industry Classification System (NAICS) and Standard Industrial Classification (SIC) codes) and descriptions of them. The hope to provide for a flexible data solution for complex business oriented applications.
 
 
 ### Parser
@@ -143,7 +145,7 @@ Usage:
 1. call `driver = setDriver()` to set chrome driver for crawling
 1. call `hazard_to_company(chemical, driver)` to get a list of companies
 
-[google_sub_all_level.py](/google_sub_all_level.py) is a google crawler to find subsidiaries directly returned by google for a search query "COMPANY_NAME+subsidiaries". 
+[google_sub_all_level.py](/google_sub_all_level.py) is a google crawler to find subsidiaries directly returned by google for a search query "COMPANY_NAME+subsidiaries".
 
 
 |Function | Input        | Processing           | Output  |

@@ -425,6 +425,23 @@ class ProfileManager(object):
         return self.aliases
         
     def get_docs_by_sentence(self, instances, iam):
+        """
+        An generator function of the sentences of the documents contained with the ability to be accessed by multiple instances at once in a safe way.
+
+    
+        Parameters
+        ----------
+        instances : int
+            the number of instances using the iterator (default = 1)
+        iam : int
+            the current instance's assignment [0-*instances*) (default = 0)
+    
+        Returns
+        -------
+        list of tuples (string, string)
+            A list tuples representing the sentences of the documents contained and the IDs of the sentences (Yields)
+    
+        """
         for item in self.__iter__(instances, iam):
             try:
                 if item['ten_ks'] != None:
@@ -456,6 +473,21 @@ class ProfileManager(object):
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
 
     def get_resources_by_company(self, item):
+        """
+        A getter for the documents and associated URLs of the resources by company
+
+    
+        Parameters
+        ----------
+        item : dict
+            a profile
+    
+        Returns
+        -------
+        list of tuples (string, string)
+            A list tuples representing the text of the documents contained and the URLs of the documents
+    
+        """
         resources = []
         try:
             if item['ten_ks'] != None:
@@ -476,6 +508,16 @@ class ProfileManager(object):
         return resources
     
     def get_texts(self):
+        """
+        A getter for the documents contained
+
+    
+        Returns
+        -------
+        list of tuples (string, string)
+            A list tuples representing the text of the documents contained and the IDs of the documents (Yields)
+    
+        """
         for item in self:
             try:
                 if item['ten_ks'] != None:
@@ -499,49 +541,112 @@ class ProfileManager(object):
                 pass
             except Exception as e:
                 print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
-                
-    def get_texts_by_company(self, item):
-        item_string = item['cik']
-        try:
-            if item['ten_ks'] != None:
-                for doc in item['ten_ks']:
-                    item_string += "\n\n" +  doc['text']
-        except KeyError as k:
-            pass
-        except Exception as e:
-            print("{} threw the following exception while yielding 10K text: {}".format(item['cik'], str(e)))
-        try:
-            if item['eight_ks'] != None:
-                for doc in item['eight_ks']:
-                    item_string += "\n\n" +  doc['text']
-        except KeyError as k:
-            pass
-        except Exception as e:
-            print("{} threw the following exception while yielding 8K text: {}".format(item['cik'], str(e)))
-        try:
-            item_string += "\n\n" +  str(item['wiki_page'])
-        except KeyError as k:
-            pass
-        except Exception as e:
-            print("{} threw the following exception while yielding wiki_page text: {}".format(item['cik'], str(e)))
-        return item_string
     
     def naics_to_description(self, naics):
+        """
+        Returns a list of descriptions of the industrial code.
+        
+
+        Parameters
+        ---------
+        naics (string)
+            is a NAICS (North American Industry Classification System) code.
+        
+        Returns
+        -------
+        list of strings
+            a list of descriptions of the industrial code.
+        
+        """
         return self.naics_description[naics]
     
     def naics_to_sic(self, naics):
+        """
+        Returns the SIC (Standard Industrial Classification) most closely associated with naics.
+        
+
+        Parameters
+        ---------
+        naics (string)
+            is a NAICS (North American Industry Classification System) code.
+        
+        Returns
+        -------
+        string
+           the SIC (Standard Industrial Classification) most closely associated with naics
+        
+        """
         return self.naics_sic[naics]
     
     def name_to_aliases(self, name):
+        """
+        Returns a list of aliases of the business entity.
+        
+
+        Parameters
+        ---------
+        name (string)
+            the name of a business entity.
+        
+        Returns
+        -------
+        list of strings
+           a list of aliases associated with the business entity
+        
+        """
         return self.name_alias[name]
     
     def name_to_cik(self, name):
+        """
+        Returns the CIK (Central Index Key) of the named business entity.
+        
+
+        Parameters
+        ---------
+        name (string)
+            the name of a business entity.
+        
+        Returns
+        -------
+        string
+           the CIK (Central Index Key) of the named business entity.
+        
+        """
         return self.name_cik[name]
     
     def name_to_description(self, name):
+        """
+        Returns a list of descriptions of the industries of the named business entity.
+        
+
+        Parameters
+        ---------
+        name (string)
+            the name of a business entity.
+        
+        Returns
+        -------
+        list of strings
+           a list of descriptions of the industries of the named business entity
+        
+        """
         return self.naics_description[self.get(name).naics] + self.sic_description[self.get(name).sic]
         
     def parse_sec_docs(self, filename):
+        """
+        The code parses the filings which haven't already been parsed, iterating on the CIK codes contained in filename. This means if the CIK codes are disjoint, this method can safely be run in parallel.
+        
+
+        Parameters
+        ---------
+        filename (string)
+            the name of a JSON file in "data/profilemanager/data/edgardata/JSON". It must be a dictionary from CIK (Central Index Key) to a dictionary containing the keys "10K", "8K", and "EX21". These keys must map to a list of dictionaries each containing the keys "time_of_filing" and "url".
+        
+        Returns
+        -------
+        None
+        
+        """
         if self.rel_path == None:
             thicc_edgar = json.loads(open("data/profilemanager/data/edgardata/JSON/{}.json".format(filename), "r").read())
         else:
