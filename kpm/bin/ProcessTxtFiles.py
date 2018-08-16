@@ -108,28 +108,7 @@ def csv_to_JSON():
             fout.append(line.replace('"', "").replace("'", "").replace("\ufffd", "").strip())
     open(os.path.join("../../data/profilemanager/data/target_companies_with_aliases.json"), "w").write(json.dumps(list(fout), sort_keys = True, indent = 4))
 
-def rename_wrm_files():
-    for filename in os.listdir("../../data/docs"):
-        if len(filename) > 100:
-            file = open("../../data/docs/{}".format(filename), "r+")
-            item = json.loads(file.read())
-            item['id'] = item['id'][:100]
-            new_filename = item['id'] + ".json"
-            print("Renaming {} to {}...".format(filename, new_filename))
-            for wrm in os.listdir("../../data/webresourcemanagers"):
-                wrminstance = WebResourceManager()
-                wrminstance.load(os.path.join("../../data/webresourcemanagers", wrm))
-                try:
-                    del wrminstance.url_to_uuid['url']
-                except:
-                    pass
-                if item['url'] in wrminstance.url_to_uuid:
-                    wrminstance.url_to_uuid[item['url']] = item['id']
-#            file.seek(0)
-#            file.write(json.dumps(item, sort_keys = True, indent = 4))
-#            file.truncate()
-#            file.close()
-            os.rename(os.path.join("../../data/docs", filename), os.path.join("../../data/docs", new_filename))
+
 def main():    
 #    pickle_to_JSON("master_dict_portion")
     rename_wrm_files()

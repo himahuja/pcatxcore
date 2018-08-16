@@ -96,7 +96,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
             save_list = []
             while not company_queue.empty():
                 save_list.append(company_queue.get())
-            file = open("PCATx_CORE_unsupervised_save_list.json", "w")
+            file = open("data/PCATx_CORE_unsupervised_save_list.json", "w")
             file.write(json.dumps(save_list, sort_keys = True, indent = 4))
             file.close()
 
