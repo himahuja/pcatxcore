@@ -70,8 +70,10 @@ def PCATx_CORE_unsupervised(list_of_companies):
     for company in list_of_companies:
         company_queue.put(company)
 
-    driver = setDriver()
+    driver = setDriver(True)
+    count = 0
     while not company_queue.empty():
+        count+=1
         name = company_queue.get()
         pm = ProfileManager()
         wiki = wikiParser(name)
@@ -96,8 +98,23 @@ def PCATx_CORE_unsupervised(list_of_companies):
             save_list = []
             while not company_queue.empty():
                 save_list.append(company_queue.get())
+            for elem in save_list:
+                company_queue.put(elem)
             file = open("data/PCATx_CORE_unsupervised_save_list.json", "w")
+            file.seek(0)
             file.write(json.dumps(save_list, sort_keys = True, indent = 4))
+            file.truncate()
+            file.close()
+        if count % 100 == 0:
+            save_list = []
+            while not company_queue.empty():
+                save_list.append(company_queue.get())
+            for elem in save_list:
+                company_queue.put(elem)
+            file = open("data/PCATx_CORE_unsupervised_save_list.json", "w")
+            file.seek(0)
+            file.write(json.dumps(save_list, sort_keys = True, indent = 4))
+            file.truncate()
             file.close()
 
 
@@ -137,8 +154,10 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
     file.close()
 
 def main():
-    company_list = json.loads(open("data/praedicat_data/target_companies_with_aliases.json").read())
-    PCATx_CORE_supervised()
+    file = open("data/praedicat_data/target_companies_with_aliases.json")
+    company_list = json.loads(file.read())
+    file.close()
+    PCATx_CORE_unsupervised(company_list)
 
 if __name__ == "__main__" :
     main()
