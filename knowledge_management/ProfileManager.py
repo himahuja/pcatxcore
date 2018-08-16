@@ -712,6 +712,22 @@ class ProfileManager(object):
             self.update_profile(this)
     
     def parse_wikipedia(self, parse_list):
+        """
+        Gets the information on the Wikipedia pages for the companies in parse_list
+        
+        Iterates on the companies contained and searching Wikipedia for the name field, then saves the returned page's parsed table and text in dictionaries ("wiki_table" and "wiki_page" respectively). The table is a dictionary from heading to values and the page is a dictionary from section headings to content.
+        
+
+        Parameters
+        ---------
+        parse_list (list of dicts)
+            list of profiles which you would like to get the Wikipedia information for
+        
+        Returns
+        -------
+        None
+        
+        """
         for company in parse_list:
             company = self[company]
             print("...Now parsing {}".format(company['name']))
@@ -721,38 +737,56 @@ class ProfileManager(object):
             self.update_profile(company)
             
     def save_aliases(self):
+        """
+        Saves the aliases list to "profilemanager/data/aliases.json" using rel_path
+        
+
+        Returns
+        -------
+        None
+        
+        """
         if self.rel_path == None:
             file = open("data/profilemanager/data/aliases.json", "w")
         else:
             file = open(os.path.join(self.rel_path, "data/profilemanager/data/aliases.json"), "w")
         file.write(json.dumps(self.aliases, sort_keys = True, indent = 4))
         file.close()
-            
-            
-    def write_EX21s_to_raw_text(self):
-        for item in self:
-            if self.rel_path == None:
-                if not os.path.exists("data/profilemanager/EX21s/{}".format(item['cik'])):
-                    os.makedirs("data/profilemanager/EX21s/{}".format(item['cik']))
-                try:
-                    for ex21 in item['EX21s']:
-                        file = open("data/profilemanager/EX21s/{}/EX21_{}.txt".format(item['cik'], ex21['time_of_filing']), "w+")
-                        file.write(tenk['text'])
-                        file.close()
-                except:
-                    pass
-            else:
-                if not os.path.exists(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}".format(item['cik']))):
-                    os.makedirs(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}".format(item['cik'])))
-                try:
-                    for ex21 in item['EX21s']:
-                        file = open(os.path.join(self.rel_path, "data/profilemanager/EX21s/{}/EX21_{}.txt".format(item['cik'], ex21['time_of_filing'])), "w+")
-                        file.write(tenk['text'])
-                        file.close()
-                except:
-                    pass
+        
+    def update_profile(self, profile):
+        """
+        Writes the current instance of the profile to the JSON
+        
+
+        Parameters
+        ---------
+        profile (dict)
+            profiles which you would like update the saved version of
+        
+        Returns
+        -------
+        None
+        
+        """
+        if self.rel_path == None:
+            file = open("data/profilemanager/profiles/{}.json".format(profile['cik']), "w")
+            file.write(json.dumps(profile, sort_keys = True, indent = 4))
+            file.close()
+        else:
+            file = open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w")
+            file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
+            file.close()
     
     def write_to_raw_text(self):
+        """
+        Writes all of the contained documents to "profilemanager/raw_text"
+        
+        
+        Returns
+        -------
+        None
+        
+        """
         for item in self:
             if self.rel_path == None:
                 if not os.path.exists("data/profilemanager/raw_text/{}".format(item['cik'])):
@@ -800,16 +834,6 @@ class ProfileManager(object):
                         file.close()
                 except:
                     pass
-    
-    def update_profile(self, profile):
-        if self.rel_path == None:
-            file = open("data/profilemanager/profiles/{}.json".format(profile['cik']), "w")
-            file.write(json.dumps(profile, sort_keys = True, indent = 4))
-            file.close()
-        else:
-            file = open(os.path.join(self.rel_path, "data/profilemanager/profiles/{}.json".format(profile['cik'])), "w")
-            file.write(json.dumps(profile, sort_keys = True, indent = 4)) 
-            file.close()
         
 
 def divvy_up_da_thiccedgars(instances, num_edgars):

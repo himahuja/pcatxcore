@@ -163,16 +163,19 @@ class WebResourceManager(object):
             score = total_score / count_keywords
         else:
             score = 0
-        print(score)
         return score
     
     def get_TaggedDocuments(self):
         doc_count = -1
         for item in self:
             doc_count+=1
-            sent_list = nltk.sent_tokenize(item['text'])
-            for i in range(len(sent_list)):
-                yield TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i)))
+            try:
+                sent_list = nltk.sent_tokenize(item['text'])
+                for i in range(len(sent_list)):
+                    yield TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i)))
+            except (KeyError, TypeError) as e:
+                print(str(e))
+                doc_list-=1
     
     def get_texts(self):
         for file in self:
@@ -203,45 +206,53 @@ class WebResourceManager(object):
         doc_list = []
         doc_count = -1
         for item in self:
-            doc_count+=1
-            sent_list = nltk.sent_tokenize(item['text'])
-            for i in range(len(sent_list)):
-                doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i))))
+            try:
+                doc_count+=1
+                sent_list = nltk.sent_tokenize(item['text'])
+                for i in range(len(sent_list)):
+                    doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i))))
+            except (KeyError, TypeError) as e:
+                print(str(e))
+                doc_count-=1
         model.train(doc_list, total_examples=model.corpus_count, epochs=model.iter)
         model.save("../data/doc2vec_model")
         doc_count = -1
         for item in self:
-            doc_count+=1
-            sent_list = nltk.sent_tokenize(item['text'])
-            doc_tags = []
-            tag2sent = {}
-            for i in range(len(sent_list)):
-                tag = "{:06d}{:04d}".format(doc_count, i)
-                doc_tags.append(tag)
-                tag2sent[tag] = i
-            tuples = []
-            for doc_vec in doc_tags:
-                try:
-                    tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
-                except KeyError as e:
-                    print(e)
-            mergeSortTuples(tuples)
-            temp_text = ""
-            for i in range(len(tuples)//2):
-                temp_text+=tuples[1] + "\n"
-            item['ss_classifier'] = temp_text
-            
-            self.train_classifier()
-            tfidf_tuples = []
-            for i in range(len(sent_list)):
-                tfidf_tuples.append((self.get_relevance_score(sent_list[i]), sent_list[i]))
-            mergeSortTuples(tuples)
-            for i in range(len(tuples)//2):
-                temp_text+=tuples[1] + "\n"
-            item['tfidf_classifier'] = temp_text
-            
-            self.update_profile(item)
-            print("Finished item {}".format(item['id']))
+            try:
+                doc_count+=1
+                sent_list = nltk.sent_tokenize(item['text'])
+                doc_tags = []
+                tag2sent = {}
+                for i in range(len(sent_list)):
+                    tag = "{:06d}{:04d}".format(doc_count, i)
+                    doc_tags.append(tag)
+                    tag2sent[tag] = i
+                tuples = []
+                for doc_vec in doc_tags:
+                    try:
+                        tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
+                    except KeyError as e:
+                        print(e)
+                mergeSortTuples(tuples)
+                temp_text = ""
+                for i in range(len(tuples)//2):
+                    temp_text+=tuples[i][1] + "\n"
+                item['ss_classifier'] = temp_text
+                
+                self.train_classifier()
+                tfidf_tuples = []
+                for i in range(len(sent_list)):
+                    tfidf_tuples.append((self.get_relevance_score(sent_list[i]), sent_list[i]))
+                mergeSortTuples(tuples)
+                for i in range(len(tuples)//2):
+                    temp_text+=tuples[i][1] + "\n"
+                item['tfidf_classifier'] = temp_text
+                
+                self.update_profile(item)
+                print("Finished item {}".format(item['id']))
+            except (KeyError, TypeError) as e:
+                print(str(e))
+                doc_count-=1
             
     
     #DOES NOT USE REL_PATH
