@@ -40,7 +40,6 @@ cpdef get_paths(G, s, p, o, length=3, maxpaths=-1):
 		discovered_paths.append(pp)
 	return discovered_paths
 
-
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)

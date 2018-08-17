@@ -199,5 +199,5 @@ if __name__ == '__main__':
 	# test_dbpedia_loading()
 	# test_graph2_creation()
 	# test_graph1_creation()
-	# import cProfile
-	# cProfile.run('test_graph1_creation()', sort='time')
+	import cProfile
+	cProfile.run('test_graph1_creation()', sort='time')
