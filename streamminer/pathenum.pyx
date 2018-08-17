@@ -40,6 +40,27 @@ cpdef get_paths(G, s, p, o, length=3, maxpaths=-1):
 		discovered_paths.append(pp)
 	return discovered_paths
 
+cpdef get_paths_sm(G, s, p, o, weight=3, maxpaths=-1):
+	"Returns all paths of length `length` starting at s and ending in o."
+	cdef:
+		double[:] data
+		long[:] indices
+		int[:] indptr
+		list paths, relpaths, discovered_paths
+	# graph vectors
+	data = G.csr.data.astype(_float)
+	indices = G.csr.indices.astype(_int64)
+	indptr = G.csr.indptr.astype(_int)
+	paths, relpaths = enumerate_paths_rational(
+		data, indices, indptr, s, p, o, weight=weight, maxpaths=maxpaths
+	)
+	# convert to Python objects
+	discovered_paths = []
+	for pth, rpth in zip(paths, relpaths):
+		## Change np.ones(length+1) to an ndarray with weights of each edge in the path
+		pp = RelationalPath(s, p, o, 0., length, pth, rpth, np.ones(length + 1))
+		discovered_paths.append(pp)
+	return discovered_paths
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
