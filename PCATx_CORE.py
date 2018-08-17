@@ -97,7 +97,9 @@ def PCATx_CORE_unsupervised(list_of_companies):
             company_queue.put(name)
             save_list = []
             while not company_queue.empty():
-                save_list.append(company_queue.get())
+                company = company_queue.get()
+                if company not in save_list:
+                    save_list.append(company)
             for elem in save_list:
                 company_queue.put(elem)
             file = open("data/PCATx_CORE_unsupervised_save_list.json", "w")
@@ -109,7 +111,9 @@ def PCATx_CORE_unsupervised(list_of_companies):
             company_queue.put(name)
             save_list = []
             while not company_queue.empty():
-                save_list.append(company_queue.get())
+                company = company_queue.get()
+                if company not in save_list:
+                    save_list.append(company)
             for elem in save_list:
                 company_queue.put(elem)
             file = open("data/PCATx_CORE_unsupervised_save_list.json", "w")
