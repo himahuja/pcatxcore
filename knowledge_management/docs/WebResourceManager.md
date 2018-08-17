@@ -8,7 +8,7 @@
 
 ## Introduction
 
-We can get a lot of information from the \textit{Web Crawling Architecture}, but it is important that the information is managed in a way that it is useful. The complexity of the architecture and variety of data types (chiefly HTML, PDF, text, URLs) render most traditional data storage solutions incapable of helping us. On the other hand, the interconnections between the modules and the need to trace information back to the source to justify assertions mean that we still need to fulfill the traditional role of a data management solution: a uniform as possible entries, queryability, and efficiency.
+The Web Crawling Framework is capable of producing a large volume of data, but it is important that the information is managed in a way that it is useful. A common theme for companies with a lot of data is that they cannot make use of it. Even though our data is represented many ways (HTML, text, lists of words, vectors, etc.), it is important that it is always traceable back to the source as well as accessible and thus queryable. It needs to be traceable back to the source so we can justify the conclusions we make with tangible evidence rather than simply pointing to the output of a system. Aggregating this information in a queryable format makes it usable for query formulation and building company profiles. The complexity of the architecture and variety of data types (chiefly HTML, PDF, text, URLs) render most traditional data storage solutions incapable of helping us. The variety of our data, integration needs, and the desire to have random access to source documents mean that we had to make our own data storage solution, but our solution still needs to fulfill the traditional role of a data management solution: a uniform as possible entries, queryability, and efficiency.
 
 **Web Resource Manager** was designed to meet these needs for a database of web resources. Each data entry is given a UUID (Universally Unique Identifier) and the instance saves a mapping from URL to UUID. Both the text and source for each web resource is saved using this UUID. The source document (HTML or PDF) is saved in "source/<resource_uuid>.(pdf/html)" while the text information, UUID, generating query, and URL is saved in a JSON file at "docs/<resource_uuid>.json." Using this uniform data storage system and a simple API. **Web Resource Manager** makes storing and querying the contents and source files of web resources trivial.
 
@@ -16,47 +16,71 @@ We can get a lot of information from the \textit{Web Crawling Architecture}, but
 
 ##### `__init__(rel_path=None)`
 
-* **rel_path** is the relative path from the current working directory to the directory where the files you'd like to work with are.
+Constructor
 
-Instantiates the object and makes a new instance of the **Classifier**.
+Parameters
+* rel_path (string) : the relative path to the parent directory of "data" holding the WebResourceManager data
+
+Returns
+* None
 
 ##### `__iter__()`
 
-Returns an iterator for the JSONs holding the web resource information.
+An iterator function with the ability to be accessed by multiple instances at once in a safe way.
+
+Parameters
+* instances (int) : the number of instances using the iterator (default = 1)
+* iam (int) : the current instance's assignment [0-*instances*) (default = 0)
+
+Returns
+* dict : A dictionary which is the profile if found, else None (Yields)
 
 ##### `__getitem__(key)` and get(key)
 
-* **key** is the UUID of the web resource content you would like to access.
+Loads and returns the web resource profile specified by key
 
-Prints an error message containing the name of the file if the file can't be opened.
+Parameters
+* key (string) : universally unique identifier (UUID) for a web resource being tracked by the Web Resource Manager instance
+
+Returns
+* dict : A dictionary which is the profile if found, else None
 
 ##### `__len__()`
 
-Returns the number of web resources currently being tracked by the WebResourceManager object.
+Returns the number of web resources being tracked by the instance
+
+Returns
+* int : number of web resources in the instance
 
 ##### `__repr__()` and `__str__()`
 
-Returns a string representation of the WebResourceManager object using JSON.
+Returns a sorted and indented dictionary representation of URLs to UUIDs of the web resources contained.
 
-#####  absorb_file_manager(other_file_manager)
 
-* **other_file_manager** is another WebResourceManager object.
+Returns
+* string : a sorted and indented dictionary representation of URLs to UUIDs of the web resources map
 
-This object starts tracking all of the files in the **other_file_manager** by adding the files to its dictionary. **other_file_manager** and its files are not altered in any way.
+#####  absorb_file_manager(other_wrm)
+
+This object starts tracking all of the files in the other_file_manager by adding the files to its dictionary. other_file_manager and its files are not altered in any way.
+
+Parameters
+* other_wrm (string) : another WebResourceManager object
+
+Returns
+* None
 
 ##### get_corpus(process_all=False)
 
-* **process_all** is a parameter that allows you specify whether or not you would like to reprocess a document which already has a **corpus** field. If the document already has a **corpus** field and **process_all** == False, the document is not processed and the field is added to the corpora. If the document already has a **corpus** field and **process_all** == True, the document is reprocessed and its **corpus** field is overwritten using the new output.
+Converts the text to a format more suitable for NLP processing
 
-Specifically, it this function decodes using the "UTF-8" codec, ignoring errors, uses regular expressions to remove email addresses, special characters and numbers, then removes all words of length < 3 from the corpus and stems using NLTK's PorterStemmer.
+The function decodes using the "UTF-8" codec, ignoring errors, uses regular expressions to remove email addresses and all non-alpha-numeric characters except ' and -, then lemmatizes and stems using NLTK's WordNetLemmatizer and PorterStemmer respectively.
 
-Note: This method serves the function of the now deprecated corpusBuilder's **`__init__()`** and **filter_dict()** functions.
+Parameters
+* process_all (bool) : indicates whether you would like to use the 'corpus' fields of previously processed web resources (False) or reprocess all of the resources (True)
 
-##### get_relevance_score(document)
-
-* **document** is a string, generally the text attribute of a document.
-
-Returns the relevance score using **classifier**.
+Returns
+* None
 
 ##### get_TaggedDocuments()
 

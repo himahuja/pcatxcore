@@ -125,7 +125,7 @@ def train_model():
 
 def main():
     pm = ProfileManager("..")
-    get_TaggedDocuments(pm, 6, 5)
+    get_TaggedDocuments(pm, 6, 0)
     time.sleep(300)
     train_model()
     tag_idks(6)

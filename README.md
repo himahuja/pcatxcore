@@ -85,7 +85,9 @@ Some of the helper modules are as follows:
 
 1. `search_sec10k`: [*Deprecated*] searches the SEC websites for the 10-K based on CIK
 
-[hazard_to_company.py](/hazard_to_company.py) is a site crawler for NPIRS(http://npirspublic.ceris.purdue.edu/ppis/) that gets all companies that use certain ingredients the user is looking for.
+[Site_Crawler_Parser_All.py](Site_Crawler_Parser_All.py) --- Documentation
+
+NPIRS Engine is a site crawler for NPIRS(http://npirspublic.ceris.purdue.edu/ppis/) that gets all companies that use certain ingredients the user is looking for.
 
 
 |Function | Input        | Processing           | Output  |
@@ -99,7 +101,7 @@ Usage:
 1. call `driver = setDriver()` to set chrome driver for crawling
 1. call `hazard_to_company(chemical, driver)` to get a list of companies
 
-[google_sub_all_level.py](/google_sub_all_level.py) is a google crawler to find subsidiaries directly returned by google for a search query "COMPANY_NAME+subsidiaries".
+Google Engine is a google crawler to find subsidiaries directly returned by google for a search query "COMPANY_NAME+subsidiaries".
 
 
 |Function | Input        | Processing           | Output  |
@@ -112,7 +114,7 @@ Usage:
 1. call `driver = setDriver()` to set chrome driver for crawling
 1. call `master_google_sub = get_recursive_sub(company,driver)` to get a all-level-down subsidiaries for a company
 
-[tri_facility_info.py](/tri_facility_info.py) is a site crawler for TRI Facility(https://www.epa.gov/enviro/tri-search) that gets all facility information with a tri id the user provides
+TRI Engine is a site crawler for TRI Facility(https://www.epa.gov/enviro/tri-search) that gets all facility information with a tri id the user provides
 
 
 |Function | Input        | Processing           | Output  |
@@ -124,7 +126,7 @@ Usage:
 1. call `get_tri_dict(tri_id,driver)` to get a dictionary of facility information
 
 
-[ewg_ingredient.py](/ewg_ingredient.py) is a site crawler for EWG Skindeep Database(https://www.ewg.org/skindeep/#.W3H8HNJKiUk) that gets product and ingredient information for a company in their database
+EWG Engine is a site crawler for EWG Skindeep Database(https://www.ewg.org/skindeep/#.W3H8HNJKiUk) that gets product and ingredient information for a company in their database
 
 
 |Function | Input        | Processing           | Output  |

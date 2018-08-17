@@ -87,8 +87,7 @@ class WebResourceManager(object):
             file.close()
             return json.loads(profile)
         except Exception as e:
-            pass
-#            print("Error while getting {} with rel_path set to {}: {}".format(key, self.rel_path, str(e)))
+            print("Error while getting {} with rel_path set to {}: {}".format(key, self.rel_path, str(e)))
     
     def __len__(self):
         """
@@ -104,35 +103,67 @@ class WebResourceManager(object):
         return len(self.url_to_uuid)
         
     def __repr__(self):
-        return json.dumps(self.url_to_uuid, sort_keys = True, indent = 4)
+        '''
+        Returns a sorted and indented dictionary representation of URLs to UUIDs of the web resources contained.
+        
+        
+        Returns
+        -------
+        string
+            a sorted and indented dictionary representation of URLs to UUIDs of the web resources map
+        '''
+        return str(json.dumps(self.url_to_uuid, sort_keys = True, indent = 4))
         
     def __str__(self):
-        return json.dumps(self.url_to_uuid, sort_keys = True, indent = 4)
+        '''
+        Returns a sorted and indented dictionary representation of URLs to UUIDs of the web resources contained.
         
-    def absorb_file_manager(self, other_file_manager):
+        
+        Returns
+        -------
+        string
+            a sorted and indented dictionary representation of URLs to UUIDs of the web resources map
+        '''
+        return str(json.dumps(self.url_to_uuid, sort_keys = True, indent = 4))
+        
+    def absorb_file_manager(self, other_wrm):
+        """
+        This object starts tracking all of the files in the other_file_manager by adding the files to its dictionary. other_file_manager and its files are not altered in any way.
+
+    
+        Parameters
+        ----------
+        other_wrm : string
+            another WebResourceManager object
+    
+        Returns
+        -------
+        None
+    
+        """
         for item in other_file_manager:
             try:
                 if item['id'] not in self.url_to_uuid.values():
                     self.url_to_uuid[item['url']] = item['id']
             except:
                 pass
-    
-    def clean_resource(self):
-        for item in self:
-            try:
-                del item['tfidf_classifier']
-            except Exception as e:
-                print(str(e))
-            try:
-                del item['ss_classifier']
-            except Exception as e:
-                print(str(e))
-            try:
-                self.update_profile(item)
-            except:
-                pass
         
     def get(self, key):
+        """
+        Loads and returns the web resource profile specified by key
+
+    
+        Parameters
+        ----------
+        key : string
+            universally unique identifier (UUID) for a web resource being tracked by the Web Resource Manager instance
+    
+        Returns
+        -------
+        dict
+            A dictionary which is the profile if found, else None
+    
+        """
         try:
             if self.rel_path == None:
                 file = open("data/docs/{}.json".format(key))
@@ -142,10 +173,25 @@ class WebResourceManager(object):
             file.close()
             return json.loads(profile)
         except Exception as e:
-            pass
-#            print("Error while getting {} with rel_path set to {}: {}".format(key, self.rel_path, str(e)))
+            print("Error while getting {} with rel_path set to {}: {}".format(key, self.rel_path, str(e)))
         
     def get_corpus(self, process_all=False):
+        """
+        Converts the text to a format more suitable for NLP processing
+        
+        The function decodes using the "UTF-8" codec, ignoring errors, uses regular expressions to remove email addresses and all non-alpha-numeric characters except ' and -, then lemmatizes and stems using NLTK's WordNetLemmatizer and PorterStemmer respectively.
+
+    
+        Parameters
+        ----------
+        process_all : bool
+            indicates whether you would like to use the 'corpus' fields of previously processed web resources (False) or reprocess all of the resources (True)
+            
+        Returns
+        -------
+        None
+    
+        """
         corpus_list = []
         count = 0
         ps = PorterStemmer()
@@ -198,27 +244,6 @@ class WebResourceManager(object):
                     yield sent_list[i]
             except Exception as e:
                 print("{} threw the following exception while yielding text: {}".format(item['id'], str(e)))
-        
-    def get_relevance_score(self, document):
-        response = self.classifier.transform([document])
-        feature_names = self.classifier.get_feature_names()
-    
-        score_dict = {}
-        for col in response.nonzero()[1]:
-            score_dict[feature_names[col]] = response[0,col]
-    
-        word_list = nltk.word_tokenize(document)
-        total_score = 0
-        count_keywords = 0
-        for word in word_list:
-            if word in score_dict:
-                total_score += score_dict[word]
-                count_keywords += 1
-        if (count_keywords != 0):   
-            score = total_score / count_keywords
-        else:
-            score = 0
-        return score
     
     def get_TaggedDocuments(self):
         for item in self:
@@ -252,56 +277,6 @@ class WebResourceManager(object):
             self.rel_path = this['rel_path']
         except:
             pass
-        
-    def rank_by_relevance(self):
-        model = Doc2Vec.load("../data/doc2vec_model")
-        doc_count = 0
-        doc_list = []
-        for item in self:
-            try:
-                sent_list = nltk.sent_tokenize(item['text'])
-                for i in range(len(sent_list)):
-                    doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{}{:04d}".format(item['id'], i))))
-                doc_count+=1
-            except (KeyError, TypeError) as e:
-                print(str(e))
-        model.train(doc_list, total_examples=model.corpus_count, epochs=model.iter)
-        model.save("../data/doc2vec_model")
-        for item in self:
-            try:
-                sent_list = nltk.sent_tokenize(item['text'])
-                doc_tags = []
-                tag2sent = {}
-                for i in range(len(sent_list)):
-                    tag = "{}{:04d}".format(item['id'], i)
-                    doc_tags.append(tag)
-                    tag2sent[tag] = sent_list[i]
-                tuples = []
-                for doc_vec in doc_tags:
-                    try:
-                        tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
-                    except KeyError as e:
-                        print("Error in wrm:rank_by_relevance \n The following error was thrown while attempting to get the Doc2Vec similarity of {}: \n {}".format(item['id'], str(e)))
-                mergeSortTuples(tuples)
-                temp_text = ""
-                for i in range(len(tuples)//2):
-                    temp_text+=tuples[i][1] + "\n"
-                item['ss_classifier'] = temp_text
-                
-                self.train_classifier()
-                tfidf_tuples = []
-                for i in range(len(sent_list)):
-                    tfidf_tuples.append((self.get_relevance_score(sent_list[i]), sent_list[i]))
-                mergeSortTuples(tfidf_tuples)
-                for i in range(len(tfidf_tuples)//2):
-                    temp_text+=tfidf_tuples[i][1] + "\n"
-                item['tfidf_classifier'] = temp_text
-                
-                self.update_profile(item)
-                print("Finished item {}".format(item['id']))
-                doc_count+=1
-            except (KeyError, TypeError) as e:
-                print("Error in wrm:rank_by_relevance \n {}".format(str(e)))
             
     
     #DOES NOT USE REL_PATH
@@ -351,9 +326,6 @@ class WebResourceManager(object):
         file.write(json.dumps(this, sort_keys = True, indent = 4))
         file.close
 
-    def train_classifier(self):
-        self.classifier = TfidfVectorizer(stop_words='english')
-        self.classifier.fit_transform(self.get_texts())
 
     def update_profile(self, item):
         if self.rel_path == None:
@@ -416,7 +388,6 @@ def main():
         wrm = WebResourceManager(rel_path = "..")
         wrm.load(os.path.join("../data/webresourcemanagers", file))
         wrm.rel_path=".."
-        wrm.clean_resource()
     
 if __name__ == "__main__" :
     main()
