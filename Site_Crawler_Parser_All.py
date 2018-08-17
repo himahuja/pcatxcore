@@ -42,7 +42,7 @@ def get_tri_dict(tri_id, driver):
     time.sleep(1)
 
     fac_dict = {}
-    
+
     # find tags that contain information
     try:
         fac_name = driver.find_element_by_xpath("//td[@class='ng-binding' and @headers='facName']")
@@ -85,7 +85,7 @@ def get_tri_dict(tri_id, driver):
         for item in duns_parent_company:
             if item.text.isnumeric():
                 duns_num = item.text
-                fac_dict['duns_num'] = duns_num            
+                fac_dict['duns_num'] = duns_num
             else:
                 parent_company = item.text
                 fac_dict['parent_company'] = parent_company
@@ -101,7 +101,7 @@ def get_tri_dict(tri_id, driver):
 
     try:
         pub_contact = driver.find_element_by_xpath("//td[@class='ng-binding' and @headers='pubContact']")
-        fac_dict['pub_contact'] = pub_contact.text 
+        fac_dict['pub_contact'] = pub_contact.text
     except:
         fac_dict['pub_contact'] = 'NA'
 
@@ -115,7 +115,7 @@ def get_tri_dict(tri_id, driver):
         phone = driver.find_element_by_xpath("//td[@class='ng-binding' and @headers='phone']")
         fac_dict['phone'] = phone.text
     except:
-        fac_dict['phone'] = 'NA' 
+        fac_dict['phone'] = 'NA'
 
     try:
         latitude = driver.find_element_by_xpath("//td[@class='ng-binding' and @headers='lat']")
@@ -136,7 +136,7 @@ def get_tri_dict(tri_id, driver):
     except:
         fac_dict['longitude'] ='NA'
 
-    try:    
+    try:
         bia_tribal_code = driver.find_element_by_xpath("//td[@class='ng-binding' and @headers='biTribalCode']")
         fac_dict['bia_tribal_code'] = bia_tribal_code.text
     except:
@@ -144,7 +144,7 @@ def get_tri_dict(tri_id, driver):
 
     try:
         naics_sic_lstform = driver.find_elements_by_xpath("//td[@class='ng-binding' and @headers='lstfrm']")
-        for i in range(len(naics_sic_lstform)):        
+        for i in range(len(naics_sic_lstform)):
             if i == 0:
                 fac_dict['naics'] = numeric_only(naics_sic_lstform[i].text)
             elif i == 1:
@@ -164,13 +164,13 @@ def get_sub(company, driver):
 
     driver.get(goog_search)
     sub_list = []
-    
+
     # find tags containing subsidiary information
 
     divs1 = driver.find_elements_by_xpath("//div[@class='kltat']")
     divs2 = driver.find_elements_by_xpath("//div[@class='Z0LcW']")
     divs3 = driver.find_elements_by_xpath("//div[@class='title']")
-    
+
     # Google appears to have one of the three types of subsidiary tags
     if divs1 != []:
         for div in divs1:
@@ -183,7 +183,11 @@ def get_sub(company, driver):
     elif divs3 != []:
         for div in divs3:
             sub_list.append(div.text)
-        return sub_list        
+        return sub_list
+    try:
+        sub_list.remove(name)
+    except:
+        pass
     return sub_list
 
 def get_parent_child_dict(company,parent,children_list):
@@ -197,7 +201,7 @@ def get_recursive_sub(company,driver):
     company_queue.put(company)
     master_google_sub = {}
     master_parent_child_dict = {}
-        
+
     while not company_queue.empty():
         try:
             name = company_queue.get()
@@ -228,7 +232,7 @@ def get_recursive_sub(company,driver):
 # EWG ingredient
 # find all products for a company
 def company_to_product(company,driver):
-    
+
     comp_prod_dict = {}
     try:
         url = 'https://www.ewg.org/skindeep/search.php?query=&search_group=companies&ptype2=#.W2nG9P5Kgxe'
@@ -243,7 +247,7 @@ def company_to_product(company,driver):
         for a in atags:
             if 'product' in a.text:
                 a.click()
-                break   
+                break
         # display the search results as 50 items a page
         atags2 = driver.find_elements_by_tag_name("a")
         for a in atags2:
@@ -252,11 +256,11 @@ def company_to_product(company,driver):
                 break
         # find the tags containing product names and add to product list for the company
         prod_list = []
-        while True:   
+        while True:
             try:
                 td_list = driver.find_elements_by_xpath("//td[@class='product_name_list']")
                 for td in td_list:
-                    prod_list.append(td.find_element_by_tag_name('a').text)   
+                    prod_list.append(td.find_element_by_tag_name('a').text)
             except:
                 break
             try:
@@ -270,7 +274,7 @@ def company_to_product(company,driver):
                     if a.text == 'Next>':
                         found = True
                         a.click()
-                        
+
                 if not found:
                     print(company+' products attached.')
                     break
@@ -279,11 +283,11 @@ def company_to_product(company,driver):
         # map a company to a product list once found
         if prod_list != []:
             comp_prod_dict[company] = prod_list
-        
-        
+
+
     except:
         print(company+' not found')
-        
+
     return comp_prod_dict
 
 # find ingredients for all products
@@ -307,18 +311,18 @@ def product_to_ingredient(comp_prod_dict,driver):
                 # find the tags containing ingredients information and get the contents
                 td_list = driver.find_elements_by_xpath("//td[@class='firstcol']")
                 ingredient_list = []
-                
+
                 for td in td_list:
                     if td.text != '':
                         ingredient_list.append(td.text.replace('\n',' '))
                 if ingredient_list != []:
                     prod_ingredient_dict[prod] = ingredient_list
                     print(prod+' ingredient found')
-                
-    
+
+
             except:
                 print(prod+' ingredient not found')
-                
+
         if prod_ingredient_dict != {}:
             comp_prod_ingredient_dict[key] = prod_ingredient_dict
     return comp_prod_ingredient_dict
@@ -374,7 +378,7 @@ def hazard_to_company(chemical,driver):
     except:
         print('Unable to find companies for the hazard')
         return []
-        
+
 def wikiParser(company):
     """
 
@@ -425,15 +429,15 @@ if __name__ == "__main__":
     print('3. EWG Skin Deep Cosmetics(EWG)')
     print('4. NPIRS Hazard to Companies(NPIRS)')
     print('5. Wikipedia (WIKI)')
-    
+
     engine = input("Please enter your choice (TRI/GOOGLE/EWG/NPIRS): ")
     engine = engine.lower()
     driver = setDriver(True)
-    
-    if engine == 'tri' or engine == "1":       
+
+    if engine == 'tri' or engine == "1":
         # example tri id: 46402SSGRYONENO, 89319BHPCP7MILE, 70070MNSNTRIVER
         tri_id = input('Please enter a tri id: ')
-        print(get_tri_dict(tri_id,driver))
+        print(json.dumps(get_tri_dict(tri_id,driver), sort_keys = True, indent = 4))
         # example output
         #{'fac_name': 'ROBINSON NEVADA MINING CO', 'tri_id': '89319BHPCP7MILE', 'address': '4232 W WHITE PINE CO RD 44 RUTH, NV, 89319', 'frs_id': '110042080832', 'mailing_name': 'ROBINSON NEVADA MINING CO', 'mailing_address': 'PO BOX 382 RUTH, NV, 89319', 'parent_company': 'NA', 'county': 'WHITE PINE', 'pub_contact': 'AMANDA HILTON', 'region': '9', 'phone': '(775) 289-7045', 'latitude': '39.27083', 'tribe': 'NA', 'longitude': '-115.0125', 'bia_tribal_code': 'NA', 'naics': 'NA', 'sic': 'NA', 'last_form': 'NA'}
     elif engine == 'google' or engine == "2":
@@ -441,7 +445,7 @@ if __name__ == "__main__":
         company = input('Enter a company name: ')
         master_google_sub = get_recursive_sub(company,driver)
         # print result of all subsidiaries as a list
-        print(master_google_sub)
+        print(json.dumps(master_google_sub, sort_keys = True, indent = 4))
         # example output:
         #{'ABC-MART,INC.': {'parent': 'NA', 'children': ['ABC-Mart Korea Co,. Ltd', 'LaCrosse Footwear']}, 'LaCrosse Footwear': {'parent': 'ABC-MART,INC.', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc', 'LaCrosse International, Inc']}, 'LaCrosse International, Inc': {'parent': 'LaCrosse Footwear', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc']}}
     elif engine == 'ewg' or engine == "3":
@@ -449,7 +453,7 @@ if __name__ == "__main__":
         company = input('Please enter a company name: ')
         driver = setDriver(False)
         comp_prod_dict = company_to_product(company,driver)
-        print(product_to_ingredient(comp_prod_dict,driver))
+        print(json.dumps(product_to_ingredient(comp_prod_dict,driver), sort_keys = True, indent = 4))
         # example output:
         # {'Advanced Research Laboratories': {'Zero Frizz Keratin Corrective Hair Serum': ['FRAGRANCE', 'OCTINOXATE ETHYLHEXYL METHOXYCINNAMATE', 'TOCOPHERYL ACETATE', 'DIMETHICONE', 'CYCLOMETHICONE', 'KERATIN AMINO ACIDS', 'DIMETHICONOL'], 'Zero Frizz Keratin Smoothing Conditioner': ['FRAGRANCE', 'DMDM HYDANTOIN (FORMALDEHYDE RELEASER)', 'OCTINOXATE ETHYLHEXYL METHOXYCINNAMATE', 'METHYLPARABEN', 'PEG/ PPG-18/ 18 DIMETHICONE', 'CYCLOPENTASILOXANE', 'DIMETHICONE', 'BEHENTRIMONIUM CHLORIDE', 'CETRIMONIUM CHLORIDE', 'PROPYLENE GLYCOL', 'HYDROLYZED KERATIN', 'CITRIC ACID', 'AMODIMETHICONE', 'TRIBUTYL CITRATE', 'STEARAMIDOPROPYL DIMETHYLAMINE', 'CETYL ALCOHOL', 'PANTHENOL', 'HYDROXYETHYLCELLULOSE', 'STEARYL ALCOHOL', 'SODIUM BENZOTRIAZOLYL BUTYLPHENOL SULFONATE', 'DISODIUM EDTA', 'C12-14 ISOPARAFFIN', 'BUTETH-3', 'TRIDECETH-12', 'WATER']}}
     elif engine == 'npirs' or engine == "4":

@@ -18,7 +18,7 @@ def PCATx_CORE_supervised():
     wiki = wikiParser(name)
     newName = wiki[2]
     foundInDatabase = False
-    driver = setDriver()
+    driver = setDriver(True)
     if pm.get(name) != None or pm.get(newName) != None:
         foundInDatabase = True
         query = { 'name' : name }
@@ -93,7 +93,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
                 wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
             generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
         except:
-            driver = setDriver()
+            driver = setDriver(True)
             company_queue.put(name)
             save_list = []
             while not company_queue.empty():
@@ -106,6 +106,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
             file.truncate()
             file.close()
         if count % 100 == 0:
+            company_queue.put(name)
             save_list = []
             while not company_queue.empty():
                 save_list.append(company_queue.get())
@@ -132,7 +133,7 @@ def basic_relevance_filter(document):
 def generate_HTML_output(wrm, table, sub_list, dbresources, name):
     html = '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n<title>{}</title>\n<meta charset="iso-8859-1">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<!--<link rel="stylesheet" href="../styles/layout.css" type="text/css">-->\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n</head>\n<body>\n<div style="width:49%; float:left; style:block"><center>{}</center></div>\n<div style="width:49%; float:right; style:block">\n<center><h2>We found this list of subsidiaries:</h2>\n<ul>\n'.format(name, table)
     for item in sub_list:
-        html+='<a href="{}.html"><li>{}</li></a>\n'.format(item, item)
+        html+='<a href="{}.html"><li>{}</li></a>\n'.format(re.sub('[^0-9A-Za-z-]+', '', item), item)
     html+='</center>\n</ul>\n</div>'
     for item in wrm:
         html+='\n</div>\n<div width="100%" style="display:block; clear:both"></div>\n<p style="visibility:hidden">break</p>\n<center><a href="{}"><h2>{}</h2></a></center>\n<div width="100%" style="display:block; clear:both"></div>\n\n\n<div style="width:49%; height:100%; float:left; min-height:600px; style:block">\n<iframe src="{}" style="width:100%; min-height:600px; style:block"></iframe>'.format(item['url'], item['url'], item['url'])
