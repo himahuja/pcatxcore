@@ -34,13 +34,13 @@ def get_TaggedDocuments(manager):
                 sent_list = nltk.sent_tokenize(item['text'])
                 for i in range(len(sent_list)):
                     words = sent_list[i].split()
-                    tag = "{:06d}{:4d}".format(count, i)
+                    tag = "{}{:04d}".format(item['id'], i)
                     letters_in_sentence = sum([len(w) for w in words])
                     if letters_in_sentence > 750 or letters_in_sentence < 50:
                         tagged = True
                         bad.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list({tag, "bad"})))
                     if not tagged:
-                        for word in ['skip to main content',  'remember my device', "toggle menu", "user agreement" "privacy statement", "terms of service", "javascript", "footer", "header", "subscribe",  "contact us", "usage has been flagged"]:
+                        for word in [ '|', 'skip to main content',  'remember my device', "toggle menu", "user agreement" "privacy statement", "terms of service", "javascript", "footer", "header", "subscribe",  "contact us", "usage has been flagged"]:
                             if not tagged and word in sent_list[i] or len(sent_list[i]) < 3:
                                 tagged = True
                                 bad.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list({tag, "bad"})))
