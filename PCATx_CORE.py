@@ -61,6 +61,7 @@ def PCATx_CORE_supervised(recursive=True):
     if(len(wrm) > 0):
         wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
     generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
+    driver.quit()
     if recursive:
         PCATx_CORE_unsupervised(sub_list)
 
