@@ -9,6 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 # to set the wait time before moving to the next page
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 # to save python objects
 import pickle as pk
 import json, os, re, sys, subprocess
@@ -117,9 +118,8 @@ def search_sec10k(url, driver):
         pages = driver.find_elements_by_xpath("//*[@id='header']/tbody/tr[2]/td/a[text() = 'Next']")
         try:
             pages[0].click()
-        except:
-            print("There are no more pages to parse. {}".format(search_query['cik']))
-            break
+        except NoSuchElementException:
+            raise Exception("We are unable to reach Google")
     return link_href
 
 # ███████ ███████ ████████     ██████  ██████  ██ ██    ██ ███████ ██████

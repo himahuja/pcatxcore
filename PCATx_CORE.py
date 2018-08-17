@@ -81,7 +81,8 @@ def PCATx_CORE_unsupervised(list_of_companies):
         print("Currently web crawling: {}".format(name))
         sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
         for company in sub_list:
-            company_queue.put(company)
+            if company != "":
+                company_queue.put(company)
         try:
             crawlerWrapper(query, "google", driver)
             with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
@@ -159,7 +160,7 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
     file.close()
 
 def main():
-    file = open("data/praedicat_data/target_companies_with_aliases.json")
+    file = open("data/PCATx_CORE_unsupervised_save_list.json.json")
     company_list = json.loads(file.read())
     file.close()
     PCATx_CORE_unsupervised(company_list)
