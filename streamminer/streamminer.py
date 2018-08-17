@@ -102,6 +102,256 @@ _float = np.float
 #######################################################################
 
 
+# ███████ ████████ ██████  ███████  █████  ███    ███     ███    ███ ██ ███    ██ ███████ ██████
+# ██         ██    ██   ██ ██      ██   ██ ████  ████     ████  ████ ██ ████   ██ ██      ██   ██
+# ███████    ██    ██████  █████   ███████ ██ ████ ██     ██ ████ ██ ██ ██ ██  ██ █████   ██████
+#      ██    ██    ██   ██ ██      ██   ██ ██  ██  ██     ██  ██  ██ ██ ██  ██ ██ ██      ██   ██
+# ███████    ██    ██   ██ ███████ ██   ██ ██      ██     ██      ██ ██ ██   ████ ███████ ██   ██
+
+
+def predpath_train_model_sm(G, triples, relsim, use_interpretable_features=False, cv=10):
+	"""
+	Entry point for building a fact-checking classifier.
+	Performs three steps:
+	1. Path extraction (features)
+	2a. Path selection using information gain
+	2b. Filtering most informative discriminative predicate paths
+	3. Building logistic regression model
+
+	Parameters:
+	-----------
+	G: rgraph
+		Knowledge graph.
+	triples: dataframe
+		A data frame consisting of at least four columns, including
+		sid, pid, oid, class.
+	use_interpretable_features: bool
+		Whether or not to perform 2b.
+	cv: int
+		Number of cross-validation folds.
+
+	Returns:
+	--------
+	vec: DictVectorizer
+		Useful for preprocessing future triples.
+	model: dict
+		A dictionary containing 'clf' as the built model,
+		and two other key-value pairs, including best parameter
+		and best AUROC score.
+	"""
+
+
+	y = triples['class'] # ground truth
+	triples = triples[['sid', 'pid', 'oid']].to_dict(orient='records')
+
+
+	##### Taken from kstream #######
+	# ADDITION: Creating backup
+	# COMPLETED
+	G_bak = {
+		'data': G.csr.data.copy(),
+		'indices': G.csr.indices.copy(),
+		'indptr': G.csr.indptr.copy()
+	}
+	################################
+
+	##################################################
+	## Addition for K-STREAM
+	# NOT CHECKED YET
+	# pid_array = pid.copy()
+	##################################################
+	# Remove all edges in G corresponding to predicate p.
+	pid = triples[0]['pid']
+	print 'PID is: {}, with type: {}'.format(pid, pid.dtype)
+
+	#################################################
+	# ADDITION to compute relsim. setup
+	# INCOMPLETE
+	cost_vec_bak = np.log(G.indeg_vec).copy()
+
+
+	# some set up
+	G.sources = np.repeat(np.arange(G.N), np.diff(G.csr.indptr))
+
+	G.targets = G.csr.indices % G.N
+
+	cost_vec = cost_vec_bak.copy()
+	indegsim = weighted_degree(G.indeg_vec, weight=WTFN)
+	specificity_wt = indegsim[G.targets] # specificity
+	relations = (G.csr.indices - G.targets) / G.N
+
+	####################################################
+	### PRINT CHECK
+	print "relations has size: {}".format(relations.shape)
+	print "G.sources looks like: {}".format(G.sources)
+	print "G.sources has shape: {}".format(G.sources.shape)
+	print "G.targets has shape: {}".format(G.targets.shape)
+	print "G.indeg_vec has shape: {}".format(G.indeg_vec.shape)
+	#####################################################
+	print "Sum of G.csr.data elements BEFORE ANYTHING: {}".format(np.sum(G.csr.data))
+
+	#####################################################
+	# Setting paths using relsim (from K-Stream)
+	# set weights
+	relsimvec = np.array(relsim[int(pid), :]) # specific to predicate p
+	# print "relsim is "
+	print "relsimvec has the size: {}".format(relsimvec.shape)
+	print "relsimvec is: {}".format(relsimvec)
+	print "specificity_wt vector has the size: {}".format(specificity_wt.shape)
+	print "relations has the size: {}".format(relations.shape)
+	relsim_wt = relsimvec[relations]
+	print "relsim_wt has the size: {}".format(relsim_wt.shape)
+	print "relsim_wt is: {}".format(relsim_wt)
+	G.csr.data = np.multiply(relsim_wt, specificity_wt) # it is the capacity of each edge, under p
+	######################################################
+	print '=> Removing predicate {} from KG.'.format(pid)
+	# ADDITION: Use G.indeg_vec
+	eraseedges_mask = ((G.csr.indices - (G.csr.indices % G.N)) / G.N) == pid
+	G.csr.data[eraseedges_mask] = 0
+
+	##################################################################
+	# PRINT CHECK
+	print "The initial shape of G.csr.data is: {}".format(G.csr.data.shape)
+	print "Number of non-zero elements in G.csr.data: {}".format(np.count_nonzero(G.csr.data))
+	print "Sum of G.csr.data elements: {}".format(np.sum(G.csr.data))
+	print "Shape of indices: {}".format(G.csr.indices.shape)
+	print "Shape of indptr: {}".format(G.csr.indptr.shape)
+	print "Shape of data: {}".format(G.csr.data.shape)
+	print ''
+	############################################################################################
+
+	# Path extraction
+	print '=> Path extraction..(this can take a while)'
+	t1 = time()
+	features, pos_features, neg_features, measurements = extract_paths_sm(G, triples, y)
+	print 'P: +:{}, -:{}, unique tot:{}'.format(len(pos_features), len(neg_features), len(features))
+	vec = DictVectorizer()
+	X = vec.fit_transform(measurements)
+	n, m = X.shape
+	print 'Time taken: {:.2f}s'.format(time() - t1)
+	print ''
+
+	# Path selection
+	print '=> Path selection..'
+	t1 = time()
+	pathselect = SelectKBest(mutual_info_classif, k=min(100, m))
+	X_select = pathselect.fit_transform(X, y)
+	selectidx = pathselect.get_support(indices=True) # selected feature indices
+	vec = vec.restrict(selectidx, indices=True)
+	select_pos_features, select_neg_features = set(), set()
+	for feature in vec.get_feature_names():
+		if feature in pos_features:
+			select_pos_features.add(feature)
+		if feature in neg_features:
+			select_neg_features.add(feature)
+	print 'D: +:{}, -:{}, tot:{}'.format(
+		len(select_pos_features), len(select_neg_features), X_select.shape[1]
+	)
+	print 'Time taken: {:.2f}s'.format(time() - t1)
+	print ''
+
+	# Fact interpretation
+	if use_interpretable_features and len(select_neg_features) > 0:
+		print '=> Fact interpretation..'
+		t1 = time()
+		theta = 10
+		select_neg_idx = [i for i, f in enumerate(vec.get_feature_names()) if f in select_neg_features]
+		removemask = np.where(np.sum(X_select[:, select_neg_idx], axis=0) >= theta)[0]
+		restrictidx = select_neg_idx[removemask]
+		keepidx = []
+		for i, f in enumerate(vec.get_feature_names()):
+			if i not in restrictidx:
+				keepidx.append(i)
+			else:
+				select_neg_features.remove(f)
+		vec = vec.restrictidx(keepidx, indices=True)
+		X_select = X_select[:, keepidx]
+		print 'D*: +:{}, -:{}, tot:{}'.format(
+			len(select_pos_features), len(select_neg_features), X_select.shape[1]
+		)
+		print 'Time taken: {:.2f}s'.format(time() - t1)
+		print ''
+
+	# Model creation
+	print '=> Model building..'
+	t1 = time()
+	model = find_best_model(X_select, y, cv=cv)
+	print '#Features: {}, best-AUROC: {:.5f}'.format(X_select.shape[1], model['best_score'])
+	print 'Time taken: {:.2f}s'.format(time() - t1)
+	print ''
+	############################################
+	## From KStream
+	np.copyto(G.csr.data, G_bak['data'])
+	np.copyto(G.csr.indices, G_bak['indices'])
+	np.copyto(G.csr.indptr, G_bak['indptr'])
+	np.copyto(cost_vec, cost_vec_bak)
+	############################################
+
+	return vec, model
+def extract_paths_sm(G, triples, y, length=3, features=None):
+	"""
+	Extracts anchored predicate paths for a given sequence of triples.
+
+	Parameters:
+	-----------
+	G: rgraph
+		Knowledge graph.
+	triples: sequence
+		A list of triples (sid, pid, oid).
+	y: array
+		A sequence of class labels.
+	length: int
+		Maximum length of any path.
+	features: dict
+		Features extracted earlier. A set of (feature_id, path) pairs.
+		If None, it is assumed feature set and feature matrix are desired.
+		If not None, only X (feature matrix) is returned.
+
+	Returns:
+	--------
+	features: dict
+		A set of (feature_id, path) pairs.
+	X: dict
+		A dictionary representation of feature matrix.
+	"""
+	return_features = False
+	if features is None:
+		return_features = True
+		features, pos_features, neg_features = set(), set(), set()
+	measurements = []
+	for idx, triple in enumerate(triples):
+		sid, pid, oid = triple['sid'], triple['pid'], triple['oid']
+		label = y[idx]
+
+		# extract paths for a triple
+		triple_feature = dict()
+		for m in xrange(length + 1):
+			if m in [0, 1]: # paths of length 0 and 1 mean nothing
+				continue
+			paths = c_get_paths(G, sid, pid, oid, length=m, maxpaths=200) # cythonized
+			for pth in paths:
+				ff = tuple(pth.relational_path) # feature
+				# print 'FF was this: {}'.format(ff)
+				if ff not in features:
+					features.add(ff)
+					if label == 1:
+						pos_features.add(ff)
+					elif label == 0:
+						neg_features.add(ff)
+					else:
+						raise Exception('Unknown class label: {}'.format(label))
+				triple_feature[ff] = triple_feature.get(ff, 0) + 1
+		measurements.append(triple_feature)
+		# print '(T:{}, F:{})'.format(idx+1, len(triple_feature))
+		sys.stdout.flush()
+	print ''
+	if return_features:
+		return features, pos_features, neg_features, measurements
+	return measurements
+
+#######################################################################
+#######################################################################
+
 def predpath_train_model(G, triples, use_interpretable_features=False, cv=10):
 	"""
 	Entry point for building a fact-checking classifier.
@@ -394,6 +644,9 @@ def compute_mincostflow(G, relsim, subs, preds, objs, flowfile):
 	# Uses the log of indegree to calculate the costs of the successive shortest paths
 	## Change this to another metric
 	cost_vec_bak = np.log(G.indeg_vec).copy()
+	# print "Shape of cost_vec_bak: {}".format(cost_vec_bak.shape)
+	# print "cost_vec_bak: {}".format(cost_vec_bak)
+	# print "cost_vec_bak, non-zero: {}".format(cost_vec_bak.nonzero())
 
 	# some set up
 	G.sources = np.repeat(np.arange(G.N), np.diff(G.csr.indptr))
@@ -562,6 +815,14 @@ def normalize(df):
 	df['softmaxscore'] = df[['sid','score']].groupby(by=['sid'], as_index=False).transform(softmax)
 	return df
 
+
+# ███    ███  █████  ██ ███    ██
+# ████  ████ ██   ██ ██ ████   ██
+# ██ ████ ██ ███████ ██ ██ ██  ██
+# ██  ██  ██ ██   ██ ██ ██  ██ ██
+# ██      ██ ██   ██ ██ ██   ████
+
+
 def main(args=None):
 	parser = argparse.ArgumentParser(
 		description=__doc__,
@@ -649,6 +910,7 @@ def main(args=None):
 		log.info('KL computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
 	elif args.method == 'predpath': # PREDPATH
 		vec, model = predpath_train_model(G, spo_df) # train
+		# vec, model = predpath_train_model(G, spo_df, relsim)
 		print 'Time taken: {:.2f}s\n'.format(time() - t1)
 		# save model
 		predictor = { 'dictvectorizer': vec, 'model': model }
@@ -660,12 +922,12 @@ def main(args=None):
 		except IOError, e:
 			raise e
 	elif args.method == 'streamminer':
-		vec, model = predpath_train_model(G, spo_df) # train
+		vec, model = predpath_train_model_sm(G, spo_df, relsim) # train
 		print 'Time taken: {:.2f}s\n'.format(time() - t1)
 		# save model
 		predictor = { 'dictvectorizer': vec, 'model': model }
 		try:
-			outpkl = join(args.outdir, 'out_predpath_{}_{}.pkl'.format(base, DATE))
+			outpkl = join(args.outdir, 'out_streamminer_{}_{}.pkl'.format(base, DATE))
 			with open(outpkl, 'wb') as g:
 				pkl.dump(predictor, g, protocol=pkl.HIGHEST_PROTOCOL)
 			print 'Saved: {}'.format(outpkl)
