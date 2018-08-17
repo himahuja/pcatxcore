@@ -18,14 +18,22 @@ import numpy as np
 class WebResourceManager(object):
     
     def __init__(self, rel_path=None):
-        #read in the file
+        """
+        Constructor
+
+    
+        Parameters
+        ----------
+        rel_path : string
+            the relative path to the parent directory of "data" holding the WebResourceManager data
+    
+        Returns
+        -------
+        None
+    
+        """
         self.rel_path = rel_path
         self.url_to_uuid = {}
-        self.classifier = TfidfVectorizer(stop_words='english')
-#        if rel_path == None:
-#            self.classifier = Doc2Vec.load("data/doc2vec_model")
-#        else:
-#            self.classifier = Doc2Vec.load(os.path.join(self.rel_path, "data/doc2vec_model"))
     
 
     def __iter__(self, instances=1, iam = 0):
@@ -54,8 +62,22 @@ class WebResourceManager(object):
                 if i % instances == iam:
                     yield self.get(list(self.url_to_uuid.values().keys())[i])
         
-    #get the file with the UUID
     def __getitem__(self, key):
+        """
+        Loads and returns the web resource profile specified by key
+
+    
+        Parameters
+        ----------
+        key : string
+            universally unique identifier (UUID) for a web resource being tracked by the Web Resource Manager instance
+    
+        Returns
+        -------
+        dict
+            A dictionary which is the profile if found, else None
+    
+        """
         try:
             if self.rel_path == None:
                 file = open("data/docs/{}.json".format(key))
@@ -69,6 +91,16 @@ class WebResourceManager(object):
 #            print("Error while getting {} with rel_path set to {}: {}".format(key, self.rel_path, str(e)))
     
     def __len__(self):
+        """
+        Returns the number of web resources being tracked by the instance
+        
+        
+        Returns
+        -------
+        int
+            number of web resources in the instance
+    
+        """
         return len(self.url_to_uuid)
         
     def __repr__(self):
@@ -79,8 +111,11 @@ class WebResourceManager(object):
         
     def absorb_file_manager(self, other_file_manager):
         for item in other_file_manager:
-            if item['id'] not in self.url_to_uuid.values():
-                self.url_to_uuid[item['url']] = item['id']
+            try:
+                if item['id'] not in self.url_to_uuid.values():
+                    self.url_to_uuid[item['url']] = item['id']
+            except:
+                pass
     
     def clean_resource(self):
         for item in self:
@@ -186,16 +221,13 @@ class WebResourceManager(object):
         return score
     
     def get_TaggedDocuments(self):
-        doc_count = -1
         for item in self:
-            doc_count+=1
             try:
                 sent_list = nltk.sent_tokenize(item['text'])
                 for i in range(len(sent_list)):
-                    yield TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i)))
+                    yield TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{}{:04d}".format(item['id'], i)))
             except (KeyError, TypeError) as e:
                 print(str(e))
-                doc_list-=1
     
     def get_texts(self):
         for file in self:
@@ -235,14 +267,13 @@ class WebResourceManager(object):
                 print(str(e))
         model.train(doc_list, total_examples=model.corpus_count, epochs=model.iter)
         model.save("../data/doc2vec_model")
-        doc_count = 0
         for item in self:
             try:
                 sent_list = nltk.sent_tokenize(item['text'])
                 doc_tags = []
                 tag2sent = {}
                 for i in range(len(sent_list)):
-                    tag = "{:06d}{:04d}".format(doc_count, i)
+                    tag = "{}{:04d}".format(item['id'], i)
                     doc_tags.append(tag)
                     tag2sent[tag] = sent_list[i]
                 tuples = []
@@ -250,11 +281,8 @@ class WebResourceManager(object):
                     try:
                         tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
                     except KeyError as e:
-                        pass
-#                        print("Error in wrm:rank_by_relevance \n The following error was thrown while attempting to get the Doc2Vec similarity of {}: \n {}".format(item['id'], str(e)))
-                print(tuples)
+                        print("Error in wrm:rank_by_relevance \n The following error was thrown while attempting to get the Doc2Vec similarity of {}: \n {}".format(item['id'], str(e)))
                 mergeSortTuples(tuples)
-                print(tuples)
                 temp_text = ""
                 for i in range(len(tuples)//2):
                     temp_text+=tuples[i][1] + "\n"
@@ -264,9 +292,9 @@ class WebResourceManager(object):
                 tfidf_tuples = []
                 for i in range(len(sent_list)):
                     tfidf_tuples.append((self.get_relevance_score(sent_list[i]), sent_list[i]))
-                mergeSortTuples(tuples)
-                for i in range(len(tuples)//2):
-                    temp_text+=tuples[i][1] + "\n"
+                mergeSortTuples(tfidf_tuples)
+                for i in range(len(tfidf_tuples)//2):
+                    temp_text+=tfidf_tuples[i][1] + "\n"
                 item['tfidf_classifier'] = temp_text
                 
                 self.update_profile(item)
@@ -324,6 +352,7 @@ class WebResourceManager(object):
         file.close
 
     def train_classifier(self):
+        self.classifier = TfidfVectorizer(stop_words='english')
         self.classifier.fit_transform(self.get_texts())
 
     def update_profile(self, item):

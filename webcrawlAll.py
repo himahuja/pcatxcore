@@ -12,7 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 # to save python objects
 import pickle as pk
-import json, os, re, sys, subprocess
+import json, os, re, sys, subprocess, time
 from collections import OrderedDict
 
 # ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████ ██████
@@ -73,6 +73,8 @@ def search_google(query, driver, number_of_pages):
         # Goes to the next page
         try:
             next_page = driver.find_element_by_css_selector('a#pnnext.pn')
+            #hopefully helps us from getting blocked
+            time.sleep(.5)
             next_page.click()
         except Exception as e:
             print("There are no more pages to parse. {}".format(str(e)))

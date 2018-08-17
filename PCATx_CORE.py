@@ -74,6 +74,9 @@ def PCATx_CORE_unsupervised(list_of_companies):
     count = 0
     while not company_queue.empty():
         count+=1
+        if count % 25 == 0:
+            #hopefully helps us from getting blocked
+            time.sleep(3)
         name = company_queue.get()
         pm = ProfileManager()
         wiki = wikiParser(name)
@@ -160,7 +163,7 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
     file.close()
 
 def main():
-    file = open("data/PCATx_CORE_unsupervised_save_list.json.json")
+    file = open("data/PCATx_CORE_unsupervised_save_list.json")
     company_list = json.loads(file.read())
     file.close()
     PCATx_CORE_unsupervised(company_list)

@@ -430,7 +430,7 @@ if __name__ == "__main__":
     print('4. NPIRS Hazard to Companies(NPIRS)')
     print('5. Wikipedia (WIKI)')
 
-    engine = input("Please enter your choice (TRI/GOOGLE/EWG/NPIRS): ")
+    engine = input("Please enter your choice (TRI/GOOGLE/EWG/NPIRS/WIKI): ")
     engine = engine.lower()
     driver = setDriver(True)
 
