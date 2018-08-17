@@ -9,9 +9,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 # to set the wait time before moving to the next page
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 # to save python objects
 import pickle as pk
-import json, os, re, sys, subprocess
+import json, os, re, sys, subprocess, time
 from collections import OrderedDict
 
 # ██    ██ ██████  ██          ███    ███  █████  ██   ██ ███████ ██████
@@ -21,6 +22,7 @@ from collections import OrderedDict
 #  ██████  ██   ██ ███████     ██      ██ ██   ██ ██   ██ ███████ ██   ██
 
 def urlmaker_sec(queryDic):
+    #query for SEC
     searchText = queryDic['searchText'] if 'searchText' in queryDic else '*'
     formType = queryDic['formType'] if 'formType' in queryDic else '1'
     sic = queryDic['sic'] if 'sic' in queryDic else '*'
@@ -71,6 +73,8 @@ def search_google(query, driver, number_of_pages):
         # Goes to the next page
         try:
             next_page = driver.find_element_by_css_selector('a#pnnext.pn')
+            #hopefully helps us from getting blocked
+            time.sleep(.5)
             next_page.click()
         except Exception as e:
             print("There are no more pages to parse. {}".format(str(e)))
@@ -116,9 +120,8 @@ def search_sec10k(url, driver):
         pages = driver.find_elements_by_xpath("//*[@id='header']/tbody/tr[2]/td/a[text() = 'Next']")
         try:
             pages[0].click()
-        except:
-            print("There are no more pages to parse. {}".format(search_query['cik']))
-            break
+        except NoSuchElementException:
+            raise Exception("We are unable to reach Google")
     return link_href
 
 # ███████ ███████ ████████     ██████  ██████  ██ ██    ██ ███████ ██████

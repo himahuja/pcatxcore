@@ -7,9 +7,9 @@ Created on Thu Aug 16 11:38:53 2018
 """
 
 from selenium import webdriver
-import pickle
-import time
-import json, os, re, sys, subprocess
+import wikipedia as wiki
+from bs4 import BeautifulSoup
+import json, os, re, sys, subprocess, pickle, time, urllib.request, unicodedata, wikipedia
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 import queue
@@ -39,7 +39,7 @@ def setDriver(headless = False):
 def get_tri_dict(tri_id, driver):
     url ='https://www3.epa.gov/enviro/facts/tri/ef-facilities/#/Facility/'+tri_id
     driver.get(url)
-    time.sleep(0.5)
+    time.sleep(1)
 
     fac_dict = {}
 
@@ -184,6 +184,10 @@ def get_sub(company, driver):
         for div in divs3:
             sub_list.append(div.text)
         return sub_list
+    try:
+        sub_list.remove(name)
+    except:
+        pass
     return sub_list
 
 def get_parent_child_dict(company,parent,children_list):
@@ -270,6 +274,7 @@ def company_to_product(company,driver):
                     if a.text == 'Next>':
                         found = True
                         a.click()
+
                 if not found:
                     print(company+' products attached.')
                     break
@@ -278,8 +283,11 @@ def company_to_product(company,driver):
         # map a company to a product list once found
         if prod_list != []:
             comp_prod_dict[company] = prod_list
+
+
     except:
         print(company+' not found')
+
     return comp_prod_dict
 
 # find ingredients for all products
@@ -310,8 +318,11 @@ def product_to_ingredient(comp_prod_dict,driver):
                 if ingredient_list != []:
                     prod_ingredient_dict[prod] = ingredient_list
                     print(prod+' ingredient found')
+
+
             except:
                 print(prod+' ingredient not found')
+
         if prod_ingredient_dict != {}:
             comp_prod_ingredient_dict[key] = prod_ingredient_dict
     return comp_prod_ingredient_dict
@@ -368,40 +379,91 @@ def hazard_to_company(chemical,driver):
         print('Unable to find companies for the hazard')
         return []
 
+def wikiParser(company):
+    """
+
+    """
+    wiki_page = {}
+    wiki_table = {}
+    try:
+        page = wiki.page(title = company)
+    except:
+        print("Reading the wiki page, {} was not possible".format(company))
+        return (wiki_page, wiki_table, "", "", "<ul></ul>")
+    secs = page.sections
+    for sec in secs:
+        wiki_page[sec] = page.section(sec)
+    # Do the wikipedia table
+    link = page.url
+    body = urllib.request.urlopen(link).read()
+    soup = BeautifulSoup(body, 'lxml')
+    title = soup.find('title')
+    if title != None:
+        title = str(title).replace("<title>", "").replace("</title>", "").replace("- Wikipedia", "").strip()
+    try:
+        table = soup.find('table',{'class':'infobox vcard'})
+        rows = table.find_all('tr')
+        for row in rows:
+            right = row.find_all('td')
+            left = row.find_all('th')
+            for head, elem in zip(left, right):
+                filler = unicodedata.normalize("NFKD", head.get_text(strip=True))
+                els = elem.find_all('li')
+                if len(els) != 0:
+                    temp_list = []
+                    for el in els:
+                        temp_list.append(unicodedata.normalize("NFKD",re.sub('\[[^()]*\]', "", el.get_text(strip=True))))
+                    wiki_table[filler] = temp_list
+                elif head.text == "Founded":
+                    wiki_table[filler] = unicodedata.normalize("NFKD",elem.get_text(strip=True).split(";", 1)[0])
+                elif elem.text != "":
+                    wiki_table[filler] = unicodedata.normalize("NFKD",re.sub('\[[^()]*\]', "",elem.get_text(strip=True)))
+    except:
+        print("Wikipedia Table does not exist for {}".format(company))
+    return (wiki_page, wiki_table, title, link, table)
+
 if __name__ == "__main__":
     print('Please select an engine:')
     print('1. TRI Facility Information(TRI)')
     print('2. Recursive Google Subsidiaries(GOOGLE)')
     print('3. EWG Skin Deep Cosmetics(EWG)')
     print('4. NPIRS Hazard to Companies(NPIRS)')
+    print('5. Wikipedia (WIKI)')
 
-    engine = input("Please enter your choice (TRI/GOOGLE/EWG/NPIRS): ")
+    engine = input("Please enter your choice (TRI/GOOGLE/EWG/NPIRS/WIKI): ")
+    engine = engine.lower()
     driver = setDriver(True)
 
-    if engine == 'TRI':
+    if engine == 'tri' or engine == "1":
         # example tri id: 46402SSGRYONENO, 89319BHPCP7MILE, 70070MNSNTRIVER
         tri_id = input('Please enter a tri id: ')
-        print(get_tri_dict(tri_id,driver))
+        print(json.dumps(get_tri_dict(tri_id,driver), sort_keys = True, indent = 4))
         # example output
         #{'fac_name': 'ROBINSON NEVADA MINING CO', 'tri_id': '89319BHPCP7MILE', 'address': '4232 W WHITE PINE CO RD 44 RUTH, NV, 89319', 'frs_id': '110042080832', 'mailing_name': 'ROBINSON NEVADA MINING CO', 'mailing_address': 'PO BOX 382 RUTH, NV, 89319', 'parent_company': 'NA', 'county': 'WHITE PINE', 'pub_contact': 'AMANDA HILTON', 'region': '9', 'phone': '(775) 289-7045', 'latitude': '39.27083', 'tribe': 'NA', 'longitude': '-115.0125', 'bia_tribal_code': 'NA', 'naics': 'NA', 'sic': 'NA', 'last_form': 'NA'}
-    elif engine == 'GOOGLE':
+    elif engine == 'google' or engine == "2":
         # example company: ABC-MART,INC.
         company = input('Enter a company name: ')
         master_google_sub = get_recursive_sub(company,driver)
         # print result of all subsidiaries as a list
-        print(master_google_sub)
+        print(json.dumps(master_google_sub, sort_keys = True, indent = 4))
         # example output:
         #{'ABC-MART,INC.': {'parent': 'NA', 'children': ['ABC-Mart Korea Co,. Ltd', 'LaCrosse Footwear']}, 'LaCrosse Footwear': {'parent': 'ABC-MART,INC.', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc', 'LaCrosse International, Inc']}, 'LaCrosse International, Inc': {'parent': 'LaCrosse Footwear', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc']}}
-    elif engine == 'EWG':
+    elif engine == 'ewg' or engine == "3":
         # example ewg company name: Advanced Research Laboratories, Advanced Beauty, Inc.
         company = input('Please enter a company name: ')
         driver = setDriver(False)
         comp_prod_dict = company_to_product(company,driver)
-        print(product_to_ingredient(comp_prod_dict,driver))
+        print(json.dumps(product_to_ingredient(comp_prod_dict,driver), sort_keys = True, indent = 4))
         # example output:
         # {'Advanced Research Laboratories': {'Zero Frizz Keratin Corrective Hair Serum': ['FRAGRANCE', 'OCTINOXATE ETHYLHEXYL METHOXYCINNAMATE', 'TOCOPHERYL ACETATE', 'DIMETHICONE', 'CYCLOMETHICONE', 'KERATIN AMINO ACIDS', 'DIMETHICONOL'], 'Zero Frizz Keratin Smoothing Conditioner': ['FRAGRANCE', 'DMDM HYDANTOIN (FORMALDEHYDE RELEASER)', 'OCTINOXATE ETHYLHEXYL METHOXYCINNAMATE', 'METHYLPARABEN', 'PEG/ PPG-18/ 18 DIMETHICONE', 'CYCLOPENTASILOXANE', 'DIMETHICONE', 'BEHENTRIMONIUM CHLORIDE', 'CETRIMONIUM CHLORIDE', 'PROPYLENE GLYCOL', 'HYDROLYZED KERATIN', 'CITRIC ACID', 'AMODIMETHICONE', 'TRIBUTYL CITRATE', 'STEARAMIDOPROPYL DIMETHYLAMINE', 'CETYL ALCOHOL', 'PANTHENOL', 'HYDROXYETHYLCELLULOSE', 'STEARYL ALCOHOL', 'SODIUM BENZOTRIAZOLYL BUTYLPHENOL SULFONATE', 'DISODIUM EDTA', 'C12-14 ISOPARAFFIN', 'BUTETH-3', 'TRIDECETH-12', 'WATER']}}
-    elif engine == 'NPIRS':
+    elif engine == 'npirs' or engine == "4":
         # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl
         name = input("Please enter a hazard name: ")
         comp_list = hazard_to_company(name, driver)
         print(comp_list)
+    elif engine == 'wiki' or engine == "5":
+        # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl
+        name = input("Please enter a Wikipedia query: ")
+        wiki = wikiParser(name)
+        print(json.dumps(wiki[1], indent = 4, sort_keys = True))
+        print(json.dumps(wiki[0], indent = 4, sort_keys = True))
