@@ -183,7 +183,11 @@ def get_sub(company, driver):
     elif divs3 != []:
         for div in divs3:
             sub_list.append(div.text)
-        return sub_list        
+        return sub_list
+    try:
+        sub_list.remove(name)
+    except:
+        pass        
     return sub_list
 
 def get_parent_child_dict(company,parent,children_list):
@@ -388,7 +392,7 @@ if __name__ == "__main__":
     if engine == 'TRI':       
         # example tri id: 46402SSGRYONENO, 89319BHPCP7MILE, 70070MNSNTRIVER
         tri_id = input('Please enter a tri id: ')
-        print(get_tri_dict(tri_id,driver))
+        print(json.dumps(get_tri_dict(tri_id,driver), sort_keys = True, indent = 4))
         # example output
         #{'fac_name': 'ROBINSON NEVADA MINING CO', 'tri_id': '89319BHPCP7MILE', 'address': '4232 W WHITE PINE CO RD 44 RUTH, NV, 89319', 'frs_id': '110042080832', 'mailing_name': 'ROBINSON NEVADA MINING CO', 'mailing_address': 'PO BOX 382 RUTH, NV, 89319', 'parent_company': 'NA', 'county': 'WHITE PINE', 'pub_contact': 'AMANDA HILTON', 'region': '9', 'phone': '(775) 289-7045', 'latitude': '39.27083', 'tribe': 'NA', 'longitude': '-115.0125', 'bia_tribal_code': 'NA', 'naics': 'NA', 'sic': 'NA', 'last_form': 'NA'}
     elif engine == 'GOOGLE':
@@ -396,7 +400,7 @@ if __name__ == "__main__":
         company = input('Enter a company name: ')
         master_google_sub = get_recursive_sub(company,driver)
         # print result of all subsidiaries as a list
-        print(master_google_sub)
+        print(json.dumps(master_google_sub, sort_keys = True, indent = 4))
         # example output:
         #{'ABC-MART,INC.': {'parent': 'NA', 'children': ['ABC-Mart Korea Co,. Ltd', 'LaCrosse Footwear']}, 'LaCrosse Footwear': {'parent': 'ABC-MART,INC.', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc', 'LaCrosse International, Inc']}, 'LaCrosse International, Inc': {'parent': 'LaCrosse Footwear', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc']}}
     elif engine == 'EWG':
@@ -404,11 +408,11 @@ if __name__ == "__main__":
         company = input('Please enter a company name: ')
         driver = setDriver(False)
         comp_prod_dict = company_to_product(company,driver)
-        print(product_to_ingredient(comp_prod_dict,driver))
+        print(json.dumps(product_to_ingredient(comp_prod_dict,driver), sort_keys = True, indent = 4))
         # example output:
         # {'Advanced Research Laboratories': {'Zero Frizz Keratin Corrective Hair Serum': ['FRAGRANCE', 'OCTINOXATE ETHYLHEXYL METHOXYCINNAMATE', 'TOCOPHERYL ACETATE', 'DIMETHICONE', 'CYCLOMETHICONE', 'KERATIN AMINO ACIDS', 'DIMETHICONOL'], 'Zero Frizz Keratin Smoothing Conditioner': ['FRAGRANCE', 'DMDM HYDANTOIN (FORMALDEHYDE RELEASER)', 'OCTINOXATE ETHYLHEXYL METHOXYCINNAMATE', 'METHYLPARABEN', 'PEG/ PPG-18/ 18 DIMETHICONE', 'CYCLOPENTASILOXANE', 'DIMETHICONE', 'BEHENTRIMONIUM CHLORIDE', 'CETRIMONIUM CHLORIDE', 'PROPYLENE GLYCOL', 'HYDROLYZED KERATIN', 'CITRIC ACID', 'AMODIMETHICONE', 'TRIBUTYL CITRATE', 'STEARAMIDOPROPYL DIMETHYLAMINE', 'CETYL ALCOHOL', 'PANTHENOL', 'HYDROXYETHYLCELLULOSE', 'STEARYL ALCOHOL', 'SODIUM BENZOTRIAZOLYL BUTYLPHENOL SULFONATE', 'DISODIUM EDTA', 'C12-14 ISOPARAFFIN', 'BUTETH-3', 'TRIDECETH-12', 'WATER']}}
     elif engine == 'NPIRS':
         # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl
         name = input("Please enter a hazard name: ")
         comp_list = hazard_to_company(name, driver)
-        print(comp_list)
+        print(json.dumps(comp_list, sort_keys = True, indent = 4))
