@@ -21,6 +21,7 @@ from collections import OrderedDict
 #  ██████  ██   ██ ███████     ██      ██ ██   ██ ██   ██ ███████ ██   ██
 
 def urlmaker_sec(queryDic):
+    #query for SEC
     searchText = queryDic['searchText'] if 'searchText' in queryDic else '*'
     formType = queryDic['formType'] if 'formType' in queryDic else '1'
     sic = queryDic['sic'] if 'sic' in queryDic else '*'

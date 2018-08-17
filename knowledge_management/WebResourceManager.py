@@ -61,9 +61,12 @@ class WebResourceManager(object):
                 file = open("data/docs/{}.json".format(key))
             else:
                 file = open(os.path.join(self.rel_path, "data/docs/{}.json").format(key))
-            return json.loads(file.read())
-        except:
-            print("Error: Problem loading {}.json. Check that your rel_path is correct".format(key))
+            profile = file.read()
+            file.close()
+            return json.loads(profile)
+        except Exception as e:
+            pass
+#            print("Error while getting {} with rel_path set to {}: {}".format(key, self.rel_path, str(e)))
     
     def __len__(self):
         return len(self.url_to_uuid)
@@ -78,6 +81,21 @@ class WebResourceManager(object):
         for item in other_file_manager:
             if item['id'] not in self.url_to_uuid.values():
                 self.url_to_uuid[item['url']] = item['id']
+    
+    def clean_resource(self):
+        for item in self:
+            try:
+                del item['tfidf_classifier']
+            except Exception as e:
+                print(str(e))
+            try:
+                del item['ss_classifier']
+            except Exception as e:
+                print(str(e))
+            try:
+                self.update_profile(item)
+            except:
+                pass
         
     def get(self, key):
         try:
@@ -85,10 +103,12 @@ class WebResourceManager(object):
                 file = open("data/docs/{}.json".format(key))
             else:
                 file = open(os.path.join(self.rel_path, "data/docs/{}.json").format(key))
-            return json.loads(file.read())
+            profile = file.read()
+            file.close()
+            return json.loads(profile)
         except Exception as e:
-            print(self.rel_path)
-            print("Error while getting {}: {}".format(key, str(e)))
+            pass
+#            print("Error while getting {} with rel_path set to {}: {}".format(key, self.rel_path, str(e)))
         
     def get_corpus(self, process_all=False):
         corpus_list = []
@@ -203,37 +223,38 @@ class WebResourceManager(object):
         
     def rank_by_relevance(self):
         model = Doc2Vec.load("../data/doc2vec_model")
+        doc_count = 0
         doc_list = []
-        doc_count = -1
         for item in self:
             try:
-                doc_count+=1
                 sent_list = nltk.sent_tokenize(item['text'])
                 for i in range(len(sent_list)):
-                    doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{:06d}{:04d}".format(doc_count, i))))
+                    doc_list.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list("{}{:04d}".format(item['id'], i))))
+                doc_count+=1
             except (KeyError, TypeError) as e:
                 print(str(e))
-                doc_count-=1
         model.train(doc_list, total_examples=model.corpus_count, epochs=model.iter)
         model.save("../data/doc2vec_model")
-        doc_count = -1
+        doc_count = 0
         for item in self:
             try:
-                doc_count+=1
                 sent_list = nltk.sent_tokenize(item['text'])
                 doc_tags = []
                 tag2sent = {}
                 for i in range(len(sent_list)):
                     tag = "{:06d}{:04d}".format(doc_count, i)
                     doc_tags.append(tag)
-                    tag2sent[tag] = i
+                    tag2sent[tag] = sent_list[i]
                 tuples = []
                 for doc_vec in doc_tags:
                     try:
                         tuples.append((model.docvecs.similarity('bad',doc_vec), tag2sent[doc_vec]))
                     except KeyError as e:
-                        print(e)
+                        pass
+#                        print("Error in wrm:rank_by_relevance \n The following error was thrown while attempting to get the Doc2Vec similarity of {}: \n {}".format(item['id'], str(e)))
+                print(tuples)
                 mergeSortTuples(tuples)
+                print(tuples)
                 temp_text = ""
                 for i in range(len(tuples)//2):
                     temp_text+=tuples[i][1] + "\n"
@@ -250,9 +271,9 @@ class WebResourceManager(object):
                 
                 self.update_profile(item)
                 print("Finished item {}".format(item['id']))
+                doc_count+=1
             except (KeyError, TypeError) as e:
-                print(str(e))
-                doc_count-=1
+                print("Error in wrm:rank_by_relevance \n {}".format(str(e)))
             
     
     #DOES NOT USE REL_PATH
@@ -308,11 +329,15 @@ class WebResourceManager(object):
     def update_profile(self, item):
         if self.rel_path == None:
             file = open("data/docs/{}.json".format(item['id']), "w")
+            file.seek(0)
             file.write(json.dumps(item, sort_keys = True, indent = 4))
+            file.truncate()
             file.close()
         else:
             file = open(os.path.join(self.rel_path, "data/docs/{}.json".format(item['id'])), "w")
-            file.write(json.dumps(item, sort_keys = True, indent = 4)) 
+            file.seek(0)
+            file.write(json.dumps(item, sort_keys = True, indent = 4))
+            file.truncate()
             file.close()
 
 def convert_to_corpus(doc):
@@ -332,8 +357,8 @@ def mergeSortTuples(alist):
         lefthalf = alist[:mid]
         righthalf = alist[mid:]
 
-        mergeSort(lefthalf)
-        mergeSort(righthalf)
+        mergeSortTuples(lefthalf)
+        mergeSortTuples(righthalf)
 
         i=0
         j=0
@@ -358,14 +383,11 @@ def mergeSortTuples(alist):
             k=k+1
             
 def main():
-    with open("../kpm/data/articles.txt") as f:
-        content = f.readlines()
-    content = [x.strip() for x in content]
-    wrm = WebResourceManager("..")
-    wrm.load()
-    url_list = ["https://www.sec.gov/Archives/edgar/data/1800/000104746914001176/a2218043z10-k.htm", "https://www.sec.gov/Archives/edgar/data/1800/000091205701006039/a2035109zex-21.txt"]
-    for url in url_list:
-        print(str(wrm.string_to_uuid(url)) + "--" + re.sub('[^A-Za-z0-9]+', '', url))
+    for file in os.listdir("../data/webresourcemanagers"):
+        wrm = WebResourceManager(rel_path = "..")
+        wrm.load(os.path.join("../data/webresourcemanagers", file))
+        wrm.rel_path=".."
+        wrm.clean_resource()
     
 if __name__ == "__main__" :
     main()
