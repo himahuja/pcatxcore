@@ -432,7 +432,7 @@ if __name__ == "__main__":
 
     engine = input("Please enter your choice (TRI/GOOGLE/EWG/NPIRS/WIKI): ")
     engine = engine.lower()
-    driver = setDriver(True)
+    driver = setDriver()
 
     if engine == 'tri' or engine == "1":
         # example tri id: 46402SSGRYONENO, 89319BHPCP7MILE, 70070MNSNTRIVER
@@ -451,7 +451,7 @@ if __name__ == "__main__":
     elif engine == 'ewg' or engine == "3":
         # example ewg company name: Advanced Research Laboratories, Advanced Beauty, Inc.
         company = input('Please enter a company name: ')
-        driver = setDriver(False)
+        driver = setDriver()
         comp_prod_dict = company_to_product(company,driver)
         print(json.dumps(product_to_ingredient(comp_prod_dict,driver), sort_keys = True, indent = 4))
         # example output:

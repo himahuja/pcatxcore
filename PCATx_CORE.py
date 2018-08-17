@@ -12,18 +12,18 @@ from knowledge_management.WebResourceManager import *
 from knowledge_management.ProfileManager import *
 from gensim import models
 
-def PCATx_CORE_supervised():
+def PCATx_CORE_supervised(recursive=True):
     name = input("What company would you like to crawl for?   ")
     pm = ProfileManager()
     wiki = wikiParser(name)
     newName = wiki[2]
     foundInDatabase = False
-    driver = setDriver(True)
+    driver = setDriver()
     if pm.get(name) != None or pm.get(newName) != None:
         foundInDatabase = True
         query = { 'name' : name }
         print("Currently web crawling: {}".format(name))
-        driver = Site_Crawler_Parser_All.setDriver(True)
+        driver = Site_Crawler_Parser_All.setDriver()
         sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
     else:
         yon = input("Did you mean this company? (y/n) {}   ".format(wiki[2]))
@@ -61,8 +61,8 @@ def PCATx_CORE_supervised():
     if(len(wrm) > 0):
         wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
     generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
-#        wrm.train_classifier()
-#        wrm.rank_by_relevance()
+    if recursive:
+        PCATx_CORE_unsupervised(sub_list)
 
 def PCATx_CORE_unsupervised(list_of_companies):
     company_queue = queue.Queue()
@@ -70,7 +70,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
     for company in list_of_companies:
         company_queue.put(company)
 
-    driver = setDriver(True)
+    driver = setDriver()
     count = 0
     while not company_queue.empty():
         count+=1
@@ -97,7 +97,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
                 wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
             generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
         except:
-            driver = setDriver(True)
+            driver = setDriver()
             company_queue.put(name)
             save_list = []
             while not company_queue.empty():
