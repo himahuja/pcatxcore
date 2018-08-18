@@ -186,7 +186,21 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
 
     if engine == 'google':
         search_query['name'].replace(" ", "+")
+        search_query['name'] = '"' + search_query['name'] + '"'
         url = "https://www.google.com/search?q=" + search_query['name']
+        try:
+            search_query['aliases'] = ["+~" + s for s in search_query['aliases']]
+            for optional in search_query['aliases']:
+                url += optional
+        except:
+            continue
+            # print("There are no aliases")
+        try:
+            search_query['filetype'] = "+filetype:%3A" + search_query['filetype']
+            url += search_query['filetype']
+        except:
+            continue
+            # print("There is no file type specified")
         # change the number in the line below to limit the number of pages it parses
         links = search_google(url, driver, 2)
         with open('data/parsedLinks/{}.pk'.format(re.sub('[^0-9A-Za-z-]+', '', search_query['name'])), 'wb') as handle:
