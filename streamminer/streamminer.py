@@ -45,6 +45,8 @@ from sklearn.model_selection import GridSearchCV
 from datastructures.rgraph import make_graph, Graph
 from datastructures.relationalpath import RelationalPath
 from pathenum import get_paths as c_get_paths
+## for streamminer,
+from pathenum import get_paths_sm as c_get_paths_sm
 
 ##############################################
 from algorithms.mincostflow.ssp import succ_shortest_path, disable_logging
@@ -140,7 +142,7 @@ def predpath_train_model_sm(G, triples, relsim, use_interpretable_features=False
 		and best AUROC score.
 	"""
 
-
+	weight = 10
 	y = triples['class'] # ground truth
 	triples = triples[['sid', 'pid', 'oid']].to_dict(orient='records')
 
@@ -148,11 +150,11 @@ def predpath_train_model_sm(G, triples, relsim, use_interpretable_features=False
 	##### Taken from kstream #######
 	# ADDITION: Creating backup
 	# COMPLETED
-	G_bak = {
-		'data': G.csr.data.copy(),
-		'indices': G.csr.indices.copy(),
-		'indptr': G.csr.indptr.copy()
-	}
+	# G_bak = {
+	# 	'data': G.csr.data.copy(),
+	# 	'indices': G.csr.indices.copy(),
+	# 	'indptr': G.csr.indptr.copy()
+	# }
 	################################
 
 	##################################################
@@ -167,63 +169,74 @@ def predpath_train_model_sm(G, triples, relsim, use_interpretable_features=False
 	#################################################
 	# ADDITION to compute relsim. setup
 	# INCOMPLETE
-	cost_vec_bak = np.log(G.indeg_vec).copy()
+	# cost_vec_bak = np.log(G.indeg_vec).copy()
 
 
 	# some set up
-	G.sources = np.repeat(np.arange(G.N), np.diff(G.csr.indptr))
+	# G.sources = np.repeat(np.arange(G.N), np.diff(G.csr.indptr))
 
-	G.targets = G.csr.indices % G.N
+	# G.targets = G.csr.indices % G.N
 
-	cost_vec = cost_vec_bak.copy()
-	indegsim = weighted_degree(G.indeg_vec, weight=WTFN)
-	specificity_wt = indegsim[G.targets] # specificity
+	# cost_vec = cost_vec_bak.copy()
+	# indegsim = weighted_degree(G.indeg_vec, weight=WTFN)
+	# specificity_wt = indegsim[G.targets] # specificity
 	relations = (G.csr.indices - G.targets) / G.N
 
 	####################################################
 	### PRINT CHECK
-	print "relations has size: {}".format(relations.shape)
-	print "G.sources looks like: {}".format(G.sources)
-	print "G.sources has shape: {}".format(G.sources.shape)
-	print "G.targets has shape: {}".format(G.targets.shape)
-	print "G.indeg_vec has shape: {}".format(G.indeg_vec.shape)
+	# print "relations has size: {}".format(relations.shape)
+	# print "G.sources looks like: {}".format(G.sources)
+	# print "G.sources has shape: {}".format(G.sources.shape)
+	# print "G.targets has shape: {}".format(G.targets.shape)
+	# print "G.indeg_vec has shape: {}".format(G.indeg_vec.shape)
 	#####################################################
-	print "Sum of G.csr.data elements BEFORE ANYTHING: {}".format(np.sum(G.csr.data))
+	# print "Sum of G.csr.data elements BEFORE ANYTHING: {}".format(np.sum(G.csr.data))
 
 	#####################################################
 	# Setting paths using relsim (from K-Stream)
 	# set weights
 	relsimvec = np.array(relsim[int(pid), :]) # specific to predicate p
 	# print "relsim is "
-	print "relsimvec has the size: {}".format(relsimvec.shape)
-	print "relsimvec is: {}".format(relsimvec)
-	print "specificity_wt vector has the size: {}".format(specificity_wt.shape)
-	print "relations has the size: {}".format(relations.shape)
-	relsim_wt = relsimvec[relations]
-	print "relsim_wt has the size: {}".format(relsim_wt.shape)
-	print "relsim_wt is: {}".format(relsim_wt)
-	G.csr.data = np.multiply(relsim_wt, specificity_wt) # it is the capacity of each edge, under p
+	# print "relsimvec has the size: {}".format(relsimvec.shape)
+	# print "relsimvec is: {}".format(relsimvec)
+	# print "specificity_wt vector has the size: {}".format(specificity_wt.shape)
+	# print "relations has the size: {}".format(relations.shape)
+
+	relsim_wt = relsimvec[relations] # with the size of relations as the number of relations
+
+	# print "relsim_wt has the size: {}".format(relsim_wt.shape)
+	# print "relsim_wt is: {}".format(relsim_wt)
+	# G.csr.data = np.multiply(relsim_wt, specificity_wt) # it is the capacity (U) of each edge, under p
 	######################################################
+	# G.csr.data = specificity_wt
+
+	# set weights
+	indegsim = weighted_degree(G.indeg_vec, weight=WTFN).reshape((1, G.N))
+	indegsim = indegsim.ravel()
+	targets = G.csr.indices % G.N
+	specificity_wt = indegsim[targets] # specificity
+	G.csr.data = specificity_wt.copy()
+
+	## Removing all the edges with the predicte p in between any nodes.
 	print '=> Removing predicate {} from KG.'.format(pid)
-	# ADDITION: Use G.indeg_vec
 	eraseedges_mask = ((G.csr.indices - (G.csr.indices % G.N)) / G.N) == pid
 	G.csr.data[eraseedges_mask] = 0
 
 	##################################################################
 	# PRINT CHECK
-	print "The initial shape of G.csr.data is: {}".format(G.csr.data.shape)
-	print "Number of non-zero elements in G.csr.data: {}".format(np.count_nonzero(G.csr.data))
-	print "Sum of G.csr.data elements: {}".format(np.sum(G.csr.data))
-	print "Shape of indices: {}".format(G.csr.indices.shape)
-	print "Shape of indptr: {}".format(G.csr.indptr.shape)
-	print "Shape of data: {}".format(G.csr.data.shape)
+	# print "The initial shape of G.csr.data is: {}".format(G.csr.data.shape)
+	# print "Number of non-zero elements in G.csr.data: {}".format(np.count_nonzero(G.csr.data))
+	# print "Sum of G.csr.data elements: {}".format(np.sum(G.csr.data))
+	# print "Shape of indices: {}".format(G.csr.indices.shape)
+	# print "Shape of indptr: {}".format(G.csr.indptr.shape)
+	# print "Shape of data: {}".format(G.csr.data.shape)
 	print ''
 	############################################################################################
 
 	# Path extraction
 	print '=> Path extraction..(this can take a while)'
 	t1 = time()
-	features, pos_features, neg_features, measurements = extract_paths_sm(G, triples, y)
+	features, pos_features, neg_features, measurements = extract_paths_sm(G, relsim_wt, triples, y, weight)
 	print 'P: +:{}, -:{}, unique tot:{}'.format(len(pos_features), len(neg_features), len(features))
 	vec = DictVectorizer()
 	X = vec.fit_transform(measurements)
@@ -288,7 +301,7 @@ def predpath_train_model_sm(G, triples, relsim, use_interpretable_features=False
 	############################################
 
 	return vec, model
-def extract_paths_sm(G, triples, y, length=3, features=None):
+def extract_paths_sm(G, triples, relsim_wt, y, weight = 10, features=None):
 	"""
 	Extracts anchored predicate paths for a given sequence of triples.
 
@@ -314,36 +327,68 @@ def extract_paths_sm(G, triples, y, length=3, features=None):
 	X: dict
 		A dictionary representation of feature matrix.
 	"""
+
+	## Create graph backup
+	G_bak = {
+		'data': G.csr.data.copy(),
+		'indices': G.csr.indices.copy(),
+		'indptr': G.csr.indptr.copy()
+	}
 	return_features = False
 	if features is None:
 		return_features = True
 		features, pos_features, neg_features = set(), set(), set()
 	measurements = []
+	# Make backup here
+
 	for idx, triple in enumerate(triples):
 		sid, pid, oid = triple['sid'], triple['pid'], triple['oid']
 		label = y[idx]
 
+		# total_weight = 34
+
 		# extract paths for a triple
 		triple_feature = dict()
-		for m in xrange(length + 1):
-			if m in [0, 1]: # paths of length 0 and 1 mean nothing
-				continue
-			paths = c_get_paths(G, sid, pid, oid, length=m, maxpaths=200) # cythonized
-			for pth in paths:
-				ff = tuple(pth.relational_path) # feature
-				# print 'FF was this: {}'.format(ff)
-				if ff not in features:
-					features.add(ff)
-					if label == 1:
-						pos_features.add(ff)
-					elif label == 0:
-						neg_features.add(ff)
-					else:
-						raise Exception('Unknown class label: {}'.format(label))
-				triple_feature[ff] = triple_feature.get(ff, 0) + 1
+		paths = c_get_paths_sm(G, sid, pid, oid, relsim_wt, \
+								weights = weight, maxpath=200)
+		for pth in paths:
+			ff =  tuple(pth.relational_path)
+			if ff not in features:
+				features.add(ff)
+				if label == 1:
+					pos_features.add(ff)
+				if label == 0:
+					neg_features.add(ff)
+				else:
+					raise Exception("Unknown class label: {}".format(label))
+			triple_feature[ff] = triple_feature.get(ff, 0) + 1
 		measurements.append(triple_feature)
-		# print '(T:{}, F:{})'.format(idx+1, len(triple_feature))
 		sys.stdout.flush()
+
+		## REST GRAPH, make backup
+		np.copyto(G.csr.data, G_bak['data'])
+		np.copyto(G.csr.indices, G_bak['indices'])
+		np.copyto(G.csr.indptr, G_bak['indptr'])
+
+		# for m in xrange(length + 1):
+		# 	if m in [0, 1]: # paths of length 0 and 1 mean nothing
+		# 		continue
+		# 	paths = c_get_paths_sm(G, sid, pid, oid, weights=m, maxpaths=200) # cythonized
+		# 	for pth in paths:
+		# 		ff = tuple(pth.relational_path) # feature
+		# 		# print 'FF was this: {}'.format(ff)
+		# 		if ff not in features:
+		# 			features.add(ff)
+		# 			if label == 1:
+		# 				pos_features.add(ff)
+		# 			elif label == 0:
+		# 				neg_features.add(ff)
+		# 			else:
+		# 				raise Exception('Unknown class label: {}'.format(label))
+		# 		triple_feature[ff] = triple_feature.get(ff, 0) + 1
+		# measurements.append(triple_feature)
+		# # print '(T:{}, F:{})'.format(idx+1, len(triple_feature))
+		# sys.stdout.flush()
 	print ''
 	if return_features:
 		return features, pos_features, neg_features, measurements
