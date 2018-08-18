@@ -17,6 +17,20 @@ import queue
 
 # set driver for all other engines
 def setDriver(headless = False):
+    """
+        Sets a selenium webdriver object for running web-crawlers on various systems.
+        Note: Requires chromedrivers for various platforms in a chromedrivers directory
+
+        Parameters
+        ----------
+        headless: Boolean
+            if True, sets a headless browser. if False (Default), sets a browser with head
+
+        Returns
+        -------
+        selenium.webdriver.Chrome
+            driver with standard option settings
+    """
     if sys.platform == 'darwin':
         type_chromedriver = "chromedriver_darwin"
     elif sys.platform == 'linux':
@@ -37,6 +51,39 @@ def setDriver(headless = False):
 
 # get TRI Dictionary
 def get_tri_dict(tri_id, driver):
+    """
+        Open facility report page and scrape facility information into a dictionary
+        
+        Parameters
+        ----------
+        tri_id: str        
+            TRI facility id used as a unique identifier for a facility on TRI Search
+        driver: selenium.webdriver.Chrome
+            Chrome driver after calling 'driver = setDriver()'
+
+        Returns
+        -------
+        fac_dict: dict
+            fac_name(str): Facility Name
+            tri_id(str): TRI facility ID
+            address(str): Facility Address
+            frs_id(str): FRS ID
+            mailing_name(str): Facility Mailing Name
+            mailing_address(str): Facility Mailing Address
+            duns_num(str): Facility Duns Number
+            parent_company(str): Facility's Parent Company Name
+            county(str): County
+            pub_contact(str): Public Contact Name
+            region(str): EPA Region Code
+            phone(str): Contact Number
+            latitude(str): Latitude
+            tribe(str): Tribe
+            longitude(str): Longitude
+            bia_tribal_code(str): BIA Tribal Code
+            naics(str): Naics Code
+            sic(str): SIC Code
+            last_form(str): Last Year of Report              
+    """
     url ='https://www3.epa.gov/enviro/facts/tri/ef-facilities/#/Facility/'+tri_id
     driver.get(url)
     time.sleep(1)
@@ -159,6 +206,22 @@ def get_tri_dict(tri_id, driver):
 
 # get Google subsidiary
 def get_sub(company, driver):
+    """
+        Search "COMPANY_NAME+subsidiaries" on google chromedrivers directory and scrape the
+        knowledge graph results of subsidiary names returned by Google on the top
+
+        Parameters
+        ----------
+        company: str
+            A company name to find subsidiary for
+        driver: selenium.webdriver.Chrome
+            Chrome driver after calling 'driver = setDriver()'
+            
+        Returns
+        -------
+        sub_list: list
+            a list of subsidiary names(str)
+    """
     query = company+"+subsidiaries"
     goog_search = "https://www.google.co.uk/search?q=" + query
 
@@ -191,12 +254,52 @@ def get_sub(company, driver):
     return sub_list
 
 def get_parent_child_dict(company,parent,children_list):
+    """
+        Build a dictionary that contains parent company, subsidiary company information
+        for a certain company
+
+        Parameters
+        ----------
+        company: str
+            A company name to build dictionary for
+        parent: str
+            The parent company name for the company
+        children_list: list
+            A list of subsidiary names of the company
+            
+        Returns
+        -------
+        parent_child_dict: dict
+            parent(str): the parent company name
+            child(list): a list of subsidiary names of the company
+    """
     parent_child_dict = {}
     parent_child_dict['parent'] = parent
     parent_child_dict['children'] = children_list
     return parent_child_dict
 
 def get_recursive_sub(company,driver):
+    """
+        Search "COMPANY_NAME+subsidiaries" RECURSIVELY on google chromedrivers directory to
+        get all-level subsidiaries of a company and build a master dictionary that contains
+        all-level subsidiary information for a company
+        
+        Parameters
+        ----------
+        company: str
+            A company name to find subsidiary for
+        driver: selenium.webdriver.Chrome
+            Chrome driver after calling 'driver = setDriver()'
+            
+        Returns
+        -------
+        master_google_sub: dict
+            NOTE: a dictionary of dictionaries that uses company name as the first
+            layer of dictionary key
+
+            COMPANY(str): parent(str): the parent company of the company,'NA' if not found
+                          child(list): a list of subsidiary names
+    """
     company_queue = queue.Queue()
     company_queue.put(company)
     master_google_sub = {}
@@ -232,7 +335,22 @@ def get_recursive_sub(company,driver):
 # EWG ingredient
 # find all products for a company
 def company_to_product(company,driver):
-
+    """
+        Search a company name on EWG and get all products made by the company
+        in EWG database
+        
+        Parameters
+        ----------
+        company: str
+            A company name to find products for
+        driver: selenium.webdriver.Chrome
+            Chrome driver after calling 'driver = setDriver()'
+            
+        Returns
+        -------
+        comp_prod_dict: dict
+            COMPANY(str): a list of products made by the company
+    """
     comp_prod_dict = {}
     try:
         url = 'https://www.ewg.org/skindeep/search.php?query=&search_group=companies&ptype2=#.W2nG9P5Kgxe'
@@ -292,6 +410,27 @@ def company_to_product(company,driver):
 
 # find ingredients for all products
 def product_to_ingredient(comp_prod_dict,driver):
+    """
+        Search a product name on EWG, get all ingredients in the product
+        in EWG database, and build a master dictionary that contains information for
+        company-products-ingredients
+        
+        Parameters
+        ----------
+        comp_prod_dict: dict
+            A dictionary that contains company to products information after
+            calling 'comp_prod_dict = company_to_product(company, driver)'
+        driver: selenium.webdriver.Chrome
+            Chrome driver after calling 'driver = setDriver()'
+            
+        Returns
+        -------
+        comp_prod_ingredient_dict: dict
+            NOTE: a dictionary of dictionaries that uses a company name as the
+            first layer of dictionary key
+            
+            COMPANY(str): PRODUCT(str): a list of ingredients in the company product           
+    """
     comp_prod_ingredient_dict = {}
     for key in comp_prod_dict:
         prod_ingredient_dict = {}
@@ -330,6 +469,19 @@ def product_to_ingredient(comp_prod_dict,driver):
 
 # NPIRS
 def get_comp_name(text):
+    """
+        Extract relevant content of company name in a html tag
+        
+        Parameters
+        ----------
+        text: str
+            raw content in a html tag
+            
+        Returns
+        -------
+        name: str
+            a clean company name after junk texts are filtered
+    """    
     name = ''
     count = 0
     start = False
@@ -344,12 +496,40 @@ def get_comp_name(text):
             count +=1
 
 def remove_null(comp_list):
+    """
+        Remove null values in a company list
+        
+        Parameters
+        ----------
+        comp_list: list
+            a list of companies           
+        Returns
+        -------
+        comp_list: str
+            a clean list of company names with no null values
+    """     
     for comp in comp_list:
         if comp == '':
             comp_list.remove('')
     return list(set(comp_list))
 
 def hazard_to_company(chemical,driver):
+    """
+        Search NPIRS by entering a chemical name and get a list of companies
+        that use the chemical in their products in NPIRS database
+ 
+        Parameters
+        ----------
+        chemical: str
+            a hazard name
+        driver: selenium.webdriver.Chrome
+            Chrome driver after calling 'driver = setDriver()'
+        
+        Returns
+        -------
+        comp_list: list
+            a list of companies that use the hazard
+    """ 
     try:
         driver.get('http://npirspublic.ceris.purdue.edu/ppis/')
         driver.find_element_by_xpath("//input[@id='ContentPlaceHolder1_active']").click()
@@ -381,8 +561,27 @@ def hazard_to_company(chemical,driver):
 
 def wikiParser(company):
     """
-
-    """
+        Search the Wikipedia page for a company and get wikipedia infobox
+        together with all other contents
+ 
+        Parameters
+        ----------
+        company: str
+        
+        Returns
+        -------
+        wiki_page: dict
+            a dictionary of all other contents on wikipedia
+        wiki_table: dict
+            a dictionary of wikipedia infobox
+        title: str
+            page title
+        link: str
+            page url
+        table: beautifulsoup.table
+            wikipedia infobox returned as a beautifulsoup element
+        
+    """ 
     wiki_page = {}
     wiki_table = {}
     try:
@@ -432,35 +631,42 @@ if __name__ == "__main__":
 
     engine = input("Please enter your choice (TRI/GOOGLE/EWG/NPIRS/WIKI): ")
     engine = engine.lower()
-    driver = setDriver()
 
     if engine == 'tri' or engine == "1":
         # example tri id: 46402SSGRYONENO, 89319BHPCP7MILE, 70070MNSNTRIVER
+        driver = setDriver()
         tri_id = input('Please enter a tri id: ')
         print(json.dumps(get_tri_dict(tri_id,driver), sort_keys = True, indent = 4))
+        driver.quit()
         # example output
         #{'fac_name': 'ROBINSON NEVADA MINING CO', 'tri_id': '89319BHPCP7MILE', 'address': '4232 W WHITE PINE CO RD 44 RUTH, NV, 89319', 'frs_id': '110042080832', 'mailing_name': 'ROBINSON NEVADA MINING CO', 'mailing_address': 'PO BOX 382 RUTH, NV, 89319', 'parent_company': 'NA', 'county': 'WHITE PINE', 'pub_contact': 'AMANDA HILTON', 'region': '9', 'phone': '(775) 289-7045', 'latitude': '39.27083', 'tribe': 'NA', 'longitude': '-115.0125', 'bia_tribal_code': 'NA', 'naics': 'NA', 'sic': 'NA', 'last_form': 'NA'}
     elif engine == 'google' or engine == "2":
         # example company: ABC-MART,INC.
+        driver = setDriver()
         company = input('Enter a company name: ')
         master_google_sub = get_recursive_sub(company,driver)
         # print result of all subsidiaries as a list
         print(json.dumps(master_google_sub, sort_keys = True, indent = 4))
+        driver.quit()
         # example output:
         #{'ABC-MART,INC.': {'parent': 'NA', 'children': ['ABC-Mart Korea Co,. Ltd', 'LaCrosse Footwear']}, 'LaCrosse Footwear': {'parent': 'ABC-MART,INC.', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc', 'LaCrosse International, Inc']}, 'LaCrosse International, Inc': {'parent': 'LaCrosse Footwear', 'children': ['Danner Inc', "White's Boots", 'LaCrosse Europe ApS', 'Environmentally Neutral Design Outdoor, Inc.', 'LaCrosse Europe Inc']}}
     elif engine == 'ewg' or engine == "3":
         # example ewg company name: Advanced Research Laboratories, Advanced Beauty, Inc.
+        driver = setDriver()
         company = input('Please enter a company name: ')
         driver = setDriver()
         comp_prod_dict = company_to_product(company,driver)
         print(json.dumps(product_to_ingredient(comp_prod_dict,driver), sort_keys = True, indent = 4))
+        driver.quit()
         # example output:
         # {'Advanced Research Laboratories': {'Zero Frizz Keratin Corrective Hair Serum': ['FRAGRANCE', 'OCTINOXATE ETHYLHEXYL METHOXYCINNAMATE', 'TOCOPHERYL ACETATE', 'DIMETHICONE', 'CYCLOMETHICONE', 'KERATIN AMINO ACIDS', 'DIMETHICONOL'], 'Zero Frizz Keratin Smoothing Conditioner': ['FRAGRANCE', 'DMDM HYDANTOIN (FORMALDEHYDE RELEASER)', 'OCTINOXATE ETHYLHEXYL METHOXYCINNAMATE', 'METHYLPARABEN', 'PEG/ PPG-18/ 18 DIMETHICONE', 'CYCLOPENTASILOXANE', 'DIMETHICONE', 'BEHENTRIMONIUM CHLORIDE', 'CETRIMONIUM CHLORIDE', 'PROPYLENE GLYCOL', 'HYDROLYZED KERATIN', 'CITRIC ACID', 'AMODIMETHICONE', 'TRIBUTYL CITRATE', 'STEARAMIDOPROPYL DIMETHYLAMINE', 'CETYL ALCOHOL', 'PANTHENOL', 'HYDROXYETHYLCELLULOSE', 'STEARYL ALCOHOL', 'SODIUM BENZOTRIAZOLYL BUTYLPHENOL SULFONATE', 'DISODIUM EDTA', 'C12-14 ISOPARAFFIN', 'BUTETH-3', 'TRIDECETH-12', 'WATER']}}
     elif engine == 'npirs' or engine == "4":
         # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl
+        driver = setDriver()
         name = input("Please enter a hazard name: ")
         comp_list = hazard_to_company(name, driver)
         print(comp_list)
+        driver.quit()
     elif engine == 'wiki' or engine == "5":
         # hazards: formaldehyde, glyphosate, arsenic, aluminum, carbaryl
         name = input("Please enter a Wikipedia query: ")

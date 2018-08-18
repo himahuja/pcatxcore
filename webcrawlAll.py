@@ -22,6 +22,24 @@ from collections import OrderedDict
 #  ██████  ██   ██ ███████     ██      ██ ██   ██ ██   ██ ███████ ██   ██
 
 def urlmaker_sec(queryDic):
+    """
+    Produces the URL, which can be entered into the search (Designed for SEC.gov)
+
+    Parameters
+    ----------
+    queryDic : dict
+        searchText (str): Company name to be searched (Default: '*')
+        formType (str): Type of the document to be retrieved (Default: '1')
+        sic (str): SIC code for the companies to be searched (Default: '*')
+        cik (str): CIK code for the company to be searched (Default: '*')
+        startDate (str): Start date of the produced results (YYYYMMDD) (Default: '*')
+        endDate (str): End date of the produced results (YYYYMMDD) (Default: '*')
+        sortOrder (str): Ascending (Value = 'Date') or Descending (Value = 'ReverseDate') retrieval of results, (Default: 'Date')
+    Returns
+    -------
+    str
+        URL to be searched on the SEC website
+    """
     #query for SEC
     searchText = queryDic['searchText'] if 'searchText' in queryDic else '*'
     formType = queryDic['formType'] if 'formType' in queryDic else '1'
@@ -41,6 +59,17 @@ def urlmaker_sec(queryDic):
 # ███████ ██ ██   ████ ██   ██     ██      ██ ███████ ██    ███████ ██   ██
 
 def linkFilter_google(url):
+    """
+    Filters out the links of social media websites from the returned google search results using `filterList` defined implicitly.
+    Parameters
+    ----------
+    url: str
+        URL to be tested against `filterList`
+    Returns
+    -------
+    int
+        returns 0 (is a social media link), 1 (is not a social media link)
+    """
     filterList = ['youtube', 'facebook', 'twitter', 'vk', 'instagram', 'wired', 'rollingstone', 'linkedin']
     filterList.extend(['https://'+ k for k in filterList])
     filterList.extend(['http://'+ k for k in filterList])
@@ -59,6 +88,25 @@ def linkFilter_google(url):
 
 
 def search_google(query, driver, number_of_pages):
+    """
+        Searches Google websites for the top page results
+
+        Parameters
+        ----------
+        query: dict
+            name (str): the mandatory portion of the search query
+            aliases (str[]): optional words of the search query
+            filetype (str): filetype to be searched for
+        driver: selenium.webdriver.Chrome
+            An instance of browser driving engine
+        number_of_pages: int
+            Number of pages of google web results
+
+        Returns
+        -------
+        str[]
+            List of links returned from the google search engine
+    """
     driver.get(query)
     link_href = []
     for i in range(number_of_pages):
@@ -89,7 +137,7 @@ def search_google(query, driver, number_of_pages):
 
 def search_sec10k(url, driver):
     """
-        Add the functionality to return the time
+        @Deprecated module
     """
     driver.get(url)
     link_href = []
@@ -131,13 +179,27 @@ def search_sec10k(url, driver):
 # ███████ ███████    ██        ██████  ██   ██ ██   ████   ███████ ██   ██
 
 def setDriver(headless = False):
+    """
+        Sets a selenium webdriver object for running web-crawlers on various systems.
+        Note: Requires chromedrivers for various platforms in a chromedrivers directory
+
+        Parameters
+        ----------
+        headless: Boolean
+            if True, sets a headless browser. if False (Default), sets a browser with head
+
+        Returns
+        -------
+        selenium.webdriver.Chrome
+            driver with standard option settings
+    """
     if sys.platform == 'darwin':
         type_chromedriver = "chromedriver_darwin"
     elif sys.platform == 'linux':
         type_chromedriver = "chromedriver_linux"
     elif sys.platform == 'win32':
         type_chromedriver = "chromedriver_win32.exe"
-    path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), type_chromedriver)
+    path_chromedriver = os.path.join(os.path.dirname(os.path.realpath(__file__)), "chromedrivers", type_chromedriver)
     options = Options()
     if headless:
         options.add_argument("--headless") # Runs Chrome in headless mode.
@@ -158,20 +220,81 @@ def setDriver(headless = False):
 
 def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
     """
-        Takes in the query to search for on a portal
+        Takes in the query to search for on a portal.
+        NOTE: Saves to file, does not return anything.
+
         Currently supported portals:
-            1. google: searches the google page for that company
+            1. google: searches the google page for entered company
             2. sec10k: searches the 10k filing for that company
             3. sec10kall: finds the 10Ks of all the companies
-            #TODO: add the dates for finding the 10Ks for all the companies
+            4. secsic10k: uses the SIC codes to gather all the companies' 10K in all SICs
+            5. generalSEC: performs any general query on SEC using `urlmaker_sec`
+            6. sitespecific: Performs Crawling specifically on any particular website
+            7. tri: Returns the TRI page for given facility ID
+            8. everything-all: finds the 8Ks, 10Ks and EX-21s of all the companies on the SEC website, via CIK
 
-        INPUT:
-            search_query: ANY dictionary with 'name' as a fundamental component,
-                          check the specific engine for more details
-            #TODO: engine: STRING, default: 'google', engine to be used for performing the query
-        OUTPUT:
-            Returns nothing
-            Saves a pickle file with the name: search_query
+        Parameters
+        ----------
+            search_query: dict
+                The format for search query for different engines is as follows:
+                1. google
+                    name (str): the mandatory portion of the search query
+                    aliases (str[]): optional words of the search query
+                    filetype (str): filetype to be searched for
+                2. sec10k:
+                    cik (str): String typed CIK code of the company
+                    dateStart (str): Starting date of filings, '/' seperated date, MM/DD/YYYY
+                    dateEnd (str): Ending date of filings, '/' seperated date, MM/DD/YYYY
+                3. sec10kall:
+                    None
+                4. secsic10k:
+                    None
+                5. generalSEC:
+                    searchText (str): Company name to be searched (Default: '*')
+                    formType (str): Type of the document to be retrieved (Default: '1')
+                    sic (str): SIC code for the companies to be searched (Default: '*')
+                    cik (str): CIK code for the company to be searched (Default: '*')
+                    startDate (str): Start date of the produced results (YYYYMMDD) (Default: '*')
+                    endDate (str): End date of the produced results (YYYYMMDD) (Default: '*')
+                    sortOrder (str): Ascending (Value = 'Date') or Descending (Value = 'ReverseDate') retrieval of results, (Default: 'Date')
+                6. tri:
+                    tri_id (str): TRI ID of the facility
+                7. google-subs:
+                    name: name of the company whose subsidiaries have to be discovered
+                8. everything-all:
+                    None
+            search_query: str
+                1. sitespecific:
+                    Default Settings:
+                        1. -p0: only parse URLS, don't download anything
+                        2. -%I : make an index of links
+                        3. set depth of 5
+                        4. language preference: en
+                        5. -n: get non-html files near an html
+
+                    search_query['name']: url of the website we need to download
+                    -O output directory
+                    -r<number> set the depth limit
+                    -m<number>,<number> nonhtml,html file size limit in bytes
+                    %e<number>, number of external links from the targetted website
+                    '%P0' don't attempt to pase link in Javascript or in unknown tags
+                    -n get non-html files near an html-files (images on web-pages)
+                    t test all urls
+                    -%L <filename>, loads all the links to be tracked by the function
+                    K0 Keep relative links
+                    K keep original links
+                    -%l "en, fr, *" language preferences for the documents
+                    -Z debug log
+                    -v verbose screen mode
+                    I make an index
+                    %I make a searchable index
+                    -pN priority mode (0): just scan (1): just get html (2): just get non-html (3): save all files (7): get html files first, then treat other files
+            engine: str
+                specify which type of crawler to use, refer module summary for options
+        Returns
+        -------
+            None
+
     """
     if doSetDriver == None:
         driver = setDriver(headless)
@@ -186,7 +309,21 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
 
     if engine == 'google':
         search_query['name'].replace(" ", "+")
+        search_query['name'] = '"' + search_query['name'] + '"'
         url = "https://www.google.com/search?q=" + search_query['name']
+        try:
+            search_query['aliases'] = ["+~" + s for s in search_query['aliases']]
+            for optional in search_query['aliases']:
+                url += optional
+        except:
+            continue
+            # print("There are no aliases")
+        try:
+            search_query['filetype'] = "+filetype:%3A" + search_query['filetype']
+            url += search_query['filetype']
+        except:
+            continue
+            # print("There is no file type specified")
         # change the number in the line below to limit the number of pages it parses
         links = search_google(url, driver, 2)
         with open('data/parsedLinks/{}.pk'.format(re.sub('[^0-9A-Za-z-]+', '', search_query['name'])), 'wb') as handle:
@@ -199,20 +336,12 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
     # ███████ ███████  ██████    ██  ██████  ██   ██
 
     elif engine == 'sec10k':
-        """
-        search query format:
-        TYPE: dictionary
-        {cik: <STRING, CIK Code of the company>,
-         dateStart: <STRING, '/' seperated date, MM/DD/YYYY>,
-         dateEnd: <STRING, '/' seperated date, MM/DD/YYYY>,}
-        """
         search_query['formType'] = "10K"
         url = urlmaker_sec(search_query)
         links = search_sec10k(url, driver)
         with open('data/parsedLinks/{}.pk'.format(search_query['cik']), 'wb') as handle:
             pk.dump(links, handle, protocol=pk.HIGHEST_PROTOCOL)
         print(links)
-        # print(timestamps)
 
     #  █████  ██      ██           ██  ██████  ██   ██
     # ██   ██ ██      ██          ███ ██  ████ ██  ██
@@ -261,7 +390,6 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
     elif engine == 'secsic10k':
         """
             uses the SIC codes to gather all the companies' 10K in that particular SIC
-            DICT elements, dateStart, dateEnd
         """
         search_query['formType'] = "10K"
         try:
@@ -290,20 +418,6 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
         links = []
         # links = search_sec(url, driver)
 
-    # ███████ ███████  ██████     ███████     ██████   ██
-    # ██      ██      ██          ██               ██ ███
-    # ███████ █████   ██          █████        █████   ██
-    #      ██ ██      ██          ██          ██       ██
-    # ███████ ███████  ██████     ███████     ███████  ██
-
-    elif engine == 'secE21':
-        """
-            uses the company CIK to find if it has any subidaries from the E-21 form
-        """
-        pass
-    elif engine == 'bloomberg':
-        pass
-
     # ███████ ██ ████████ ███████     ███████ ███████  █████  ██████   ██████ ██   ██
     # ██      ██    ██    ██          ██      ██      ██   ██ ██   ██ ██      ██   ██
     # ███████ ██    ██    █████       ███████ █████   ███████ ██████  ██      ███████
@@ -311,36 +425,13 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
     # ███████ ██    ██    ███████     ███████ ███████ ██   ██ ██   ██  ██████ ██   ██
 
     elif engine == 'sitespecific':
-        """
-            search_query['name']: url of the website we need to download
-            -O output directory
-            -r<number> set the depth limit
-            -m<number>,<number> nonhtml,html file size limit in bytes
-            %e<number>, number of external links from the targetted website
-            '%P0' don't attempt to pase link in Javascript or in unknown tags
-            -n get non-html files near an html-files (images on web-pages)
-            t test all urls
-            -%L <filename>, loads all the links to be tracked by the function
-            K0 Keep relative links
-            K keep original links
-            -%l "en, fr, *" language preferences for the documents
-            -Z debug log
-            -v verbose screen mode
-            I make an index
-            %I make a searchable index
-            -pN priority mode (0): just scan (1): just get html (2): just get non-html (3): save all files (7): get html files first, then treat other files
-        """
         url = search_query['url']
         name = search_query['name']
         filename = 'sitespecific.sh'
         path_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "data", filename)
         """
             Current settings:
-            1. -p0: only parse URLS, don't download anything
-            2. -%I : make an index of links
-            3. set depth of 5
-            4. language preference: en
-            5. -n: get non-html files near an html
+
         """
         caller_statement = "httrack {} -O data/temp/{} -r5 -n '%P0' -%I -p0 -%l \"en\" '-* +*htm +*html +*pdf'".format(url, name)
         with open(path_file, 'w') as handle:
