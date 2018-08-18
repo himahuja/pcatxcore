@@ -79,27 +79,18 @@ def get_TaggedDocuments(pm, instances, iam):
                 
 def tag_idks():
     model = Doc2Vec.load("../data/doc2vec_model")
-    good_list = []
-    bad_list = []
+    output = []
     i = 0
     for file in os.listdir("../data/profilemanager/TaggedDocuments"):
         filename = os.fsdecode(file)
         if filename.endswith(".json") and "idk_sentences" in filename:
-            file = json.loads(open(os.path.join("../data/profilemanager",filename), "r").read())
+            file = json.loads(open(os.path.join("../data/profilemanager/TaggedDocuments",filename), "r").read())
             for td in file:
                 bad = model.docvecs.similarity('bad',td[1][0])
                 good = model.docvecs.similarity('good',td[1][0])
-                if good/bad >= 1:
-                    td[1].append('good')
-                    good_list.append(TaggedDocument(words=td[0], tags=td[1]))
-                else:
-                    td[1].append('bad')
-                    bad_list.append(TaggedDocument(words=td[0], tags=td[1]))
-            file = open("../data/profilemanager/labeled_good_{}.json".format(filename), "w")
-            file.write(json.dumps(good_list, sort_keys = True, indent = 4))
-            file.close()
-            file = open("../data/profilemanager/labeled_bad_{}.json".format(filename), "w")
-            file.write(json.dumps(bad_list, sort_keys = True, indent = 4))
+                output.append([good/bad - 1, td[0]])
+            file = open("../data/profilemanager/output_{}.json".format(filename), "w")
+            file.write(json.dumps(output, sort_keys = True, indent = 4))
             file.close()
 
 def train_model():           
@@ -125,10 +116,10 @@ def train_model():
 
 def main():
     pm = ProfileManager("..")
-    get_TaggedDocuments(pm, 6, 0)
+    get_TaggedDocuments(pm, 6, 5)
     time.sleep(300)
     train_model()
-    tag_idks(6)
+    tag_idks()
 
 if __name__ == "__main__" :
     main()

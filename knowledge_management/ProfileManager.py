@@ -168,7 +168,7 @@ class ProfileManager(object):
             for cik in self.cik_name:
                 yield self.get(cik)
         else:
-            for i in range(len(self.cik_name)):
+            for i in range(len(self.cik_name)//100):
                 if i % instances == iam:
                     yield self.get(list(self.cik_name.keys())[i])
         
