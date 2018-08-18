@@ -25,6 +25,7 @@ def urlmaker_sec(queryDic):
     """
     Produces the URL, which can be entered into the search (Designed for SEC.gov)
 
+
     Parameters
     ----------
     queryDic : dict
@@ -35,6 +36,7 @@ def urlmaker_sec(queryDic):
         startDate (str): Start date of the produced results (YYYYMMDD) (Default: '*')
         endDate (str): End date of the produced results (YYYYMMDD) (Default: '*')
         sortOrder (str): Ascending (Value = 'Date') or Descending (Value = 'ReverseDate') retrieval of results, (Default: 'Date')
+    
     Returns
     -------
     str
@@ -61,10 +63,13 @@ def urlmaker_sec(queryDic):
 def linkFilter_google(url):
     """
     Filters out the links of social media websites from the returned google search results using `filterList` defined implicitly.
-    Parameters
+   
+   
+   Parameters
     ----------
-    url: str
+    url : str
         URL to be tested against `filterList`
+        
     Returns
     -------
     int
@@ -91,21 +96,22 @@ def search_google(query, driver, number_of_pages):
     """
         Searches Google websites for the top page results
 
+
         Parameters
         ----------
-        query: dict
+        query : dict
             name (str): the mandatory portion of the search query
             aliases (str[]): optional words of the search query
             filetype (str): filetype to be searched for
-        driver: selenium.webdriver.Chrome
+        driver : selenium.webdriver.Chrome
             An instance of browser driving engine
-        number_of_pages: int
+        number_of_pages : int
             Number of pages of google web results
 
         Returns
         -------
         str[]
-            List of links returned from the google search engine
+            list of links returned from the google search engine
     """
     driver.get(query)
     link_href = []

@@ -57,13 +57,16 @@ Milestone 2 is much more Natural Language Processing focused, we will be trying 
 </div>
 
 ##### Web Crawler
-IMPORTANT NOTE: All web crawlers are subject to deprecation once a website changes its layout
 
 <div align="center">
   <img alt="Diagram of PCATx Core's Web Crawler" src="/img/WebCrawler.png">
 </div>
 
-[webcrawlAll.py](/webcrawlAll.py) is a set of modules to crawl various credible websites (TRI, EPA and SEC). Each of these modules is accessible from the module: `crawlerWrapper` which specifies various *engines*.
+* [WebResourceManager.py](WebResourceManager.py) --- [Documentation](knowledge_management/docs/WebResourceManager.md)\
+WebResourceManager is a class for helping manage a database of web resources. WebResourceManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintain a dictionary from  URL to UUID. Using this uniform data storage system and a simple API, WebResourceManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.
+
+* [webcrawlAll.py](/webcrawlAll.py) --- [Documentation](docs/webcrawllAll.md)\
+webcrawlAll is a set of modules to crawl various credible websites (TRI, EPA and SEC). Each of these modules is accessible from the module: `crawlerWrapper` which specifies various *engines*.
   * `google`: calls `search_google`.
   * `sec10k`: [*Deprecated*] constructs the url with `urlmaker_sec` and calls the `search_sec10k` for that CIK code.
   * `sec10kall`: engine is related to `sec10k`, but it runs for a CIK dict rather than a single CIK.
@@ -72,18 +75,6 @@ IMPORTANT NOTE: All web crawlers are subject to deprecation once a website chang
   * `sitespecific`:  Uses *httrack* to download index and PDFs from the input website.
   * `google-subs`: Pulls the subsidaries out of Google
   * `everything-all`: Pulls out the 10Ks, 8Ks, and E-21s for a CIK dictionary
-
-Some of the helper modules are as follows:
-
-1. `setDriver`: sets the driver using selenium; sets the types of arguments and the locates the drivers.
-
-1. `urlmaker_sec`: creates a URL given the `searchText`, `formType` (10-K, 8-K, E-21 etc.), `cik`, `startDate`, `endDate`
-
-1. `linkFilter_google`: filters out results received from social media websites
-
-1. `search_google`: returns the search results from google for a particular query.
-
-1. `search_sec10k`: [*Deprecated*] searches the SEC websites for the 10-K based on CIK
 
 [Site_Crawler_Parser_All.py](Site_Crawler_Parser_All.py) --- Documentation
 
