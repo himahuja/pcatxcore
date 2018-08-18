@@ -62,9 +62,6 @@ Milestone 2 is much more Natural Language Processing focused, we will be trying 
   <img alt="Diagram of PCATx Core's Web Crawler" src="/img/WebCrawler.png">
 </div>
 
-* [WebResourceManager.py](WebResourceManager.py) --- [Documentation](knowledge_management/docs/WebResourceManager.md)\
-WebResourceManager is a class for helping manage a database of web resources. WebResourceManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintain a dictionary from  URL to UUID. Using this uniform data storage system and a simple API, WebResourceManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.
-
 * [webcrawlAll.py](/webcrawlAll.py) --- [Documentation](docs/webcrawllAll.md)\
 webcrawlAll is a set of modules to crawl various credible websites (TRI, EPA and SEC). Each of these modules is accessible from the module: `crawlerWrapper` which specifies various *engines*.
   * `google`: calls `search_google`.

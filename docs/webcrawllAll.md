@@ -56,30 +56,30 @@ Parameters
   8. everything-all:
     * None
 * search_query (str)
-  1. sitespecific - Default Settings:
-    1. -p0: only parse URLS, don't download anything
-    2. -%I : make an index of links
-    3. set depth of 5
-    4. language preference: en
-    5. -n: get non-HTML files near an HTML
-
-  * search_query['name']: url of the website we need to download
-  * -O output directory
-  * -r<number> set the depth limit
-  * -m<number>,<number> non-HTML,HTML file size limit in bytes
-  * %e<number>, number of external links from the targetted website
-  * '%P0' don't attempt to parse link in Javascript or in unknown tags
-  * -n get non-HTML files near an HTML-files (images on web-pages)
-  * t test all URLs
-  * -%L <filename>, loads all the links to be tracked by the function
-  * K0 Keep relative links
-  * K keep original links
-  * -%l "en, fr, \*" language preferences for the documents
-  * -Z debug log
-  * -v verbose screen mode
-  * I make an index
-  * %I make a searchable index
-  * -pN priority mode (0): just scan (1): just get HTML (2): just get non-HTML (3): save all files (7): get HTML files first, then treat other files
+  * Default Settings:
+    * -p0: only parse URLS, don't download anything
+    * -%I : make an index of links
+    * set depth of 5
+    * language preference: en
+    * -n: get non-HTML files near an HTML
+  * Parameters
+    * search_query['name'] (url of the website we need to download)
+    * -O output directory
+    * -r<number> set the depth limit
+    * -m<number>,<number> non-HTML,HTML file size limit in bytes
+    * %e<number>, number of external links from the targetted website
+    * '%P0' don't attempt to parse link in Javascript or in unknown tags
+    * -n get non-HTML files near an HTML-files (images on web-pages)
+    * t test all URLs
+    * -%L <filename>, loads all the links to be tracked by the function
+    * K0 Keep relative links
+    * K keep original links
+    * -%l "en, fr, \*" language preferences for the documents
+    * -Z debug log
+    * -v verbose screen mode
+    * I make an index
+    * %I make a searchable index
+    * -pN priority mode (0): just scan (1): just get HTML (2): just get non-HTML (3): save all files (7): get HTML files first, then treat other files
 * engine (str) : specify which type of crawler to use, refer module summary for options
 
 Returns
