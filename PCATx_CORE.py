@@ -5,7 +5,7 @@ Created on Fri Jul  6 14:10:12 2018
 @author: alex
 """
 import parser, pickle, difflib, nltk, json, queue, re
- from webcrawlAll import crawlerWrapper, setDriver
+from webcrawlAll import crawlerWrapper, setDriver
 from PCATParser import *
 import Site_Crawler_Parser_All
 from knowledge_management.WebResourceManager import *
@@ -164,10 +164,10 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
     file.close()
 
 def main():
-    file = open("data/PCATx_CORE_unsupervised_save_list.json")
-    company_list = json.loads(file.read())
-    file.close()
-    PCATx_CORE_unsupervised(company_list)
+#    file = open("data/PCATx_CORE_unsupervised_save_list.json")
+#    company_list = json.loads(file.read())
+#    file.close()
+    PCATx_CORE_supervised()
 
 if __name__ == "__main__" :
     main()

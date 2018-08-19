@@ -324,13 +324,13 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
             for optional in search_query['aliases']:
                 url += optional
         except:
-            continue
+            pass
             # print("There are no aliases")
         try:
             search_query['filetype'] = "+filetype:%3A" + search_query['filetype']
             url += search_query['filetype']
         except:
-            continue
+            pass
             # print("There is no file type specified")
         # change the number in the line below to limit the number of pages it parses
         links = search_google(url, driver, 2)

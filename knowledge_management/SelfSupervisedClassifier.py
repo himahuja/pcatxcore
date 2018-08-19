@@ -15,12 +15,13 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 def convert_to_corpus(doc):
     ps = PorterStemmer()  
     lmtzr = WordNetLemmatizer()
-    text = re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", doc.lower())).splitlines()
     doc_list = []
-    for line in text:
-        words = line.split()
-        for word in words:
-            doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
+    if type(doc) is list:
+        for word in doc:
+            doc_list.append(ps.stem(lmtzr.lemmatize(re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", word.lower())).strip())))
+    if type(doc) is str:
+        for word in doc.split():
+            doc_list.append(ps.stem(lmtzr.lemmatize(re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", word.lower())).strip())))
     return doc_list
 
 def get_TaggedDocuments_pm(pm, instances, iam):
@@ -28,7 +29,7 @@ def get_TaggedDocuments_pm(pm, instances, iam):
         bad = []
         idk = []
         count = 0
-        numPerList = 1000000
+        numPerList = 10000
         with open(os.path.join("../data/profilemanager/data", "names.json"), "r") as handle:
             names = json.loads(handle.read())
         with open(os.path.join("../data/profilemanager/data", "cas_from_wiki.json"), "r") as handle:
@@ -40,7 +41,7 @@ def get_TaggedDocuments_pm(pm, instances, iam):
                 goodlist.append(word)
         goodlist = goodlist
         for text, tag in pm.get_docs_by_sentence(instances, iam):
-            text = convert_to_corpus(str(text))
+            text = convert_to_corpus(text)
             tagged = False
             letters_in_sentence = sum([len(w) for w in text])
             if letters_in_sentence > 750 or letters_in_sentence < 50:
@@ -57,7 +58,7 @@ def get_TaggedDocuments_pm(pm, instances, iam):
                         tagged = True
                         bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
             if not tagged:
-                for word in ['call', 'pursuant', 'accord', 'security', 'goodwill', 'registrant', 'amendment', 'transit', 'proxy', 'stockholder', 'disclosure', 'mission', 'share', 'flow', 'amortize', 'pension', 'depreciate', 'statement', 'certify', 'recieviable', 'payable', 'license', 'expense', "jurisdiction" ]:
+                for word in ['call', 'pursuant', 'accord', 'security', 'goodwill', 'registrant', 'amendment', 'transit', 'proxy', 'stockholder', 'disclosure', 'mission', 'share', 'flow', 'amortize', 'pension', 'depreciate', 'statement', 'certify', 'recieviable', 'payable', 'license', 'expense', "jurisdiction", "----", "gaap" ]:
                     if not tagged and word in text:
                         tagged = True
                         bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
@@ -103,13 +104,12 @@ def get_TaggedDocuments_wrm(manager):
                 tagged = False
                 sent_list = nltk.sent_tokenize(item['text'])
                 for i in range(len(sent_list)):
-                    words = sent_list[i].split()
+                    text = convert_to_corpus(sent_list[i])
                     tag = "{}{:04d}".format(item['id'], i)
-                    words = sent_list[i].split()
-                    letters_in_sentence = sum([len(w) for w in words])
+                    letters_in_sentence = sum([len(w) for w in text])
                     if letters_in_sentence > 750 or letters_in_sentence < 25:
                         tagged = True
-                        bad.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list({tag, "bad"})))
+                        bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
                     if not tagged:
                         words = 0
                         bad_words = 0
@@ -117,16 +117,16 @@ def get_TaggedDocuments_wrm(manager):
                             words+= 1
                             if len(word) < 3 or len(word) > 10:
                                 bad_words+= 1
-                            if bad_words/words >.9:
-                                tagged = True
-                                bad.append(TaggedDocument(words=sent_list[i], tags=list({tag, "bad"})))
+                        if bad_words/words > .9:
+                            tagged = True
+                            bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
                     if not tagged:
-                        for word in [ '|', 'skip to main content',  'remember my device', "toggle menu", "user agreement" "privacy statement", "terms of service", "javascript", "footer", "header", "subscribe",  "contact us", "usage has been flagged"]:
+                        for word in [ 'skip to main content',  'remember my device', "toggle menu", "user agreement" "privacy statement", "terms of service", "javascript", "footer", "header", "subscribe",  "contact us", "usage has been flagged"]:
                             if not tagged and word in sent_list[i] or len(sent_list[i]) < 3:
                                 tagged = True
-                                bad.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list({tag, "bad"})))
+                                bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
                     if not tagged:
-                        idk.append(TaggedDocument(words=convert_to_corpus(str(sent_list[i])), tags=list({tag})))
+                        idk.append(TaggedDocument(words=text, tags=list({tag})))
                     count = count + 1
                     if count % numPerList == 0:
                         file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("bad_sentences", count//numPerList), "w")
@@ -191,7 +191,7 @@ def train_model_pm():
         if filename.endswith(".json"):
             file = json.loads(open(os.path.join("../data/profilemanager/TaggedDocuments", filename), "r").read())
             for td in file:
-                docs.append(TaggedDocument(words=td[0], tags=[x for x in td[1]]))
+                docs.append(TaggedDocument(words=[x for x in td[0]], tags=[x for x in td[1]]))
     model = Doc2Vec(docs, workers=7, vector_size=1000)
     print("Start training process...")
     model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
@@ -223,10 +223,11 @@ def main():
     train_model_wrm()
     tag_idks_wrm()
 #    pm = ProfileManager("..")
-#    get_TaggedDocuments_pm(pm, 6, 5)
-#    time.sleep(300)
+#    get_TaggedDocuments_pm(pm, 6, 0)
+#    time.sleep(3000)
 #    train_model_pm()
 #    tag_idks_pm()
+    
 
 if __name__ == "__main__" :
     main()

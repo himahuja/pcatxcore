@@ -8,24 +8,45 @@ import wikipedia as wiki
 sys.path.append
 from knowledge_management.ProfileManager import *
 
+#helper class for try_one
 class Timeout(Exception): 
     pass 
 
-def try_one(func, link, query_string, t):
+def try_one(func, t, **kwargs):
+    """
+    Calls the function with the keyword arguments and after t seconds, interupts the call and moves on
+
+
+    Parameters
+    ----------
+    func : function
+        the function to be called
+    t : int
+        the number of seconds 
+    **kwargs : keyword-arguments
+        arguments you'd like to pass to func
+    
+    Returns
+    -------
+    func's return type
+
+    """
+    
+    #helper function
     def timeout_handler(signum, frame):
         raise Timeout()
 
     old_handler = signal.signal(signal.SIGALRM, timeout_handler) 
-    signal.alarm(t) # triger alarm in 3 seconds
+    signal.alarm(t) # triger alarm in t seconds
     parsed_page = None
 
     try: 
         t1=time.clock()
-        parsed_page = func(link, query_string=query_string)
+        parsed_page = func(**kwargs)
         t2=time.clock()
 
     except Timeout:
-        print('{}({}) timed out after {} seconds'.format(func.__name__,link,t))
+        print('{}() timed out after {} seconds'.format(func.__name__, t))
         return None
     finally:
         signal.signal(signal.SIGALRM, old_handler) 
@@ -35,8 +56,19 @@ def try_one(func, link, query_string, t):
 
 def tag_visible(element):
     """
-    HELPER FUNCTION
-    Boolean function that filters out non-required tags in HTML-pages
+    Determines if an HTML tag is visible
+
+
+    Parameters
+    ----------
+    element : BeautifulSoup.element
+        an HTML element
+    
+    Returns
+    -------
+    bool
+        True if the element is visible, False else
+
     """
     if element.parent.name in ['[document]', 'head', 'style', 'script', 'title', 'header', 'meta', 'footer']:
         return False
@@ -47,41 +79,59 @@ def tag_visible(element):
     return True
 
 def text_from_html(body):
+    """
+    Gets all of the visible text from the body of an HTML document
 
+
+    Parameters
+    ----------
+    body : string
+        the body of an HTML document
+    
+    Returns
+    -------
+    string
+        the visible text in the body
+
+    """
     soup = BeautifulSoup(body.decode("utf-8", "ignore"), 'lxml')
     texts = soup.findAll(text=True)
     visible_texts = filter(tag_visible, texts)
     return " ".join(t.strip() for t in visible_texts)
 
-def sentence_filter(text_list):
-    new_list = [] + text_list
-    for sent in text_list:
-        for i in range(len(sent) - 2):
-            if sent[i] == sent[i+1] and sent[i+1] == sent[i+2]:
-                if sent in new_list:
-                    new_list.remove(sent)
-    return new_list
+def get_PDF_content(query_string, link):
+    """
+    Gets all of the text from a PDF document
 
-def get_PDF_content(query_string, link, linkList=None, name=None):
-    #download pdf file ,from web
+
+    Parameters
+    ----------
+    query_string : string
+        the query that generated the PDF document
+    link : string
+        the URL for the document
+    
+    Returns
+    -------
+    string
+        the visible text in the PDF
+
+    """
+    #read the PDF from the web
     content=urllib.request.urlopen(link).read()
-    if linkList != None:
-        file_name = query_string+str(linkList.index(link))+".pdf"
-    else:
-        file_name = query_string+name
-        file_name = re.sub('[^A-Za-z0-9]+', '', file_name)
-        if len(file_name) > 240:
-                file_name = file_name[:240]
-        file_name = file_name + ".pdf"
+    #name file and write to tmp directory
+    file_name = query_string+link
+    file_name = re.sub('[^A-Za-z0-9]+', '', file_name)
+    if len(file_name) > 100:
+        file_name = file_name[:100]
+    file_name = file_name + ".pdf"
     fout=open(os.path.join("data/tmp", file_name), "wb")
     fout.write(content)
     fout.close()
-
     #convert PDF to text
     content = ""
     #load PDF into PyPDF2
     pdf = PyPDF2.PdfFileReader(os.path.join("data/tmp/", file_name))
-
     if pdf.isEncrypted:
         pdf.decrypt('')
     #iterate pages
@@ -92,24 +142,61 @@ def get_PDF_content(query_string, link, linkList=None, name=None):
     return content
 
 def parse_single_page(link, query_string = "test"):
+    """
+    Gets all of the text from web page
+
+
+    Parameters
+    ----------
+    link : string
+        the URL for the document
+    query_string : string
+        the generating query, default is "test"
+    
+    Returns
+    -------
+    tuple (bytes, string)
+        the source code (HTML/PDF) of the web page and the visible text
+
+    """
     if link[-4:] != '.pdf':
             try:
                 html = urllib.request.urlopen(link).read()
+                print(type(html))
                 return (html, bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore'))
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
     else:
             try:
                 html = urllib.request.urlopen(link).read()
-                return (html, get_PDF_content(query_string, link, name=link))
+                return (html, get_PDF_content(query_string, link))
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
 
 def parser_iter(query_string, linkList):
+    """
+    Parses the URLs in linkList using a timeout of 60 seconds on each page (a la try_one) and yields them as dictionaries.
+
+
+    Parameters
+    ----------
+    query_string : string
+        the generating query, default is "test"
+    linkList : list of strings
+        list of URLs for the documents you would like to parse
+    
+    Returns
+    -------
+    dict (yields many)
+        * dict['text'] (string) : the visible text on the web page
+        * dict['html'] (bytes) : the HTML code of the page (if it is HTML based)
+        * dict['pdf'] (bytes) : the PDF code of the page (if it is PDF based)
+
+    """
     for link in linkList:
         print("...{:.2f}% done, processing link {}: {}".format(((linkList.index(link)+1)/len(linkList))*100,linkList.index(link), link))
         doc = {'url' : link, 'query': query_string }
-        parsed_page = try_one(parse_single_page, link, query_string, 60)
+        parsed_page = try_one(parse_single_page, 60, link=link, query_string=query_string)
         if parsed_page != None:
             if link[-4:] != '.pdf':
                 doc['html'] = parsed_page[0]
@@ -120,12 +207,28 @@ def parser_iter(query_string, linkList):
             yield doc
 
 def contain(sent,word_list):
+    #you can figure it out
     for i in range(len(word_list)):
         if word_list[i] in sent:
             return True
     return False
 
 def eightk_parser(link):
+    """
+    Parses an SEC document known as an 8-K
+
+
+    Parameters
+    ----------
+    link : string
+        the URL for the 8-K
+    
+    Returns
+    -------
+    string
+        the important text for the 8-K
+
+    """
     try:
         html = urllib.request.urlopen(link).read()
         text_list = nltk.sent_tokenize(text_from_html(html).replace("\n", "."))
@@ -149,6 +252,21 @@ def eightk_parser(link):
         print('{} threw an the following exception during 8K parsing {}'.format(link, str(e)))
 
 def ex21_parser(link):
+    """
+    Parses an SEC document known as an EX-21
+
+
+    Parameters
+    ----------
+    link : string
+        the URL for the EX-21
+    
+    Returns
+    -------
+    list of strings
+        the subsidiaries in the company listed in the EX-21
+
+    """
     try:
         body = urllib.request.urlopen(link).read()
         soup = BeautifulSoup(body, 'lxml')
@@ -194,7 +312,22 @@ def ex21_parser(link):
     except Exception as e:
         print('{} threw an the following exception during EX21 parsing {}'.format(link, str(e)))
 
-def tenk_parser(link): # not working
+def tenk_parser(link):
+    """
+    Parses an SEC document known as an 10-K
+
+
+    Parameters
+    ----------
+    link : string
+        the URL for the 10-K
+    
+    Returns
+    -------
+    string
+        the important information in the 10-K
+
+    """
     try:
         html = urllib.request.urlopen(link).read()
         text_list = nltk.sent_tokenize(text_from_html(html))
@@ -215,8 +348,29 @@ def tenk_parser(link): # not working
 
 def wikiParser(company):
     """
-
-    """
+        Search the Wikipedia page for a company and get wikipedia infobox
+        together with all other contents
+ 
+        Parameters
+        ----------
+        company: str
+            the company you would like to query Wikipedia for
+        
+        Returns
+        -------
+        tuple
+            dict
+                a dictionary of all other contents on wikipedia
+            dict
+                a dictionary of wikipedia infobox
+            str
+                page title
+            str
+                page url
+            beautifulsoup.table
+                wikipedia infobox HTML
+        
+    """ 
     wiki_page = {}
     wiki_table = {}
     try:
@@ -262,7 +416,7 @@ def main():
 #    for company in pm:
 #        print("Now getting information for {}".format(company['name']))
 #        print(wiki_parser(company['name']))
-     print(wikiParser("List of CAS numbers by chemical compound"))
+     parse_single_page("http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0128193")
 #    (wiki_page, wiki_table) = wikiParser_new('Apple Inc')
 #    print(wiki_page)
 #    print(wiki_table)
