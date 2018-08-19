@@ -448,7 +448,7 @@ class ProfileManager(object):
                     for doc in item['ten_ks']:
                         sent_list = nltk.sent_tokenize(doc['text'])
                         for i in range(len(sent_list)):
-                            yield (sent_list[i], str(item['cik'] + "_10k_" + doc['time_of_filing'] + "_" + str(i)))
+                            yield (sent_list[i], re.sub('[^A-Za-z0-9]+', '', str(item['cik'] + "10k" + doc['time_of_filing'] + str(i))))
             except KeyError as k:
                 pass
             except Exception as e:
@@ -458,7 +458,7 @@ class ProfileManager(object):
                     for doc in item['eight_ks']:
                         sent_list = nltk.sent_tokenize(doc['text'])
                         for i in range(len(sent_list)):
-                            yield (sent_list[i], str(item['cik'] + "_8k_" + doc['time_of_filing'] + "_" + str(i)))
+                            yield (sent_list[i], re.sub('[^A-Za-z0-9]+', '', str(item['cik'] + "8k" + doc['time_of_filing'] + str(i))))
             except KeyError as k:
                 pass
             except Exception as e:
@@ -466,7 +466,7 @@ class ProfileManager(object):
             try:
                 sent_list = nltk.sent_tokenize(str(item['wiki_page']['text']))
                 for i in range(len(sent_list)):
-                    yield (sent_list[i], str(item['cik'] + "_wiki_page" + "_" + str(i)))
+                    yield (sent_list[i], re.sub('[^A-Za-z0-9]+', '', str(item['cik'] + "wikipage" + str(i))))
             except KeyError as k:
                 pass
             except Exception as e:

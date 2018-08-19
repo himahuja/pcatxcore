@@ -73,64 +73,13 @@ webcrawlAll is a set of modules to crawl various credible websites (TRI, EPA and
   * `google-subs`: Pulls the subsidaries out of Google
   * `everything-all`: Pulls out the 10Ks, 8Ks, and E-21s for a CIK dictionary
 
-[Site_Crawler_Parser_All.py](Site_Crawler_Parser_All.py) --- Documentation
+[Site_Crawler_Parser_All.py](Site_Crawler_Parser_All.py) --- [Documentation](docs/Site_Crawler_Parser_All.md)\
 
-NPIRS Engine is a site crawler for NPIRS(http://npirspublic.ceris.purdue.edu/ppis/) that gets all companies that use certain ingredients the user is looking for.
-
-
-|Function | Input        | Processing           | Output  |
-|-----   | ------------- |:-------------:| -----:|
-|hazard_to_company(chemical,driver)    | ingredient name, chrome webdriver     | search NPIRS by entering ingredient name and get company names| a list of companies that use the ingredient |
-|setDriver()   |  None   | set chrome driver used to automatically crawl websites | driver|
-|get_comp_name(text)    |  an unfiltered string in html tags  | extract relevant content | a string of the exact company name
-|remove_null(comp_list)| a list of company names | remove null values | a clean list of company names|
-
-Usage:
-1. call `driver = setDriver()` to set chrome driver for crawling
-1. call `hazard_to_company(chemical, driver)` to get a list of companies
-
-Google Engine is a google crawler to find subsidiaries directly returned by google for a search query "COMPANY_NAME+subsidiaries".
-
-
-|Function | Input        | Processing           | Output  |
-|-----   | ------------- |:-------------:| -----:|
-|get_sub(company, driver)    | company name, chrome webdriver     | search "COMPANY_NAME+subsidiaries" on google| a list of subsidiaries that is directly returned by google on the top|
-|get_recursive_sub(company, driver)    |  a company name, chrome webdriver  | search subsidiaries recursively on google | build a dictionary that maps a company name to its parent company and a list of subsidiaries|
-
-
-Usage:
-1. call `driver = setDriver()` to set chrome driver for crawling
-1. call `master_google_sub = get_recursive_sub(company,driver)` to get a all-level-down subsidiaries for a company
-
-TRI Engine is a site crawler for TRI Facility(https://www.epa.gov/enviro/tri-search) that gets all facility information with a tri id the user provides
-
-
-|Function | Input        | Processing           | Output  |
-|-----   | ------------- |:-------------:| -----:|
-|get_tri_dict(tri_id, driver)    | tri facility id, chrome webdriver     | open facility report page and scrape information into a dictionary| a dictionary of facility information|
-
-Usage:
-1. call `driver = setDriver()` to set chrome driver for crawling
-1. call `get_tri_dict(tri_id,driver)` to get a dictionary of facility information
-
-
-EWG Engine is a site crawler for EWG Skindeep Database(https://www.ewg.org/skindeep/#.W3H8HNJKiUk) that gets product and ingredient information for a company in their database
-
-
-|Function | Input        | Processing           | Output  |
-|-----   | ------------- |:-------------:| -----:|
-|company_to_product(company,driver)    | company name, chrome webdriver     | search company name on EWG and get all products| a dictionary of a company to a list of products|
-|product_to_ingredient(comp_prod_dict,driver)    | company-product dictionay, chrome webdriver     | search product name and get all ingredients| a dictionary of company to products to ingredients|
-
-
-Usage:
-
-IMPORTANT NOTE: the driver needs to be set in a NON-HEADLESS mode. The user needs to manually close pop-up ads at the beginning for the crawler to function.
-
-
-1. call `driver = setDriver()` to set chrome driver for crawling
-1. call `comp_prod_dict = company_to_product(company,driver)` to get a dictionary of company to products
-1. call `product_to_ingredient(comp_prod_dict,driver)` to get a dictionary of company to products to ingredients
+* A crawler and parser for **Wikipedia pages** that can parse information in a Wikipedia infobox into a Python Dictionary and the article text as a string.
+* A crawler and parser for **all-level subsidiaries returned by Google** that can parse subsidiary names on a search result page into a Python Dictionary.
+* A crawler and parser for **TRI facility reports** that can parse a facility information table into a Python Dictionary and a chemical usage report into a comma-separated values (CSV) file.
+* A crawler and parser for **EWG search results** that can parse name of products by a company and ingredients in a product into a Python Dictionary.
+* A crawler and parser for **NPIRS search results** that can parse names of manufacturers that use a certain hazard into a Python Dictionary.
 
 ##### Parser
 

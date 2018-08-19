@@ -21,6 +21,7 @@ def setDriver(headless = False):
         Sets a selenium webdriver object for running web-crawlers on various systems.
         Note: Requires chromedrivers for various platforms in a chromedrivers directory
 
+
         Parameters
         ----------
         headless: Boolean
@@ -73,7 +74,7 @@ def get_tri_dict(tri_id, driver):
             duns_num(str): Facility Duns Number
             parent_company(str): Facility's Parent Company Name
             county(str): County
-            pub_contact(str): Public Contact Name
+            pub_contact(str): Public Contact Name
             region(str): EPA Region Code
             phone(str): Contact Number
             latitude(str): Latitude
@@ -219,7 +220,7 @@ def get_sub(company, driver):
             
         Returns
         -------
-        sub_list: list
+        list of strings
             a list of subsidiary names(str)
     """
     query = company+"+subsidiaries"
@@ -264,12 +265,12 @@ def get_parent_child_dict(company,parent,children_list):
             A company name to build dictionary for
         parent: str
             The parent company name for the company
-        children_list: list
+        children_list: list of strings
             A list of subsidiary names of the company
             
         Returns
         -------
-        parent_child_dict: dict
+        dict
             parent(str): the parent company name
             child(list): a list of subsidiary names of the company
     """
@@ -293,12 +294,10 @@ def get_recursive_sub(company,driver):
             
         Returns
         -------
-        master_google_sub: dict
-            NOTE: a dictionary of dictionaries that uses company name as the first
-            layer of dictionary key
-
-            COMPANY(str): parent(str): the parent company of the company,'NA' if not found
-                          child(list): a list of subsidiary names
+        dict
+            company (str) :
+                parent(str): the parent company of the company,'NA' if not found
+                child(list): a list of subsidiary names
     """
     company_queue = queue.Queue()
     company_queue.put(company)
@@ -348,7 +347,7 @@ def company_to_product(company,driver):
             
         Returns
         -------
-        comp_prod_dict: dict
+        dict
             COMPANY(str): a list of products made by the company
     """
     comp_prod_dict = {}
@@ -411,8 +410,7 @@ def company_to_product(company,driver):
 # find ingredients for all products
 def product_to_ingredient(comp_prod_dict,driver):
     """
-        Search a product name on EWG, get all ingredients in the product
-        in EWG database, and build a master dictionary that contains information for
+        Search a product name on EWG, get all ingredients in the product in EWG database, and build a master dictionary that contains information for
         company-products-ingredients
         
         Parameters
@@ -425,10 +423,7 @@ def product_to_ingredient(comp_prod_dict,driver):
             
         Returns
         -------
-        comp_prod_ingredient_dict: dict
-            NOTE: a dictionary of dictionaries that uses a company name as the
-            first layer of dictionary key
-            
+        dict
             COMPANY(str): PRODUCT(str): a list of ingredients in the company product           
     """
     comp_prod_ingredient_dict = {}
@@ -501,11 +496,11 @@ def remove_null(comp_list):
         
         Parameters
         ----------
-        comp_list: list
+        comp_list: list of strings
             a list of companies           
         Returns
         -------
-        comp_list: str
+        list of strings
             a clean list of company names with no null values
     """     
     for comp in comp_list:
@@ -527,7 +522,7 @@ def hazard_to_company(chemical,driver):
         
         Returns
         -------
-        comp_list: list
+        list of strings
             a list of companies that use the hazard
     """ 
     try:
@@ -567,19 +562,21 @@ def wikiParser(company):
         Parameters
         ----------
         company: str
+            the company you would like to query Wikipedia for
         
         Returns
         -------
-        wiki_page: dict
-            a dictionary of all other contents on wikipedia
-        wiki_table: dict
-            a dictionary of wikipedia infobox
-        title: str
-            page title
-        link: str
-            page url
-        table: beautifulsoup.table
-            wikipedia infobox returned as a beautifulsoup element
+        tuple
+            dict
+                a dictionary of all other contents on wikipedia
+            dict
+                a dictionary of wikipedia infobox
+            str
+                page title
+            str
+                page url
+            beautifulsoup.table
+                wikipedia infobox HTML
         
     """ 
     wiki_page = {}

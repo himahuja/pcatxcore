@@ -5,7 +5,7 @@ Created on Fri Jul  6 14:10:12 2018
 @author: alex
 """
 import parser, pickle, difflib, nltk, json, queue, re
-from webcrawlAll import crawlerWrapper, setDriver
+ from webcrawlAll import crawlerWrapper, setDriver
 from PCATParser import *
 import Site_Crawler_Parser_All
 from knowledge_management.WebResourceManager import *

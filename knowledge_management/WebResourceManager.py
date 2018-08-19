@@ -141,7 +141,7 @@ class WebResourceManager(object):
         None
     
         """
-        for item in other_file_manager:
+        for item in other_wrm:
             try:
                 if item['id'] not in self.url_to_uuid.values():
                     self.url_to_uuid[item['url']] = item['id']

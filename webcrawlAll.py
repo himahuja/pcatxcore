@@ -106,12 +106,12 @@ def search_google(query, driver, number_of_pages):
         driver : selenium.webdriver.Chrome
             An instance of browser driving engine
         number_of_pages : int
-            Number of pages of google web results
+            Number of pages of Google web results
 
         Returns
         -------
-        str[]
-            list of links returned from the google search engine
+        list of strings
+            list of links returned from the Google search engine
     """
     driver.get(query)
     link_href = []
@@ -191,7 +191,7 @@ def setDriver(headless = False):
 
         Parameters
         ----------
-        headless: Boolean
+        headless : Boolean
             if True, sets a headless browser. if False (Default), sets a browser with head
 
         Returns
@@ -239,9 +239,10 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
             7. tri: Returns the TRI page for given facility ID
             8. everything-all: finds the 8Ks, 10Ks and EX-21s of all the companies on the SEC website, via CIK
 
+
         Parameters
         ----------
-            search_query: dict
+            search_query : dict
                 The format for search query for different engines is as follows:
                 1. google
                     name (str): the mandatory portion of the search query
@@ -283,8 +284,8 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
                     -r<number> set the depth limit
                     -m<number>,<number> nonhtml,html file size limit in bytes
                     %e<number>, number of external links from the targetted website
-                    '%P0' don't attempt to pase link in Javascript or in unknown tags
-                    -n get non-html files near an html-files (images on web-pages)
+                    '%P0' don't attempt to parse link in Javascript or in unknown tags
+                    -n get non-html files near an HTML-files (images on web-pages)
                     t test all urls
                     -%L <filename>, loads all the links to be tracked by the function
                     K0 Keep relative links
@@ -297,6 +298,7 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
                     -pN priority mode (0): just scan (1): just get html (2): just get non-html (3): save all files (7): get html files first, then treat other files
             engine: str
                 specify which type of crawler to use, refer module summary for options
+        
         Returns
         -------
             None
