@@ -275,7 +275,7 @@ def get_TaggedDocuments_pm(pm, instances, iam = 0):
                     tagged = True
                     bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
         if not tagged:
-            for word in ['call', 'pursuant', 'accord', 'security', 'goodwill', 'registrant', 'amendment', 'transit', 'proxy', 'stockholder', 'disclosure', 'mission', 'share', 'flow', 'amortize', 'pension', 'depreciate', 'statement', 'certify', 'recieviable', 'payable', 'license', 'expense', "jurisdiction", "----", "gaap" ]:
+            for word in ['call', 'pursuant', 'accord', 'secur', 'goodwil', 'registr', 'amend', 'transit', 'proxi', 'stockhold', 'disclosur', 'mission', 'share', 'flow', 'amort', 'pension', 'depreci', 'statement', 'certifi', 'recievi', 'payabl', 'licens', 'expens', 'jurisdict', '--', 'gaap']:
                 if not tagged and word in text:
                     tagged = True
                     bad.append(TaggedDocument(words=text, tags=list({tag, "bad"})))
@@ -399,10 +399,13 @@ def score_docs_pm():
                 try:
                     bad = model.docvecs.similarity('bad',td[1][0])
                     good = model.docvecs.similarity('good',td[1][0])
-                    output.append([good/bad - 1, td[0]])
+                    if good > 0:
+                        output.append([good/(bad + 1.01), td[0]])
+                    else:
+                        output.append([good*(bad + 1.01), td[0]])
                 except Exception as e:
                     print("Exception during {}: {}".format(td[1][0], str(e)))
-            file = open("../data/profilemanager/TaggedDocuments/Classified/output_{}".format(filename), "w")
+            file = open("../data/profilemanager/TaggedDocuments/tmp/output_{}".format(filename), "w")
             file.write(json.dumps(output, sort_keys = True, indent = 4))
             file.close()
             
@@ -426,7 +429,7 @@ def score_docs_wrm():
             for td in file:
                 try:
                     bad = model.docvecs.similarity('bad',td[1][0])
-                    output.append([1/bad, td[0]])
+                    output.append([-1 * bad, td[0]])
                 except Exception as e:
                     print("Exception during {}: {}".format(td[1][0], str(e)))
             file = open("../data/TaggedDocuments/Classified/output_{}".format(filename), "w")
@@ -444,10 +447,10 @@ def train_model_pm():
     
     """  
     docs = []
-    for file in os.listdir("../data/profilemanager/TaggedDocuments"):
+    for file in os.listdir("../data/profilemanager/TaggedDocuments/Labeled"):
         filename = os.fsdecode(file)
         if filename.endswith(".json"):
-            file = json.loads(open(os.path.join("../data/profilemanager/TaggedDocuments", filename), "r").read())
+            file = json.loads(open(os.path.join("../data/profilemanager/TaggedDocuments/Labeled", filename), "r").read())
             for td in file:
                 docs.append(TaggedDocument(words=[x for x in td[0]], tags=[x for x in td[1]]))
     model = Doc2Vec(docs, workers=7, vector_size=1000)
@@ -489,14 +492,13 @@ def main():
 #    get_TaggedDocuments_wrm(wrm)
 #    train_model_wrm()
 #    score_docs_wrm()
-#    pm = ProfileManager("..")
-#    get_TaggedDocuments_pm(pm, 6, 0)
-#    time.sleep(3000)
-#    train_model_pm()
-#    score_docs_pm()
-    tfidf = train_tfidf_pm()
-    score_tfidf_pm(tfidf, 7, 6)
-    
+    pm = ProfileManager("..")
+    for i in range(6):
+        get_TaggedDocuments_pm(pm, 6, i)
+    train_model_pm()
+    score_docs_pm()
+#    tfidf = train_tfidf_pm()
+#    score_tfidf_pm(tfidf, 7, 0)
 
 if __name__ == "__main__" :
     main()
