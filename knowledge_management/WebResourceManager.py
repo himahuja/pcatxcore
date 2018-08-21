@@ -344,44 +344,14 @@ class WebResourceManager(object):
 def convert_to_corpus(doc):
     ps = PorterStemmer()  
     lmtzr = WordNetLemmatizer()
-    text = re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", doc.lower())).splitlines()
     doc_list = []
-    for line in text:
-        words = line.split()
-        for word in words:
-            doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
+    if type(doc) is list:
+        for word in doc:
+            doc_list.append(ps.stem(lmtzr.lemmatize(re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", word.lower())).strip())))
+    if type(doc) is str:
+        for word in doc.split():
+            doc_list.append(ps.stem(lmtzr.lemmatize(re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", word.lower())).strip())))
     return doc_list
-            
-def mergeSortTuples(alist):
-    if len(alist)>1:
-        mid = len(alist)//2
-        lefthalf = alist[:mid]
-        righthalf = alist[mid:]
-
-        mergeSortTuples(lefthalf)
-        mergeSortTuples(righthalf)
-
-        i=0
-        j=0
-        k=0
-        while i < len(lefthalf) and j < len(righthalf):
-            if lefthalf[i][0] < righthalf[j][0]:
-                alist[k]=lefthalf[i]
-                i=i+1
-            else:
-                alist[k]=righthalf[j]
-                j=j+1
-            k=k+1
-
-        while i < len(lefthalf):
-            alist[k]=lefthalf[i]
-            i=i+1
-            k=k+1
-
-        while j < len(righthalf):
-            alist[k]=righthalf[j]
-            j=j+1
-            k=k+1
             
 def main():
     for file in os.listdir("../data/webresourcemanagers"):

@@ -52,7 +52,8 @@ This module is divided into two parts: Data Management and Classification.
   <img alt="Diagram of PCATx Core's WebResourceManager" src="/img/WebResourceManager.png">
 </div>
 
-* [WebResourceManager.py](WebResourceManager.py) --- [Documentation](docs/WebResourceManager.md)\
+* [WebResourceManager.py](WebResourceManager.py) --- [Documentation](docs/WebResourceManager.md)
+
 WebResourceManager is a class for helping manage a database of web resources. WebResourceManager creates a UUID (Universally Unique Identifier) for the web resource, saves the information in a JSON (labeled < UUID >.json), and builds maintain a dictionary from  URL to UUID. Using this uniform data storage system and a simple API, WebResourceManager makes storing and querying the contents and source files (such as HTML and PDF) of web resources much simpler.
 
 ##### ProfileManager
@@ -61,7 +62,8 @@ WebResourceManager is a class for helping manage a database of web resources. We
   <img alt="Diagram of PCATx Core's ProfileManager" src="/img/ProfileManager.png">
 </div>
 
-* [ProfileManager.py](ProfileManager.py) --- [Documentation](docs/ProfileManager.md)\
+* [ProfileManager.py](ProfileManager.py) --- [Documentation](docs/ProfileManager.md)
+
 ProfileManager is a class for helping manage a database of business profiles. It uses the SEC's (United States Securities and Exchange Commission) CIK codes (Central Index Key) to act as identifiers and allows the user to compile a variety of information on corporate entities in an easy to use and query format. Assisting the accessibility of information, ProfileManager supports using a series of mappings from CIK codes to names and back, names to aliases, and mappings from industry code standards and descriptions of them. The hope to provide for a flexible data solution for complex business oriented applications.
 
 ### Data Classification
@@ -72,6 +74,6 @@ ProfileManager is a class for helping manage a database of business profiles. It
 
 ##### Self-Supervised Classifier
 
-* [Self-Supervised Classifier](SelfSupervisedClassifier.py) ---
-[Documentation](docs/SelfSupervisedClassifier.md)\
+* [Self-Supervised Classifier](SelfSupervisedClassifier.py) ---[Documentation](docs/SelfSupervisedClassifier.md)
+
 A model for classifying sentences as relevant or not. The approach was inspired by [Banko et al.'s 2007 "Open Information Extraction from the Web"](https://www.aaai.org/Papers/IJCAI/2007/IJCAI07-429.pdf) which used a self-supervised learner to perform open information extraction. We are taking much the same approach to relevancy classification by having the learner tag certain sentences as relevant or irrelevant based on keyword input and then Doc2Vec is trained on these tagged sentences to learn more complex features.
