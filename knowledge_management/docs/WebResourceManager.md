@@ -26,14 +26,14 @@ Returns
 
 ##### `__iter__()`
 
-An iterator function with the ability to be accessed by multiple instances at once in a safe way.
+A generator function with the ability to be accessed by multiple instances at once in a safe way.
 
 Parameters
 * instances (int) : the number of instances using the iterator (default = 1)
 * iam (int) : the current instance's assignment [0-*instances*) (default = 0)
 
 Returns
-* dict : A dictionary which is the profile if found, else None (Yields)
+* iterator of dicts : A dictionary which is the profile if found, else None
 
 ##### `__getitem__(key)` and get(key)
 
@@ -70,6 +70,16 @@ Parameters
 Returns
 * None
 
+##### convert_to_corpus(doc)
+
+Sets all of the text to lower case, removes all non-alphanumeric characters besides apostrophe (') and hyphen (-) with a Regular Expression. All words are lemmatized and then stemmed.
+
+Parameters
+* doc (string or list of strings) : a sentence in either string for or list of words form
+
+Returns
+* list of strings : the sentence after the Natural Language Processing techniques have been applied
+
 ##### get_corpus(process_all=False)
 
 Converts the text to a format more suitable for NLP processing
@@ -82,61 +92,90 @@ Parameters
 Returns
 * None
 
+##### get_docs_by_sentence()
+
+Yields the contained web resources by sentence using nltk.sent_tokenize
+
+Returns
+* iterator of strings (Yields) : the sentences in the contained web resources
+
 ##### get_TaggedDocuments()
 
-A generator that yields the **corpus** fields of the contained documents as gensim's TaggedDocument objects with the **id** and **query** fields as tags.
+Yields TaggedDocuments using the contained web resources by sentence using nltk.sent_tokenize and convert_to_corpus
+
+Returns
+* iterator of gensim.models.doc2vec.TaggedDocument (Yields) : the TaggedDocument representations of the contained web resource sentences
 
 ##### get_texts()
 
-Simple generator function so you can iterator over the text fields of documents. Can be used as a shortcut for iterating over the documents and then extracting the text field. See Usage for examples.
+Yields \`text' fields of the web resources contained
+
+Returns
+* iterator of strings (Yields) : the \`text' fields of the web resources contained
 
 ##### get_uuid(url)
 
-* **url** is the URL of the web resource
+Returns the UUID (Universally Unique Identifier) for the URL (Uniform Resource Locator)
 
-Returns the UUID of the web resource with the specified URL.
+Parameters
+* url (string) : url of the web resource of interest
+
+Returns
+* string : the UUID (Universally Unique Identifier) of the web resource
 
 ##### load(file_name=None)
 
-* **file_name** is the name of the file you wish to load a WebResourceManager from.
+Loads the saved WebResourceManager data into this instance (overwritting it). NOTE: this will overwrite rel_path IF the saved instance had rel_path set.
 
-Reads in the WebResourceManager object from a file. The default is "data/webresourcemanager.json" and if rel_path was specified it will be "rel_path/data/webresourcemanager.json"
+Parameters
+* file_name (string) : path to the file you would like to load (USES REL_PATH IF SET)
+
+Returns
+* None
 
 ##### read_in_from_directory(directory)
 
-* **directory** is the name of the directory you would like to read files in from.
-
-NOTE: In order to avoid weird interactions, this function ignores **rel_path**. You put the path from the current working directory in as **directory**.
+Reads in the web resource profiles in the directory and begins tracking them by adding them to url_to_uuid
 
 For each non-directory file in the directory, it attempts to load the file and add it to its dictionary. If this fails, it prints an error message that reads:
 
 > "File {} was not in the proper format to be tracked with WebResourceManager".format(file)
 
+Parameters
+* directory (string) : path to the directory where you'd like to load files from (DOES NOT USE REL_PATH)
+
+Returns
+* None
+
 ##### read_in_from_iterator(iterator_of_docs)
 
-* **iterator_of_docs** is an iterator of documents which are just dictionaries with a **text**, **query**, **url**, and either **html** or **pdf** attributes.
+Adds web resources from the Parser to the Web Resource Manager instance using an iterator
 
-For each document, the method generates a UUID, adds the URL to UUID mapping to the dictionary, writes the appropriate source file (< UUID >.html or < UUID >.pdf), addes a timestamp (seconds since epoch), and writes a content JSON with the **id**, **query**, **text**, **time**, and **url** fields.
+Parameters
+* iterator_of_docs (iterator of dicts) : iterator of dictionaries containing a 'url', 'text', and either 'html' or 'pdf' field
 
-##### rank_by_relevance()
+Returns
+* None
 
-For each file in the WebResourceManager, it passes it's text attribute to **get_relevance_score** and assigns the return value to the document's **relevance_score** attribute.
+##### save(file_name="data/webresourcemanager.json")
 
-##### string_to_uuid(string)
+Saves the Web Resource Manager Instance (rel_path and url_to_uuid in JSON). USES rel_path
 
-* **string** is a string, in practice it is generally the URL of the web resource
+Parameters
+* file_name (string) : file where you'd like to save the instance (default = "data/webresourcemanager.json")
 
-Returns the UUID for the web resource.
+Returns
+* None
 
-##### save(file_name=None)
+##### update_profile(item)
 
-* **file_name** is the name of the file you wish to save the WebResourceManager to.
+Updates the saved version of the web resource profile with the instance passed in
 
-Writes the WebResourceManager object to the **file_name** if specified. Otherwise, it writes to "data/webresourcemanager.json" or "rel_path/data/webresourcemanager.json" if rel_path was specified.
+Parameters
+* item (dict) : a web resource profile (must have 'id' field)
 
-##### train_classifier()
-
-Trains the **classifier** on the WebResourceManager's documents
+Returns
+* None
 
 
 ## Basic Usage

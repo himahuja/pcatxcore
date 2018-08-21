@@ -51,7 +51,7 @@ Parameters
 * linkList (list of strings) : list of URLs for the documents you would like to parse
 
 Returns
-* dict (yields many)
+* iterator of dicts
   * dict['text'] (string) : the visible text on the web page
   * dict['html'] (bytes) : the HTML code of the page (if it is HTML based)
   * dict['pdf'] (bytes) : the PDF code of the page (if it is PDF based)

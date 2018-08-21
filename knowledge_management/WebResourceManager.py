@@ -50,8 +50,8 @@ class WebResourceManager(object):
     
         Returns
         -------
-        dict
-            A dictionary which is the profile if found, else None (Yields)
+        iterator of dicts
+            A dictionary which is the profile if found, else None
     
         """
         if instances == 1:
@@ -237,6 +237,16 @@ class WebResourceManager(object):
         return corpus_list
         
     def get_docs_by_sentence(self):
+        """
+        Yields the contained web resources by sentence using nltk.sent_tokenize
+
+
+        Returns
+        -------
+        list of strings (Yields)
+            the sentences in the contained web resources
+    
+        """
         for item in self:
             try:
                 sent_list = nltk.sent_tokenize(item['text'])
@@ -246,6 +256,16 @@ class WebResourceManager(object):
                 print("{} threw the following exception while yielding text: {}".format(item['id'], str(e)))
     
     def get_TaggedDocuments(self):
+        """
+        Yields TaggedDocuments using the contained web resources by sentence using nltk.sent_tokenize and convert_to_corpus
+
+ 
+        Returns
+        -------
+        list of gensim.models.doc2vec.TaggedDocument (Yields)
+            the TaggedDocument representations of the contained web resource sentences
+    
+        """
         for item in self:
             try:
                 sent_list = nltk.sent_tokenize(item['text'])
@@ -255,13 +275,52 @@ class WebResourceManager(object):
                 print(str(e))
     
     def get_texts(self):
+        """
+        Yields `text' fields of the web resources contained
+
+ 
+        Returns
+        -------
+        iterator of strings (Yields)
+            the `text' fields of the web resources contained
+    
+        """
         for file in self:
             yield file['text']
             
     def get_uuid(self, url):
+        """
+        Returns the UUID (Universally Unique Identifier) for the URL (Uniform Resource Locator)
+
+    
+        Parameters
+        ----------
+        url : string
+            url of the web resource of interest
+            
+        Returns
+        -------
+        string
+            the UUID (Universally Unique Identifier) of the web resource
+    
+        """
         return(self.url_to_uuid[url])
         
     def load(self, file_name=None):
+        """
+        Loads the saved WebResourceManager data into this instance (overwritting it). NOTE: this will overwrite rel_path IF the saved instance had rel_path set.
+
+    
+        Parameters
+        ----------
+        file_name : string
+            path to the file you would like to load (USES REL_PATH IF SET)
+            
+        Returns
+        -------
+        None
+    
+        """
         file = ""
         if file_name == None:
             if self.rel_path == None:
@@ -281,6 +340,20 @@ class WebResourceManager(object):
     
     #DOES NOT USE REL_PATH
     def read_in_from_directory(self, directory):
+        """
+        Reads in the web resource profiles in the directory and begins tracking them by adding them to url_to_uuid
+
+    
+        Parameters
+        ----------
+        directory : string
+            path to the directory where you'd like to load files from (DOES NOT USE REL_PATH)
+            
+        Returns
+        -------
+        None
+    
+        """
         for file in os.listdir(directory):
             if not os.path.isdir(os.path.join(directory, file)):
                 try:
@@ -290,6 +363,20 @@ class WebResourceManager(object):
                     print("Error: File {} was not in the proper format to be tracked with WebResourceManager".format(file))
     
     def read_in_from_iterator(self, iterator_of_docs):
+        """
+        Adds web resources from the Parser to the Web Resource Manager instance using an iterator
+
+    
+        Parameters
+        ----------
+        iterator_of_docs : iterator of dicts
+            iterator of dictionaries containing a 'url', 'text', and either 'html' or 'pdf' field
+            
+        Returns
+        -------
+        None
+    
+        """
         for item in iterator_of_docs:
             item['id'] = str(self.string_to_uuid(item['url'])) + "--" + re.sub('[^A-Za-z0-9]+', '', item['url'])
             if len(item['id']) > 100:
@@ -312,22 +399,48 @@ class WebResourceManager(object):
             file.close()    
     
     def string_to_uuid(self, string):
+        #not my function, read documentation elsewhere
         return uuid.uuid5(uuid.NAMESPACE_DNS, string)
     
-    def save(self, file_name=None):
+    def save(self, file_name="data/webresourcemanager.json"):
+        """
+        Saves the Web Resource Manager Instance (rel_path and url_to_uuid in JSON). USES rel_path
+
+    
+        Parameters
+        ----------
+        file_name : string
+            file where you'd like to save the instance (default = "data/webresourcemanager.json")
+            
+        Returns
+        -------
+        None
+    
+        """
         this = { 'rel_path' : self.rel_path, 'url_to_uuid': self.url_to_uuid }
-        if file_name == None:
-            if self.rel_path == None:
-                file = open("data/webresourcemanager.json", "w")
-            else:
-                file = open(os.path.join(self.rel_path, "data/webresourcemanager.json"), "w")
-        else:
+        if self.rel_path == None:
             file = open(file_name, "w")
+        else:
+            file = open(os.path.join(self.rel_path, file_name), "w")
         file.write(json.dumps(this, sort_keys = True, indent = 4))
         file.close
 
 
     def update_profile(self, item):
+        """
+        Updates the saved version of the web resource profile with the instance passed in
+
+    
+        Parameters
+        ----------
+        item : dict
+            a web resource profile (must have 'id' field)
+            
+        Returns
+        -------
+        None
+    
+        """
         if self.rel_path == None:
             file = open("data/docs/{}.json".format(item['id']), "w")
             file.seek(0)
@@ -342,15 +455,30 @@ class WebResourceManager(object):
             file.close()
 
 def convert_to_corpus(doc):
+    """
+    Sets all of the text to lower case, removes all non-alphanumeric characters besides apostrophe (') and hyphen (-) with a Regular Expression. All words are lemmatized and then stemmed.
+
+
+    Parameters
+    ----------
+    doc : string or list of strings
+    a sentence in either string for or list of words form
+    
+    Returns
+    -------
+    list of strings
+    the sentence after the Natural Language Processing techniques have been applied
+    
+    """
     ps = PorterStemmer()  
     lmtzr = WordNetLemmatizer()
     doc_list = []
     if type(doc) is list:
         for word in doc:
-            doc_list.append(ps.stem(lmtzr.lemmatize(re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", word.lower())).strip())))
+            doc_list.append(ps.stem(lmtzr.lemmatize(re.sub("[^A-Za-z0-9'-]+", '', word.lower()).strip())))
     if type(doc) is str:
-        for word in doc.split():
-            doc_list.append(ps.stem(lmtzr.lemmatize(re.sub("[^A-Za-z0-9'-]+", ' ', re.sub('\S*@\S*\s?', "", word.lower())).strip())))
+        for word in word_tokenize(doc):
+            doc_list.append(ps.stem(lmtzr.lemmatize(re.sub("[^A-Za-z0-9'-]+", '', word.lower()).strip())))
     return doc_list
             
 def main():

@@ -145,4 +145,8 @@ Our architecture is focused on accumulating information for businesses and corpo
 
 ProfileManager is a class designed for the aggregation of information related to corporate entities to support building business profiles. It uses the United States Securities and Exchange Commission (SEC) Central Index Key (CIK) to act as universally unique identifiers (UUIDs) and allows the user to compile a variety of information on corporate entities in an easy to use and query format because each profile is a dictionary. Assisting the accessibility of information, **Profile Manager** includes a series of mappings from CIK codes to names and back, names to aliases, and mappings from industry codes (namely The North American Industry Classification System (NAICS) and Standard Industrial Classification (SIC) codes) and descriptions of them. The hope to provide for a flexible data solution for complex business oriented applications.
 
-* [PCATx_CORE.py](PCATx_CORE.py) --- Documentation in Progress
+#### PCATx_CORE
+
+* [PCATx_CORE.py](PCATx_CORE.py) --- [Documentation](docs/PCATx_CORE.md)
+
+**PCATx_CORE** drives the frameworks described in Milestones One and Two, providing driver functions for supervised and unsupervised runs of the architecture.

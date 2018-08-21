@@ -61,7 +61,7 @@ Parameters
 * iam (int) : the current instance's assignment [0-*instances*) (default = 0)
 
 Returns
-* dict : A dictionary which is the profile if found, else None
+* iterator of dicts : A dictionary which is the profile if found, else None
 
 ##### `__len__()`
 --------
@@ -181,7 +181,7 @@ Parameters
 * iam (int) : the current instance's assignment [0-*instances*) (default = 0)f
 
 Returns
-* list of tuples (string, string) : A list tuples representing the sentences of the documents contained and the IDs of the sentences (Yields)
+* iterator of tuples (string, string) : An iterator tuples representing the sentences of the documents contained and the IDs of the sentences (Yields)
 
 ##### get_resources_by_company(item)
 --------
@@ -200,7 +200,7 @@ Returns
 A getter for the documents contained
 
 Returns
-* list of tuples (string, string) : A list tuples representing the text of the documents contained and the IDs of the documents (Yields)
+* iterator of tuples (string, string) : An iterator tuples representing the text of the documents contained and the IDs of the documents (Yields)
 
 ##### naics_to_description(naics)
 --------

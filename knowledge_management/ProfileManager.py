@@ -148,7 +148,7 @@ class ProfileManager(object):
         
     def __iter__(self, instances=1, iam = 0):
         """
-        An iterator function with the ability to be accessed by multiple instances at once in a safe way.
+        A generator that yields the profiles of the contained corporate entities with the ability to be accessed by multiple instances at once.
 
     
         Parameters
@@ -160,7 +160,7 @@ class ProfileManager(object):
     
         Returns
         -------
-        dict
+        iterator of dicts
             A dictionary which is the profile if found, else None (Yields)
     
         """
@@ -438,8 +438,8 @@ class ProfileManager(object):
     
         Returns
         -------
-        list of tuples (string, string)
-            A list tuples representing the sentences of the documents contained and the IDs of the sentences (Yields)
+        iterator of tuples (string, string)
+            An iterator tuples representing the sentences of the documents contained and the IDs of the sentences (Yields)
     
         """
         for item in self.__iter__(instances, iam):

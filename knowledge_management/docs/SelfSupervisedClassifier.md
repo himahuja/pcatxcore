@@ -4,7 +4,6 @@
 ## Table of contents
 * Introduction
 * Documentation
-* Usage
 
 ## Introduction
 
@@ -12,24 +11,119 @@ Self-Supervised Classifier is a set of functions which together comprise a model
 
 ## Documentation
 
-##### convert_to_corpus
+##### convert_to_corpus(doc)
 
-* **doc** is the string which you would like to convert to a list of "standardized" words to be part of a corpus.
+Sets all of the text to lower case, removes all non-alphanumeric characters besides apostrophe (') and hyphen (-) with a Regular Expression. All words are lemmatized and then stemmed.
 
-Sets all of the text to lower case, removes all email addresses, removes all non-alphanumeric characters besides ' and - . All words are lemmatized and then stemmed.
+Parameters
+* doc (string or list of strings) : a sentence in either string for or list of words form
 
-##### get_TaggedDocuments(pm, instances, iam)
+Returns
+* list of strings : the sentence after the Natural Language Processing techniques have been applied
 
-* **pm** is a ProfileManager instance with the information you would like
-* **instances** is the number of instances you would like to run
-* **iam** is the instance number of the thread you are running [0-instances)
+##### get_TaggedDocuments_pm(pm, instances, iam)
 
-Calls **convert_to_corpus** on the text returned from **pm** and converts them to TaggedDocuments, tagging them as "good" or "bad" if they contain the keywords indicating so.
+Produces TaggedDocuments and labels them appropriately from the documents in the Profile Manager instance and saves them in "../data/profilemanager/TaggedDocuments/Labeled/". Multithreading safe using instances/iam
 
-##### tag_idks()
+Parameters
+* pm (ProfileManager) : a ProfileManager with the documents you would like to Tag
+* instances (int) : the number of instances you'd like to run in parallel
+* iam (int) : the current instance's assignment [0-*instances*) (default = 0)
 
-Tags all of the "idk_sentences" vectors based on whether they are closer to "good" or "bad".
+Returns
+* None
 
-##### train_model()
+##### get_TaggedDocuments_wrm(manager)
 
-Trains the Doc2Vec model on the TaggedDocuments in "../data/profilemanager/TaggedDocuments"
+Produces TaggedDocuments and labels them appropriately from the documents in the Web Resource Manager instance and saves them in "../data/TaggedDocuments/Labeled/". Multithreading safe using instances/iam
+
+Parameters
+* manager (WebResourceManager) : a ProfileManager with the documents you would like to Tag
+
+Returns
+* None
+
+##### get_tfidf_score(tfidf, document)
+
+Returns the TF-IDF value of the document using the tfidf instance
+
+Parameters
+* tfidf (sklearn.feature_extraction.text.TfidfVectorizer) : a TtfidfVectorizer with 'english' stop words and fitted to the corpus
+* document (string) : the document to score
+
+Returns
+* float : the TF-IDF score of the document
+
+##### score_docs_pm()
+
+Scores the TaggedDocuments in "../data/profilemanager/TaggedDocuments/Labeled" using Profile Manager Doc2Vec model and saves them in "../data/profilemanager/TaggedDocuments/Classified/".
+
+Returns
+* None
+
+##### score_docs_wrm()
+
+Scores the TaggedDocuments in "../data/TaggedDocuments/Labeled" using Web Resource Manager Doc2Vec model and saves them in "../data/TaggedDocuments/Classified/".
+
+Returns
+* None
+
+##### score_tfidf_pm(tfidf)
+
+Scores the documents in the Profile Manager instance using TF-IDF and saves them in "../data/profilemanager/TaggedDocuments/Classified/". Multithreading safe using instances/iam.
+
+Parameters
+* tfidf (sklearn.feature_extraction.text.TfidfVectorizer) : a TtfidfVectorizer with 'english' stop words and fitted to the Profile Manager corpus
+* instances (int) : the number of instances you'd like to run in parallel
+* iam (int) : the current instance's assignment [0-*instances*) (default = 0)
+
+Returns
+* None
+
+##### score_tfidf_wrm(tfidf)
+
+Scores the documents in the Profile Manager instance using TF-IDF and saves them in "../data/TaggedDocuments/Classified/"
+
+Parameters
+* tfidf (sklearn.feature_extraction.text.TfidfVectorizer) : a TtfidfVectorizer with 'english' stop words and fitted to the Web Resource Manager corpus
+
+Returns
+* None
+
+##### train_model_pm()
+
+Trains a Profile Manager Doc2Vec model using the TaggedDocuments in "../data/profilemanager/TaggedDocuments/Labeled/" and saves the model at "../data/profilemanager/doc2vec_model"
+
+Returns
+* None
+
+##### train_model_wrm()
+
+Trains a Web Resource Manager Doc2Vec model using the TaggedDocuments in "../data/TaggedDocuments/Labeled" and saves the model at "../data/doc2vec_model"
+
+Returns
+* None
+
+##### train_tfidf(corpus)
+
+Instantiates and trains a TF-IDF Vectorizer using the English stop words
+
+Parameters
+* corpus (list of strings) : the corpus you would like to perform TF-IDF on
+
+Returns
+* sklearn.feature_extraction.text.TfidfVectorizer : a TtfidfVectorizer with 'english' stop words and fitted to the data.
+
+##### train_tfidf_pm()
+
+Returns a TF-IDF instance trained on the Profile Manager instance
+
+Returns
+* sklearn.feature_extraction.text.TfidfVectorizer : a TtfidfVectorizer with 'english' stop words and fitted to the Profile Manager corpus
+
+##### train_tfidf_wrm()
+
+Returns a TF-IDF instance trained on the Profile Manager instance
+
+Returns
+* sklearn.feature_extraction.text.TfidfVectorizer : a TtfidfVectorizer with 'english' stop words and fitted to the Web Resource Manager corpus
