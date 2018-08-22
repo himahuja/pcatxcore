@@ -305,7 +305,8 @@ def extract_paths_sm(G, relsim_wt, triples, y, weight = 10.0, features=None):
 		# paths = get_paths_sm_limited(G, sid, pid, oid, relsim_wt, \
 		# 				weight = weight, maxpaths=20, top_n_neighbors=5)
 		path = get_shortest_path(G, sid, pid, oid)
-		print(path)
+		# print(len(path))
+		# print(path)
 	# 	for pth in paths:
 	# 		ff =  tuple(pth.relational_path)
 	# 		if ff not in features:
@@ -418,41 +419,94 @@ def relax(weight, u, v, r, Dist, prev):
         prev[v] = (-weight, u, r)
 
 def get_shortest_path(G, sid, pid, oid):
-    #making sure that nodes are integers:
-    sid = int(sid)
-    oid = int(oid)
-    #prev is of the type: [weight, node, relation]
-    Dist, visited, priority_q, prev = {sid:0}, set(), [(0,sid)], {sid:(0, -1, -1)}
-    path_stack, rel_stack, weight_stack = [], [], []
-    while priority_q:
-        _, u = heapq.heappop(priority_q)
-        if u == oid:
-            k = u
-            path_stack = [oid]
-            rel_stack = [prev[oid][2]]
-            weight_stack = [prev[oid][0]]
-            while prev[k][1] != -1:
-                path_stack.insert(prev[k][1], 0)
-                rel_stack.insert(prev[k][2], 0)
-                weight_stack.insert(prev[k][0], 0)
-                k = prev[k][1]
-            path_stack.insert(sid, 0)
-        if u in visited:
-            continue
-        visited.add(u)
-        # get the neighbours and cost of the node u
-        # returns [relations, neighbors, cost]
-        rels, nbrs, costs = G.get_neighbors_sm_unpacked(int(u))
-        for rel, nbr, cost in zip(rels, nbrs, costs): # for the iteration through keys
-            if cost != 0:
-                relax(-cost, u, nbr, rel, Dist)
-                heapq.heappush(priority_q, (-cost, nbr))
-    disceovered_path = RelationalPathSM(s, p, o, 0., len(path_stack)-1, path_stack, rel_stack, weight_stack)
-    return discovered_path
-
+	#making sure that nodes are integers:
+	# discovered_path = []
+	sid = int(sid)
+	oid = int(oid)
+	#prev is of the type: [weight, node, relation]
+	Dist, visited, priority_q, prev = {sid:0}, set(), [(0,sid)], {sid:(0, -1, -1)}
+	path_stack, rel_stack, weight_stack = [], [], []
+	while priority_q:
+		_, u = heapq.heappop(priority_q)
+		if u == oid:
+			k = u
+			path_stack = [oid]
+			while prev[k][1] != -1:
+				path_stack.insert(0, prev[k][1])
+				print
+				rel_stack.insert(0, prev[k][2])
+				weight_stack.insert(0, prev[k][0])
+				k = prev[k][1]
+				print(path_stack)
+				print(rel_stack)
+				print(weight_stack)
+			break
+		if u in visited:
+			continue
+		visited.add(u)
+		# get the neighbours and cost of the node u
+		# returns [relations, neighbors, cost]
+		rels, nbrs, costs = G.get_neighbors_sm_unpacked(int(u))
+		for rel, nbr, cost in zip(rels, nbrs, costs): # for the iteration through keys
+			if cost != 0:
+				relax(-cost, u, nbr, rel, Dist, prev)
+				heapq.heappush(priority_q, (-cost, nbr))
+				# discovered_path = RelationalPathSM(sid, pid, oid, 0., len(path_stack)-1, ..)  								  path_stack, rel_stack, weight_stack)
+	return path_stack, rel_stack, weight_stack
 #######################################################################
 #######################################################################
-
+def yenKSP(G, sid, pid, oid, K = 20):
+	discovered_paths = []
+	path_stack, rel_stack, weight_stack = get_shortest_paths(G, sid, pid, oid)
+	if not path_stack:
+		return discovered_paths
+	A = [{'path_total_cost': np.sum(weight_stack),
+		'path': path_stack,
+		'path_rel': rel_stack,
+		'path_weights': weight_stack}]
+	# A_costs = []
+	# A_rel = [rel_stack]
+	# A_weight = [weight_stack]
+	B = []
+	for k in xrange(1, K):
+		for i in xrange(0, len(A[-1])-1):
+			spurNode = A[-1]['path'][i]
+			rootPath = A[-1]['path'][:i+1]
+			rootPathRel = A[-1]['path_rel'][:i+1]
+			rootPathWeights = A[-1]['path_weights'][:i+1]
+			removed_edges = []
+			for path_dict in A:
+				if len(path_dict['path']) > i and rootPath == path_dict['path'][:i+1]:
+					#find the edge between ith and i+1th node
+					edge = G.csr[path_dict['path'][i], path_dict['path_rel'][i] * G.N + path_dict['path'][i+1]]
+						if edge == 0:
+							continue
+					removed_edges.append((path_dict['path'][i], path_dict['path'][i+1], path_dict['path_rel'], edge))
+					edge = 0 #delete the edge
+			spurPath, spurPathRel, spurPathWeights = get_shortest_paths(G, spurNode, pid, oid)
+			if spurPath:
+				totalPath = rootPath[:-1] + spurPath
+				totalDist = np.sum(rootPathWeights) + np.sum(spurPathWeight)
+				totalWeights = rootPathWeights[:-1] + spurPathWeights
+				totalPathRel = rootPathRel[:-1]+ spurPathRel
+				potential_k = {'path_total_cost': totalDist,
+							'path': totalPath,
+							'path_rel': totalPathRel,
+							'path_weights': totalWeights}
+				if not (potential_k in B):
+					B.append(potential_k)
+			for removed_edge in removed_edges:
+				G.csr[removed_edge[0], removed_edge[2]*G.N + removed_edge[1]] = removed_edge[3]
+		if len(B):
+			B = sorted(B, key=lambda k: k['path_total_cost'])
+			A.append(B[0])
+			B.pop(0)
+		else:
+			break
+	for path_dict in A:
+		discovered_paths.append(RelationalPathSM(sid, pid, oid, path_dict['path_total_cost'], len(path_dict['path'])-1,\
+		 								  path_dict['path'], path_dict['path_rel'], path_dict['path_weights'])
+	return discovered_paths
 def predpath_train_model(G, triples, use_interpretable_features=False, cv=10):
 	"""
 	Entry point for building a fact-checking classifier.
