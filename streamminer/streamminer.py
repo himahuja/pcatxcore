@@ -1,3 +1,4 @@
+# coding: utf-8
 """
 PredPath (PP) model building and prediction.
 
@@ -12,6 +13,7 @@ for identifying discriminative predicate paths.
 - Model building: Trains a logistic regression model that optimizes AUROC and empirically
 sets a threshold 'delta' for retaining most informative feature paths.
 """
+import heapq
 import sys
 import os
 import argparse
@@ -32,7 +34,6 @@ import cPickle as pkl
 from datastructures.rgraph import Graph, weighted_degree
 #####################################
 
-
 from time import time
 from os.path import exists, join, abspath, expanduser, basename, dirname, \
 	isdir, splitext
@@ -44,6 +45,7 @@ from sklearn.model_selection import GridSearchCV
 
 from datastructures.rgraph import make_graph, Graph
 from datastructures.relationalpath import RelationalPath
+from datastructures.relationalpath_sm import RelationalPathSM
 from pathenum import get_paths as c_get_paths
 ## for streamminer,
 from pathenum import get_paths_sm as c_get_paths_sm
@@ -52,6 +54,7 @@ from pathenum import get_paths_sm as c_get_paths_sm
 from algorithms.mincostflow.ssp import succ_shortest_path, disable_logging
 from algorithms.relklinker.rel_closure import relational_closure as relclosure
 from algorithms.klinker.closure import closure
+# from algorithms.sm.ksp import k_shortest_paths
 ##############################################
 
 ###################################################################
@@ -99,10 +102,9 @@ _int = np.int32
 _int64 = np.int64
 _float = np.float
 
-
+inf = float('inf')
 #######################################################################
 #######################################################################
-
 
 # ███████ ████████ ██████  ███████  █████  ███    ███     ███    ███ ██ ███    ██ ███████ ██████
 # ██         ██    ██   ██ ██      ██   ██ ████  ████     ████  ████ ██ ████   ██ ██      ██   ██
@@ -141,97 +143,42 @@ def predpath_train_model_sm(G, triples, relsim, use_interpretable_features=False
 		and two other key-value pairs, including best parameter
 		and best AUROC score.
 	"""
+	# defining the total path weights
+	weight = 20.0
 
-	weight = 10
 	y = triples['class'] # ground truth
 	triples = triples[['sid', 'pid', 'oid']].to_dict(orient='records')
 
-
-	##### Taken from kstream #######
-	# ADDITION: Creating backup
-	# COMPLETED
-	# G_bak = {
-	# 	'data': G.csr.data.copy(),
-	# 	'indices': G.csr.indices.copy(),
-	# 	'indptr': G.csr.indptr.copy()
-	# }
-	################################
-
-	##################################################
-	## Addition for K-STREAM
-	# NOT CHECKED YET
-	# pid_array = pid.copy()
-	##################################################
-	# Remove all edges in G corresponding to predicate p.
 	pid = triples[0]['pid']
 	print 'PID is: {}, with type: {}'.format(pid, pid.dtype)
-
-	#################################################
-	# ADDITION to compute relsim. setup
-	# INCOMPLETE
-	# cost_vec_bak = np.log(G.indeg_vec).copy()
-
-
-	# some set up
-	# G.sources = np.repeat(np.arange(G.N), np.diff(G.csr.indptr))
 
 	# G.targets = G.csr.indices % G.N
 
 	# cost_vec = cost_vec_bak.copy()
 	# indegsim = weighted_degree(G.indeg_vec, weight=WTFN)
 	# specificity_wt = indegsim[G.targets] # specificity
-	relations = (G.csr.indices - G.targets) / G.N
-
-	####################################################
-	### PRINT CHECK
-	# print "relations has size: {}".format(relations.shape)
-	# print "G.sources looks like: {}".format(G.sources)
-	# print "G.sources has shape: {}".format(G.sources.shape)
-	# print "G.targets has shape: {}".format(G.targets.shape)
-	# print "G.indeg_vec has shape: {}".format(G.indeg_vec.shape)
-	#####################################################
-	# print "Sum of G.csr.data elements BEFORE ANYTHING: {}".format(np.sum(G.csr.data))
-
-	#####################################################
-	# Setting paths using relsim (from K-Stream)
-	# set weights
-	relsimvec = np.array(relsim[int(pid), :]) # specific to predicate p
-	# print "relsim is "
-	# print "relsimvec has the size: {}".format(relsimvec.shape)
-	# print "relsimvec is: {}".format(relsimvec)
-	# print "specificity_wt vector has the size: {}".format(specificity_wt.shape)
-	# print "relations has the size: {}".format(relations.shape)
-
-	relsim_wt = relsimvec[relations] # with the size of relations as the number of relations
-
-	# print "relsim_wt has the size: {}".format(relsim_wt.shape)
-	# print "relsim_wt is: {}".format(relsim_wt)
-	# G.csr.data = np.multiply(relsim_wt, specificity_wt) # it is the capacity (U) of each edge, under p
-	######################################################
-	# G.csr.data = specificity_wt
 
 	# set weights
 	indegsim = weighted_degree(G.indeg_vec, weight=WTFN).reshape((1, G.N))
 	indegsim = indegsim.ravel()
 	targets = G.csr.indices % G.N
+	relations = (G.csr.indices - targets) / G.N
+	#####################################################
+	# Setting paths using relsim (from K-Stream)
+	# set weights
+	relsimvec = np.array(relsim[int(pid), :]) # specific to predicate p
+	relsim_wt = relsimvec[relations] # with the size of relations as the number of relations
+	# G.csr.data = np.multiply(relsim_wt, specificity_wt) # it is the capacity (U) of each edge, under p
+	######################################################
 	specificity_wt = indegsim[targets] # specificity
-	G.csr.data = specificity_wt.copy()
+
 
 	## Removing all the edges with the predicte p in between any nodes.
 	print '=> Removing predicate {} from KG.'.format(pid)
 	eraseedges_mask = ((G.csr.indices - (G.csr.indices % G.N)) / G.N) == pid
-	G.csr.data[eraseedges_mask] = 0
-
-	##################################################################
-	# PRINT CHECK
-	# print "The initial shape of G.csr.data is: {}".format(G.csr.data.shape)
-	# print "Number of non-zero elements in G.csr.data: {}".format(np.count_nonzero(G.csr.data))
-	# print "Sum of G.csr.data elements: {}".format(np.sum(G.csr.data))
-	# print "Shape of indices: {}".format(G.csr.indices.shape)
-	# print "Shape of indptr: {}".format(G.csr.indptr.shape)
-	# print "Shape of data: {}".format(G.csr.data.shape)
+	specificity_wt[eraseedges_mask] = 0
+	G.csr.data = specificity_wt.copy()
 	print ''
-	############################################################################################
 
 	# Path extraction
 	print '=> Path extraction..(this can take a while)'
@@ -301,7 +248,7 @@ def predpath_train_model_sm(G, triples, relsim, use_interpretable_features=False
 	############################################
 
 	return vec, model
-def extract_paths_sm(G, triples, relsim_wt, y, weight = 10, features=None):
+def extract_paths_sm(G, relsim_wt, triples, y, weight = 10.0, features=None):
 	"""
 	Extracts anchored predicate paths for a given sequence of triples.
 
@@ -328,71 +275,180 @@ def extract_paths_sm(G, triples, relsim_wt, y, weight = 10, features=None):
 		A dictionary representation of feature matrix.
 	"""
 
-	## Create graph backup
-	G_bak = {
-		'data': G.csr.data.copy(),
-		'indices': G.csr.indices.copy(),
-		'indptr': G.csr.indptr.copy()
-	}
+	# print "Shape of the data array: {}".format(G.csr.data.shape)
 	return_features = False
+
 	if features is None:
 		return_features = True
 		features, pos_features, neg_features = set(), set(), set()
 	measurements = []
 	# Make backup here
+		## Create graph backup
+	G_bak = {
+		'data': G.csr.data.copy(),
+		'indices': G.csr.indices.copy(),
+		'indptr': G.csr.indptr.copy()
+	}
 
 	for idx, triple in enumerate(triples):
 		sid, pid, oid = triple['sid'], triple['pid'], triple['oid']
 		label = y[idx]
 
-		# total_weight = 34
-
-		# extract paths for a triple
 		triple_feature = dict()
-		paths = c_get_paths_sm(G, sid, pid, oid, relsim_wt, \
-								weights = weight, maxpath=200)
-		for pth in paths:
-			ff =  tuple(pth.relational_path)
-			if ff not in features:
-				features.add(ff)
-				if label == 1:
-					pos_features.add(ff)
-				if label == 0:
-					neg_features.add(ff)
-				else:
-					raise Exception("Unknown class label: {}".format(label))
-			triple_feature[ff] = triple_feature.get(ff, 0) + 1
-		measurements.append(triple_feature)
-		sys.stdout.flush()
 
-		## REST GRAPH, make backup
-		np.copyto(G.csr.data, G_bak['data'])
-		np.copyto(G.csr.indices, G_bak['indices'])
-		np.copyto(G.csr.indptr, G_bak['indptr'])
+		targets = G.csr.indices % G.N #shift this function to the caller
+		G.csr.data[targets == oid] = 1 # no cost for target t => max. specificity.
+		G.csr.data = np.multiply(relsim_wt, G.csr.data)
 
-		# for m in xrange(length + 1):
-		# 	if m in [0, 1]: # paths of length 0 and 1 mean nothing
-		# 		continue
-		# 	paths = c_get_paths_sm(G, sid, pid, oid, weights=m, maxpaths=200) # cythonized
-		# 	for pth in paths:
-		# 		ff = tuple(pth.relational_path) # feature
-		# 		# print 'FF was this: {}'.format(ff)
-		# 		if ff not in features:
-		# 			features.add(ff)
-		# 			if label == 1:
-		# 				pos_features.add(ff)
-		# 			elif label == 0:
-		# 				neg_features.add(ff)
-		# 			else:
-		# 				raise Exception('Unknown class label: {}'.format(label))
-		# 		triple_feature[ff] = triple_feature.get(ff, 0) + 1
-		# measurements.append(triple_feature)
-		# # print '(T:{}, F:{})'.format(idx+1, len(triple_feature))
-		# sys.stdout.flush()
-	print ''
-	if return_features:
-		return features, pos_features, neg_features, measurements
-	return measurements
+		# paths = get_paths_sm(G, sid, pid, oid, relsim_wt, \
+								# weight = weight, maxpaths=20)
+		# paths = get_paths_sm_limited(G, sid, pid, oid, relsim_wt, \
+		# 				weight = weight, maxpaths=20, top_n_neighbors=5)
+		path = get_shortest_path(G, sid, pid, oid)
+		print(path)
+	# 	for pth in paths:
+	# 		ff =  tuple(pth.relational_path)
+	# 		if ff not in features:
+	# 			features.add(ff)
+	# 			if label == 1:
+	# 				pos_features.add(ff)
+	# 			if label == 0:
+	# 				neg_features.add(ff)
+	# 			else:
+	# 				raise Exception("Unknown class label: {}".format(label))
+	# 		triple_feature[ff] = triple_feature.get(ff, 0) + 1
+	# 	measurements.append(triple_feature)
+	# 	sys.stdout.flush()
+	#
+	# 	# REST GRAPH, make backup
+	# 	np.copyto(G.csr.data, G_bak['data'])
+	# 	np.copyto(G.csr.indices, G_bak['indices'])
+	# 	np.copyto(G.csr.indptr, G_bak['indptr'])
+	# print ''
+	# if return_features:
+	# 	return features, pos_features, neg_features, measurements
+	# return measurements
+
+
+def get_paths_sm(G, s, p, o, relsim_wt, weight = 10.0, maxpaths=-1):
+	# "Returns all paths of length `length` starting at s and ending in o."
+	path_stack = [[s]]
+	weight_path_stack = [[0.0]]
+	relpath_stack = [[-1]]
+	discoverd_paths = []
+	print 'We\'re checking the path: ({}, {}, {})'.format(s, p, o)
+	while len(path_stack) > 0:
+		curr_path = path_stack.pop()
+		curr_relpath = relpath_stack.pop()
+		node = curr_path[-1]
+		curr_path_weight = weight_path_stack.pop()
+		if np.sum(curr_path_weight) <= weight:
+			if int(node) == int(o):
+				print 'We have found a path!'
+				print 'The total weight of the path is: {}'.format(np.sum(curr_path_weight))
+				path = RelationalPathSM(
+					s, p, o, 0., len(curr_path)-1, curr_path, curr_relpath, curr_path_weight
+				)
+				discoverd_paths.append(path)
+				if maxpaths != -1 and len(discoverd_paths) >= maxpaths:
+					break
+				continue
+		elif np.sum(curr_path_weight) >= weight:
+			continue
+		# print "Node is: {}, o is: {}, s is: {}, p is: {}".format(node, o, s, p)
+		relnbrs, data = G.get_neighbors_sm(int(node))
+		# print 'Data vector is: {}'.format(data)
+		for i in xrange(relnbrs.shape[1]):
+			rel, nbr = relnbrs[:, i]
+			# print "rel is: {}, nbr is: {}".format(rel, nbr)
+			path_stack.append(curr_path + [nbr])
+			weight_path_stack.append(curr_path_weight + [data[i]])
+			relpath_stack.append(curr_relpath + [rel])
+	return discoverd_paths
+
+def get_paths_sm_limited(G, s, p, o, relsim_wt, weight = 10.0, maxpaths=-1, top_n_neighbors=5):
+	# "Returns all paths of length `length` starting at s and ending in o."
+	path_stack = [[s]]
+	weight_path_stack = [[0.0]]
+	relpath_stack = [[-1]]
+	discoverd_paths = []
+	print 'We\'re checking the path: ({}, {}, {})'.format(s, p, o)
+	while len(path_stack) > 0:
+		# print 'Stack: {} {}'.format(path_stack, relpath_stack)
+		curr_path = path_stack.pop()
+		curr_relpath = relpath_stack.pop()
+		node = curr_path[-1]
+		curr_path_weight = weight_path_stack.pop()
+		# print 'Node: {}'.format(node)
+		total_path_weight = np.sum(curr_path_weight)
+		if total_path_weight <= weight:
+			if int(node) == int(o):
+				print 'We have found a path!'
+				print 'The total weight of the path is: {}'.format(np.sum(curr_path_weight))
+				path = RelationalPathSM(
+					s, p, o, 0., length, curr_path, curr_relpath, curr_path_weight
+				)
+				discoverd_paths.append(path)
+				if maxpaths != -1 and len(discoverd_paths) >= maxpaths:
+					print "Exceeded number of paths!"
+					break
+				continue
+		elif total_path_weight > weight:
+			print 'Discarded path with weight'
+			continue
+		# print "Node is: {}, o is: {}, s is: {}, p is: {}".format(node, o, s, p)
+		relnbrs, data = G.get_neighbors_sm(int(node))
+		ordering = np.argsort(data)
+		relnbrs = relnbrs[:, ordering]
+		# print 'Data vector is: {}'.format(data)
+		# print(data)
+		range = relnbrs.shape[1] if relnbrs.shape[1] < top_n_neighbors else top_n_neighbors
+		for i in xrange(range):
+			rel, nbr = relnbrs[:, i]
+			# print "rel is: {}, nbr is: {}".format(rel, nbr)
+			path_stack.append(curr_path + [nbr])
+			weight_path_stack.append(curr_path_weight + [data[i]])
+			relpath_stack.append(curr_relpath + [rel])
+	return discoverd_paths
+
+def relax(weight, u, v, r, Dist, prev):
+    d = Dist.get(u, inf) + weight
+    if d < Dist.get(v, inf):
+        Dist[v] = d
+        prev[v] = (-weight, u, r)
+
+def get_shortest_path(G, sid, pid, oid):
+    #making sure that nodes are integers:
+    sid = int(sid)
+    oid = int(oid)
+    #prev is of the type: [weight, node, relation]
+    Dist, visited, priority_q, prev = {sid:0}, set(), [(0,sid)], {sid:(0, -1, -1)}
+    path_stack, rel_stack, weight_stack = [], [], []
+    while priority_q:
+        _, u = heapq.heappop(priority_q)
+        if u == oid:
+            k = u
+            path_stack = [oid]
+            rel_stack = [prev[oid][2]]
+            weight_stack = [prev[oid][0]]
+            while prev[k][1] != -1:
+                path_stack.insert(prev[k][1], 0)
+                rel_stack.insert(prev[k][2], 0)
+                weight_stack.insert(prev[k][0], 0)
+                k = prev[k][1]
+            path_stack.insert(sid, 0)
+        if u in visited:
+            continue
+        visited.add(u)
+        # get the neighbours and cost of the node u
+        # returns [relations, neighbors, cost]
+        rels, nbrs, costs = G.get_neighbors_sm_unpacked(int(u))
+        for rel, nbr, cost in zip(rels, nbrs, costs): # for the iteration through keys
+            if cost != 0:
+                relax(-cost, u, nbr, rel, Dist)
+                heapq.heappush(priority_q, (-cost, nbr))
+    disceovered_path = RelationalPathSM(s, p, o, 0., len(path_stack)-1, path_stack, rel_stack, weight_stack)
+    return discovered_path
 
 #######################################################################
 #######################################################################
@@ -860,13 +916,11 @@ def normalize(df):
 	df['softmaxscore'] = df[['sid','score']].groupby(by=['sid'], as_index=False).transform(softmax)
 	return df
 
-
 # ███    ███  █████  ██ ███    ██
 # ████  ████ ██   ██ ██ ████   ██
 # ██ ████ ██ ███████ ██ ██ ██  ██
 # ██  ██  ██ ██   ██ ██ ██  ██ ██
 # ██      ██ ██   ██ ██ ██   ████
-
 
 def main(args=None):
 	parser = argparse.ArgumentParser(
@@ -966,7 +1020,7 @@ def main(args=None):
 			print 'Saved: {}'.format(outpkl)
 		except IOError, e:
 			raise e
-	elif args.method == 'streamminer':
+	elif args.method == 'sm':
 		vec, model = predpath_train_model_sm(G, spo_df, relsim) # train
 		print 'Time taken: {:.2f}s\n'.format(time() - t1)
 		# save model
