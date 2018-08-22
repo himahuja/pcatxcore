@@ -113,6 +113,52 @@ class Graph(object):
 			rels = k * np.ones(len(nbrs), dtype=_int)
 		return np.asarray([rels, nbrs])
 
+	def get_neighbors_sm(self, i, k=-1):
+		"""
+		Returns a 2 x M dimensional array, where the first row
+		indicates the relations of the neighbors located in the second row.
+		If k = -1, neighbors across all relations are returned.
+		"""
+		if k == -1:
+			self._check_bounds(i, 0, 0)
+			nbrs = self._get_indices(i)
+			rels = (nbrs - (nbrs % self.N)) / self.N
+			data_values = np.zeros(nbrs.shape[0])
+			nbrs = nbrs % self.N
+			# print "nbrs are: {}, rels are: {}".format(nbrs, rels)
+			ikl = 0
+			for nbr, rel in zip(nbrs, rels):
+				data_values[ikl] = self.__getitem__([i, nbr, rel])
+				ikl +=1
+		else:
+			self._check_bounds(i, 0, k)
+			nbrs = self.getrow(i, k, boundscheck=False)
+			rels = k * np.ones(len(nbrs), dtype=_int)
+		return np.asarray([rels, nbrs]), data_values
+
+	def get_neighbors_sm_packed(self, i, k=-1):
+		"""
+		Returns a 2 x M dimensional array, where the first row
+		indicates the relations of the neighbors located in the second row.
+		If k = -1, neighbors across all relations are returned.
+		"""
+		if k == -1:
+			self._check_bounds(i, 0, 0)
+			nbrs = self._get_indices(i)
+			rels = (nbrs - (nbrs % self.N)) / self.N
+			data_values = np.zeros(nbrs.shape[0])
+			nbrs = nbrs % self.N
+			# print "nbrs are: {}, rels are: {}".format(nbrs, rels)
+			ikl = 0
+			for nbr, rel in zip(nbrs, rels):
+				data_values[ikl] = self.__getitem__([i, nbr, rel])
+				ikl +=1
+		else:
+			self._check_bounds(i, 0, k)
+			nbrs = self.getrow(i, k, boundscheck=False)
+			rels = k * np.ones(len(nbrs), dtype=_int)
+		return rels, nbrs, data_values
+
 	def getslice(self, k):
 		"Returns a csr_matrix representing k'th relation."
 		self._check_bounds(0, 0, k)
