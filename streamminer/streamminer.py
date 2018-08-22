@@ -412,11 +412,22 @@ def get_paths_sm_limited(G, s, p, o, relsim_wt, weight = 10.0, maxpaths=-1, top_
 			relpath_stack.append(curr_relpath + [rel])
 	return discoverd_paths
 
+###########################################################
+
+# ██████       ██ ██ ██   ██ ███████ ████████ ██████   █████  ███████
+# ██   ██      ██ ██ ██  ██  ██         ██    ██   ██ ██   ██ ██
+# ██   ██      ██ ██ █████   ███████    ██    ██████  ███████ ███████
+# ██   ██ ██   ██ ██ ██  ██       ██    ██    ██   ██ ██   ██      ██
+# ██████   █████  ██ ██   ██ ███████    ██    ██   ██ ██   ██ ███████
+
+
+
+###########################################################
 def relax(weight, u, v, r, Dist, prev):
-    d = Dist.get(u, inf) + weight
-    if d < Dist.get(v, inf):
-        Dist[v] = d
-        prev[v] = (-weight, u, r)
+	d = Dist.get(u, inf) + weight
+	if d < Dist.get(v, inf):
+		Dist[v] = d
+		prev[v] = (-weight, u, r)
 
 def get_shortest_path(G, sid, pid, oid):
 	#making sure that nodes are integers:
@@ -437,9 +448,6 @@ def get_shortest_path(G, sid, pid, oid):
 				rel_stack.insert(0, prev[k][2])
 				weight_stack.insert(0, prev[k][0])
 				k = prev[k][1]
-				print(path_stack)
-				print(rel_stack)
-				print(weight_stack)
 			break
 		if u in visited:
 			continue
@@ -453,7 +461,16 @@ def get_shortest_path(G, sid, pid, oid):
 				heapq.heappush(priority_q, (-cost, nbr))
 				# discovered_path = RelationalPathSM(sid, pid, oid, 0., len(path_stack)-1, ..)  								  path_stack, rel_stack, weight_stack)
 	return path_stack, rel_stack, weight_stack
+
 #######################################################################
+
+# ██    ██ ███████ ███    ██     ██   ██ ███████ ██████
+#  ██  ██  ██      ████   ██     ██  ██  ██      ██   ██
+#   ████   █████   ██ ██  ██     █████   ███████ ██████
+#    ██    ██      ██  ██ ██     ██  ██       ██ ██
+#    ██    ███████ ██   ████     ██   ██ ███████ ██
+
+
 #######################################################################
 def yenKSP(G, sid, pid, oid, K = 20):
 	discovered_paths = []
