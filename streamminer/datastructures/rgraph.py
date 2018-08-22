@@ -136,7 +136,7 @@ class Graph(object):
 			rels = k * np.ones(len(nbrs), dtype=_int)
 		return np.asarray([rels, nbrs]), data_values
 
-	def get_neighbors_sm_packed(self, i, k=-1):
+	def get_neighbors_sm_unpacked(self, i, k=-1):
 		"""
 		Returns a 2 x M dimensional array, where the first row
 		indicates the relations of the neighbors located in the second row.
