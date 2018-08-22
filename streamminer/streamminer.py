@@ -155,7 +155,10 @@ def predpath_train_model_sm(G, triples, relsim, use_interpretable_features=False
 	print 'PID is: {}, with type: {}'.format(pid, pid.dtype)
 
 	# G.targets = G.csr.indices % G.N
-
+	G_bak = {'data': G.csr.data.copy(),
+	'indices': G.csr.indices.copy(),
+	'indptr': G.csr.indptr.copy()
+	}
 	# cost_vec = cost_vec_bak.copy()
 	# indegsim = weighted_degree(G.indeg_vec, weight=WTFN)
 	# specificity_wt = indegsim[G.targets] # specificity
