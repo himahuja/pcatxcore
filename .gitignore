@@ -1,6 +1,6 @@
 # IGNORE THESE DIRECTORIES
 
-data/
+_data/
 
 #kpm
 kpm/data/dictionary.txt
