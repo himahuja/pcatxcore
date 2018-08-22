@@ -39,7 +39,7 @@ cpdef get_paths(G, s, p, o, length=3, maxpaths=-1):
 		discovered_paths.append(pp)
 	return discovered_paths
 
-cpdef get_paths_sm(G, s, p, o, relsim_wt, weights = 10, maxpaths=-1):
+cpdef get_paths_sm(G, s, p, o, relsim_wt, weights = 10.0, maxpaths=-1):
 	# "Returns all paths of length `length` starting at s and ending in o."
 	cdef:
 		double[:] data
@@ -48,20 +48,21 @@ cpdef get_paths_sm(G, s, p, o, relsim_wt, weights = 10, maxpaths=-1):
 		list paths, relpaths, discovered_paths
 
 	#setting up the path weights
+	targets = G.csr.indices % G.N #shift this function to the caller
 	G.csr.data[targets == o] = 1 # no cost for target t => max. specificity.
 	G.csr.data = np.multiply(relsim_wt, G.csr.data)
 	# graph vectors
 	data = G.csr.data.astype(_float)
 	indices = G.csr.indices.astype(_int64)
 	indptr = G.csr.indptr.astype(_int)
-	paths, relpaths = enumerate_paths_sm(
+	paths, relpaths, pathlen = enumerate_paths_sm(
 		data, indices, indptr, s, p, o, weight=weights, maxpaths=maxpaths
 	)
 	# convert to Python objects
 	discovered_paths = []
 	for pth, rpth in zip(paths, relpaths):
 		## Change np.ones(length+1) to an ndarray with weights of each edge in the path
-		pp = RelationalPath(s, p, o, 0., length, pth, rpth, np.ones(length + 1))
+		pp = RelationalPath(s, p, o, 0., pathlen, pth, rpth, np.ones(pathlen + 1))
 		discovered_paths.append(pp)
 	return discovered_paths
 
@@ -123,12 +124,12 @@ cdef object enumerate_paths(
 @cython.cdivision(True)
 cdef object enumerate_paths_sm(
 		double[:] data, long[:] indices, int[:] indptr,
-		int s, int p, int o, int weight=10, int maxpaths=-1
+		int s, int p, int o, double weight=10, int maxpaths=-1
 	):
 	"Workhorse function for path enumeration."
 	cdef:
 		# ===== basic types =====
-		int i, N, node, nbr, rel, start, end, N_neigh
+		int i, N, node, nbr, rel, start, end, N_neigh, path_len
 		stack[vector[int]] path_stack, relpath_stack
 		vector[int] curr_path, curr_relpath, tmp
 		vector[double] curr_path_weight, tmp_weight
@@ -137,6 +138,7 @@ cdef object enumerate_paths_sm(
 		vector[vector[int]] discovered_paths, discovered_relpaths
 		long[:] neighbors
 		np.ndarray paths_arr, relpaths_arr
+	path_len = 0
 	N = len(indptr) - 1
 	tmp_weight.push_back(0)
 	tmp.push_back(s)
@@ -155,7 +157,7 @@ cdef object enumerate_paths_sm(
 		relpath_stack.pop()
 		node = curr_path.back()
 		node_weight = curr_path_weight.back()
-		if total_path_weight <= weight
+		if total_path_weight <= weight:
 			if node == o:
 				discovered_paths.push_back(curr_path)
 				discovered_relpaths.push_back(curr_relpath)
@@ -180,4 +182,4 @@ cdef object enumerate_paths_sm(
 			curr_relpath.push_back(rel)
 			relpath_stack.push(curr_relpath)
 			curr_relpath.pop_back()
-	return discovered_paths, discovered_relpaths
+	return discovered_paths, discovered_relpaths, path_len
