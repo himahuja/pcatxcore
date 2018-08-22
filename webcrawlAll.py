@@ -36,7 +36,7 @@ def urlmaker_sec(queryDic):
         startDate (str): Start date of the produced results (YYYYMMDD) (Default: '*')
         endDate (str): End date of the produced results (YYYYMMDD) (Default: '*')
         sortOrder (str): Ascending (Value = 'Date') or Descending (Value = 'ReverseDate') retrieval of results, (Default: 'Date')
-    
+
     Returns
     -------
     str
@@ -63,13 +63,13 @@ def urlmaker_sec(queryDic):
 def linkFilter_google(url):
     """
     Filters out the links of social media websites from the returned google search results using `filterList` defined implicitly.
-   
-   
+
+
    Parameters
     ----------
     url : str
         URL to be tested against `filterList`
-        
+
     Returns
     -------
     int
@@ -298,7 +298,7 @@ def crawlerWrapper(search_query, engine, doSetDriver, headless = False):
                     -pN priority mode (0): just scan (1): just get html (2): just get non-html (3): save all files (7): get html files first, then treat other files
             engine: str
                 specify which type of crawler to use, refer module summary for options
-        
+
         Returns
         -------
             None

@@ -17,12 +17,12 @@
             "/Users/himanshuahuja/anaconda3/envs/pcatwd2/lib/python2.7/site-packages/numpy/core/include"
         ], 
         "language": "c++", 
-        "name": "algorithms.predpath.pathenum", 
+        "name": "pathenum", 
         "sources": [
-            "algorithms/predpath/pathenum.pyx"
+            "pathenum.pyx"
         ]
     }, 
-    "module_name": "algorithms.predpath.pathenum"
+    "module_name": "pathenum"
 }
 END: Cython Metadata */
 
@@ -599,8 +599,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__algorithms__predpath__pathenum
-#define __PYX_HAVE_API__algorithms__predpath__pathenum
+#define __PYX_HAVE__pathenum
+#define __PYX_HAVE_API__pathenum
 /* Early includes */
 #include <string.h>
 #include <stdio.h>
@@ -840,7 +840,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "algorithms/predpath/pathenum.pyx",
+  "pathenum.pyx",
   "__init__.pxd",
   "stringsource",
   "type.pxd",
@@ -1208,32 +1208,60 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  * cdef inline object PyArray_MultiIterNew1(a):
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
-struct __pyx_opt_args_10algorithms_8predpath_8pathenum_get_paths;
-struct __pyx_opt_args_10algorithms_8predpath_8pathenum_enumerate_paths;
+struct __pyx_opt_args_8pathenum_get_paths;
+struct __pyx_opt_args_8pathenum_get_paths_sm;
+struct __pyx_opt_args_8pathenum_enumerate_paths;
+struct __pyx_opt_args_8pathenum_enumerate_paths_sm;
 
-/* "algorithms/predpath/pathenum.pxd":3
+/* "pathenum.pxd":3
  * cimport cython
  * 
  * cpdef get_paths(G, s, p, o, length=*, maxpaths=*)             # <<<<<<<<<<<<<<
+ * cpdef get_paths_sm(G, s, p, o, relsim_wt, weights=*, maxpaths=*)
  * 
- * cdef object enumerate_paths(
  */
-struct __pyx_opt_args_10algorithms_8predpath_8pathenum_get_paths {
+struct __pyx_opt_args_8pathenum_get_paths {
   int __pyx_n;
   PyObject *length;
   PyObject *maxpaths;
 };
 
-/* "algorithms/predpath/pathenum.pxd":5
+/* "pathenum.pxd":4
+ * 
  * cpdef get_paths(G, s, p, o, length=*, maxpaths=*)
+ * cpdef get_paths_sm(G, s, p, o, relsim_wt, weights=*, maxpaths=*)             # <<<<<<<<<<<<<<
+ * 
+ * cdef object enumerate_paths(
+ */
+struct __pyx_opt_args_8pathenum_get_paths_sm {
+  int __pyx_n;
+  PyObject *weights;
+  PyObject *maxpaths;
+};
+
+/* "pathenum.pxd":6
+ * cpdef get_paths_sm(G, s, p, o, relsim_wt, weights=*, maxpaths=*)
  * 
  * cdef object enumerate_paths(             # <<<<<<<<<<<<<<
  * 		double[:] data, long[:] indices, int[:] indptr,
  * 		int s, int p, int o, int length=*, int maxpaths=*
  */
-struct __pyx_opt_args_10algorithms_8predpath_8pathenum_enumerate_paths {
+struct __pyx_opt_args_8pathenum_enumerate_paths {
   int __pyx_n;
   int length;
+  int maxpaths;
+};
+
+/* "pathenum.pxd":11
+ * 	)
+ * 
+ * cdef object enumerate_paths_sm(             # <<<<<<<<<<<<<<
+ * 		double[:] data, long[:] indices, int[:] indptr,
+ * 		int s, int p, int o, double weight=*, int maxpaths=*
+ */
+struct __pyx_opt_args_8pathenum_enumerate_paths_sm {
+  int __pyx_n;
+  double weight;
   int maxpaths;
 };
 
@@ -1546,6 +1574,15 @@ static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_n
 static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
+
+/* PyObjectSetAttrStr.proto */
+#if CYTHON_USE_TYPE_SLOTS
+#define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o, n, NULL)
+static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value);
+#else
+#define __Pyx_PyObject_DelAttrStr(o,n)   PyObject_DelAttr(o,n)
+#define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
+#endif
 
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
@@ -2144,7 +2181,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, cha
 
 /* Module declarations from 'libcpp.stack' */
 
-/* Module declarations from 'algorithms.predpath.pathenum' */
+/* Module declarations from 'pathenum' */
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
@@ -2156,8 +2193,10 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_8predpath_8pathenum_get_paths *__pyx_optional_args); /*proto*/
-static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, struct __pyx_opt_args_10algorithms_8predpath_8pathenum_enumerate_paths *__pyx_optional_args); /*proto*/
+static PyObject *__pyx_f_8pathenum_get_paths(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_8pathenum_get_paths *__pyx_optional_args); /*proto*/
+static PyObject *__pyx_f_8pathenum_get_paths_sm(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_8pathenum_get_paths_sm *__pyx_optional_args); /*proto*/
+static PyObject *__pyx_f_8pathenum_enumerate_paths(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, struct __pyx_opt_args_8pathenum_enumerate_paths *__pyx_optional_args); /*proto*/
+static PyObject *__pyx_f_8pathenum_enumerate_paths_sm(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, struct __pyx_opt_args_8pathenum_enumerate_paths_sm *__pyx_optional_args); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_int(const std::vector<int>  &); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(const std::vector<std::vector<int> >  &); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
@@ -2196,11 +2235,11 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, 
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_long = { "long", NULL, sizeof(long), { 0 }, 0, IS_UNSIGNED(long) ? 'U' : 'I', IS_UNSIGNED(long), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_int = { "int", NULL, sizeof(int), { 0 }, 0, IS_UNSIGNED(int) ? 'U' : 'I', IS_UNSIGNED(int), 0 };
-#define __Pyx_MODULE_NAME "algorithms.predpath.pathenum"
-extern int __pyx_module_is_main_algorithms__predpath__pathenum;
-int __pyx_module_is_main_algorithms__predpath__pathenum = 0;
+#define __Pyx_MODULE_NAME "pathenum"
+extern int __pyx_module_is_main_pathenum;
+int __pyx_module_is_main_pathenum = 0;
 
-/* Implementation of 'algorithms.predpath.pathenum' */
+/* Implementation of 'pathenum' */
 static PyObject *__pyx_builtin_zip;
 static PyObject *__pyx_builtin_xrange;
 static PyObject *__pyx_builtin_ValueError;
@@ -2214,6 +2253,7 @@ static PyObject *__pyx_builtin_Ellipsis;
 static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
 static const char __pyx_k_G[] = "G";
+static const char __pyx_k_N[] = "N";
 static const char __pyx_k_O[] = "O";
 static const char __pyx_k_c[] = "c";
 static const char __pyx_k_o[] = "o";
@@ -2270,16 +2310,19 @@ static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_indices[] = "indices";
 static const char __pyx_k_int64_2[] = "int64";
 static const char __pyx_k_memview[] = "memview";
+static const char __pyx_k_weights[] = "weights";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_itemsize[] = "itemsize";
 static const char __pyx_k_maxpaths[] = "maxpaths";
+static const char __pyx_k_multiply[] = "multiply";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
 static const char __pyx_k_setstate[] = "__setstate__";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_enumerate[] = "enumerate";
 static const char __pyx_k_pyx_state[] = "__pyx_state";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
+static const char __pyx_k_relsim_wt[] = "relsim_wt";
 static const char __pyx_k_IndexError[] = "IndexError";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_pyx_result[] = "__pyx_result";
@@ -2353,6 +2396,7 @@ static PyObject *__pyx_kp_s_Invalid_shape_in_axis_d_d;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_kp_s_MemoryView_of_r_at_0x_x;
 static PyObject *__pyx_kp_s_MemoryView_of_r_object;
+static PyObject *__pyx_n_s_N;
 static PyObject *__pyx_kp_u_Non_native_byte_order_not_suppor;
 static PyObject *__pyx_n_b_O;
 static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
@@ -2404,6 +2448,7 @@ static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_maxpaths;
 static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_s_mode;
+static PyObject *__pyx_n_s_multiply;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
@@ -2433,6 +2478,7 @@ static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_reduce;
 static PyObject *__pyx_n_s_reduce_cython;
 static PyObject *__pyx_n_s_reduce_ex;
+static PyObject *__pyx_n_s_relsim_wt;
 static PyObject *__pyx_n_s_s;
 static PyObject *__pyx_n_s_setstate;
 static PyObject *__pyx_n_s_setstate_cython;
@@ -2453,9 +2499,11 @@ static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
 static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_update;
+static PyObject *__pyx_n_s_weights;
 static PyObject *__pyx_n_s_xrange;
 static PyObject *__pyx_n_s_zip;
-static PyObject *__pyx_pf_10algorithms_8predpath_8pathenum_get_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_length, PyObject *__pyx_v_maxpaths); /* proto */
+static PyObject *__pyx_pf_8pathenum_get_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_length, PyObject *__pyx_v_maxpaths); /* proto */
+static PyObject *__pyx_pf_8pathenum_2get_paths_sm(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_relsim_wt, PyObject *__pyx_v_weights, PyObject *__pyx_v_maxpaths); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -2505,6 +2553,7 @@ static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new__memoryviewslice(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_float_0_;
+static PyObject *__pyx_float_10_0;
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_3;
@@ -2549,7 +2598,7 @@ static PyObject *__pyx_tuple__36;
 static PyObject *__pyx_codeobj__37;
 /* Late includes */
 
-/* "algorithms/predpath/pathenum.pyx":22
+/* "pathenum.pyx":21
  * # ================ PATH ENUMERATION PROCEDURE ================
  * 
  * cpdef get_paths(G, s, p, o, length=3, maxpaths=-1):             # <<<<<<<<<<<<<<
@@ -2557,8 +2606,8 @@ static PyObject *__pyx_codeobj__37;
  * 	cdef:
  */
 
-static PyObject *__pyx_pw_10algorithms_8predpath_8pathenum_1get_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_8predpath_8pathenum_get_paths *__pyx_optional_args) {
+static PyObject *__pyx_pw_8pathenum_1get_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_8pathenum_get_paths(PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_8pathenum_get_paths *__pyx_optional_args) {
   PyObject *__pyx_v_length = ((PyObject *)__pyx_int_3);
   PyObject *__pyx_v_maxpaths = ((PyObject *)__pyx_int_neg_1);
   __Pyx_memviewslice __pyx_v_data = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -2585,7 +2634,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
   int __pyx_t_11;
   int __pyx_t_12;
   int __pyx_t_13;
-  struct __pyx_opt_args_10algorithms_8predpath_8pathenum_enumerate_paths __pyx_t_14;
+  struct __pyx_opt_args_8pathenum_enumerate_paths __pyx_t_14;
   PyObject *(*__pyx_t_15)(PyObject *);
   Py_ssize_t __pyx_t_16;
   PyObject *(*__pyx_t_17)(PyObject *);
@@ -2603,22 +2652,22 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     }
   }
 
-  /* "algorithms/predpath/pathenum.pyx":30
+  /* "pathenum.pyx":29
  * 		list paths, relpaths, discovered_paths
  * 	# graph vectors
  * 	data = G.csr.data.astype(_float)             # <<<<<<<<<<<<<<
  * 	indices = G.csr.indices.astype(_int64)
  * 	indptr = G.csr.indptr.astype(_int)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_data); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_data); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_astype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_astype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_float); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_float); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2631,14 +2680,14 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_3};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -2647,47 +2696,47 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_3};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_data = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "algorithms/predpath/pathenum.pyx":31
+  /* "pathenum.pyx":30
  * 	# graph vectors
  * 	data = G.csr.data.astype(_float)
  * 	indices = G.csr.indices.astype(_int64)             # <<<<<<<<<<<<<<
  * 	indptr = G.csr.indptr.astype(_int)
  * 	paths, relpaths = enumerate_paths(
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_indices); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_indices); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_astype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_astype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_int64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_int64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2700,14 +2749,14 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_t_5};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -2716,47 +2765,47 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_t_5};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 30, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_GIVEREF(__pyx_t_5);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_t_5);
       __pyx_t_5 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_long(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_long(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_indices = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "algorithms/predpath/pathenum.pyx":32
+  /* "pathenum.pyx":31
  * 	data = G.csr.data.astype(_float)
  * 	indices = G.csr.indices.astype(_int64)
  * 	indptr = G.csr.indptr.astype(_int)             # <<<<<<<<<<<<<<
  * 	paths, relpaths = enumerate_paths(
  * 		data, indices, indptr, s, p, o, length=length, maxpaths=maxpaths
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_indptr); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_indptr); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_astype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_astype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_int); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_int); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2769,14 +2818,14 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     }
   }
   if (!__pyx_t_5) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_5, __pyx_t_4};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -2785,45 +2834,45 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_5, __pyx_t_4};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else
     #endif
     {
-      __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_5); __pyx_t_5 = NULL;
       __Pyx_GIVEREF(__pyx_t_4);
       PyTuple_SET_ITEM(__pyx_t_3, 0+1, __pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 32, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_indptr = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "algorithms/predpath/pathenum.pyx":34
+  /* "pathenum.pyx":33
  * 	indptr = G.csr.indptr.astype(_int)
  * 	paths, relpaths = enumerate_paths(
  * 		data, indices, indptr, s, p, o, length=length, maxpaths=maxpaths             # <<<<<<<<<<<<<<
  * 	)
  * 	# convert to Python objects
  */
-  __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_v_s); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)
-  __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)
-  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_o); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)
-  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_length); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)
-  __pyx_t_13 = __Pyx_PyInt_As_int(__pyx_v_maxpaths); if (unlikely((__pyx_t_13 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_v_s); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_o); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_length); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyInt_As_int(__pyx_v_maxpaths); if (unlikely((__pyx_t_13 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 33, __pyx_L1_error)
 
-  /* "algorithms/predpath/pathenum.pyx":33
+  /* "pathenum.pyx":32
  * 	indices = G.csr.indices.astype(_int64)
  * 	indptr = G.csr.indptr.astype(_int)
  * 	paths, relpaths = enumerate_paths(             # <<<<<<<<<<<<<<
@@ -2833,7 +2882,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
   __pyx_t_14.__pyx_n = 2;
   __pyx_t_14.length = __pyx_t_12;
   __pyx_t_14.maxpaths = __pyx_t_13;
-  __pyx_t_1 = __pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(__pyx_v_data, __pyx_v_indices, __pyx_v_indptr, __pyx_t_9, __pyx_t_10, __pyx_t_11, &__pyx_t_14); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_8pathenum_enumerate_paths(__pyx_v_data, __pyx_v_indices, __pyx_v_indptr, __pyx_t_9, __pyx_t_10, __pyx_t_11, &__pyx_t_14); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
     PyObject* sequence = __pyx_t_1;
@@ -2841,7 +2890,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 33, __pyx_L1_error)
+      __PYX_ERR(0, 32, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -2854,15 +2903,15 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_3);
     #else
-    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 32, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_15 = Py_TYPE(__pyx_t_4)->tp_iternext;
@@ -2870,7 +2919,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     __Pyx_GOTREF(__pyx_t_2);
     index = 1; __pyx_t_3 = __pyx_t_15(__pyx_t_4); if (unlikely(!__pyx_t_3)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_3);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_4), 2) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_4), 2) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
     __pyx_t_15 = NULL;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     goto __pyx_L4_unpacking_done;
@@ -2878,36 +2927,36 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_15 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 33, __pyx_L1_error)
+    __PYX_ERR(0, 32, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
-  if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 33, __pyx_L1_error)
-  if (!(likely(PyList_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 32, __pyx_L1_error)
   __pyx_v_paths = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
   __pyx_v_relpaths = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":37
+  /* "pathenum.pyx":36
  * 	)
  * 	# convert to Python objects
  * 	discovered_paths = []             # <<<<<<<<<<<<<<
  * 	for pth, rpth in zip(paths, relpaths):
  * 		pp = RelationalPath(s, p, o, 0., length, pth, rpth, np.ones(length + 1))
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_discovered_paths = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":38
+  /* "pathenum.pyx":37
  * 	# convert to Python objects
  * 	discovered_paths = []
  * 	for pth, rpth in zip(paths, relpaths):             # <<<<<<<<<<<<<<
  * 		pp = RelationalPath(s, p, o, 0., length, pth, rpth, np.ones(length + 1))
  * 		discovered_paths.append(pp)
  */
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_paths);
   __Pyx_GIVEREF(__pyx_v_paths);
@@ -2915,16 +2964,16 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
   __Pyx_INCREF(__pyx_v_relpaths);
   __Pyx_GIVEREF(__pyx_v_relpaths);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_relpaths);
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
     __pyx_t_1 = __pyx_t_3; __Pyx_INCREF(__pyx_t_1); __pyx_t_16 = 0;
     __pyx_t_17 = NULL;
   } else {
-    __pyx_t_16 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_t_16 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_17 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_t_17 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 37, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   for (;;) {
@@ -2932,17 +2981,17 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_16 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_16); __Pyx_INCREF(__pyx_t_3); __pyx_t_16++; if (unlikely(0 < 0)) __PYX_ERR(0, 38, __pyx_L1_error)
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_16); __Pyx_INCREF(__pyx_t_3); __pyx_t_16++; if (unlikely(0 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_16); __pyx_t_16++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_16); __pyx_t_16++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
         if (__pyx_t_16 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_16); __Pyx_INCREF(__pyx_t_3); __pyx_t_16++; if (unlikely(0 < 0)) __PYX_ERR(0, 38, __pyx_L1_error)
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_16); __Pyx_INCREF(__pyx_t_3); __pyx_t_16++; if (unlikely(0 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_16); __pyx_t_16++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_16); __pyx_t_16++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -2952,7 +3001,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 38, __pyx_L1_error)
+          else __PYX_ERR(0, 37, __pyx_L1_error)
         }
         break;
       }
@@ -2964,7 +3013,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 38, __pyx_L1_error)
+        __PYX_ERR(0, 37, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -2977,15 +3026,15 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
       __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(__pyx_t_4);
       #else
-      __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+      __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
+      __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       #endif
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_5 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
+      __pyx_t_5 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_15 = Py_TYPE(__pyx_t_5)->tp_iternext;
@@ -2993,7 +3042,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
       __Pyx_GOTREF(__pyx_t_2);
       index = 1; __pyx_t_4 = __pyx_t_15(__pyx_t_5); if (unlikely(!__pyx_t_4)) goto __pyx_L7_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_4);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_5), 2) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_5), 2) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
       __pyx_t_15 = NULL;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       goto __pyx_L8_unpacking_done;
@@ -3001,7 +3050,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_15 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 38, __pyx_L1_error)
+      __PYX_ERR(0, 37, __pyx_L1_error)
       __pyx_L8_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_pth, __pyx_t_2);
@@ -3009,21 +3058,21 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     __Pyx_XDECREF_SET(__pyx_v_rpth, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "algorithms/predpath/pathenum.pyx":39
+    /* "pathenum.pyx":38
  * 	discovered_paths = []
  * 	for pth, rpth in zip(paths, relpaths):
  * 		pp = RelationalPath(s, p, o, 0., length, pth, rpth, np.ones(length + 1))             # <<<<<<<<<<<<<<
  * 		discovered_paths.append(pp)
  * 	return discovered_paths
  */
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_RelationalPath); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_RelationalPath); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_ones); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_ones); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_18);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_length, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_length, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_19 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_18))) {
@@ -3036,14 +3085,14 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
       }
     }
     if (!__pyx_t_19) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else {
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_18)) {
         PyObject *__pyx_temp[2] = {__pyx_t_19, __pyx_t_5};
-        __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_18, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_18, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_19); __pyx_t_19 = 0;
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -3052,20 +3101,20 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_18)) {
         PyObject *__pyx_temp[2] = {__pyx_t_19, __pyx_t_5};
-        __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_18, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_18, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_19); __pyx_t_19 = 0;
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       } else
       #endif
       {
-        __pyx_t_20 = PyTuple_New(1+1); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_20 = PyTuple_New(1+1); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 38, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_20);
         __Pyx_GIVEREF(__pyx_t_19); PyTuple_SET_ITEM(__pyx_t_20, 0, __pyx_t_19); __pyx_t_19 = NULL;
         __Pyx_GIVEREF(__pyx_t_5);
         PyTuple_SET_ITEM(__pyx_t_20, 0+1, __pyx_t_5);
         __pyx_t_5 = 0;
-        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_18, __pyx_t_20, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_18, __pyx_t_20, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
       }
@@ -3086,7 +3135,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[9] = {__pyx_t_18, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_float_0_, __pyx_v_length, __pyx_v_pth, __pyx_v_rpth, __pyx_t_2};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_13, 8+__pyx_t_13); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_13, 8+__pyx_t_13); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3095,14 +3144,14 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[9] = {__pyx_t_18, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_float_0_, __pyx_v_length, __pyx_v_pth, __pyx_v_rpth, __pyx_t_2};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_13, 8+__pyx_t_13); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_13, 8+__pyx_t_13); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else
     #endif
     {
-      __pyx_t_20 = PyTuple_New(8+__pyx_t_13); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __pyx_t_20 = PyTuple_New(8+__pyx_t_13); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 38, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_20);
       if (__pyx_t_18) {
         __Pyx_GIVEREF(__pyx_t_18); PyTuple_SET_ITEM(__pyx_t_20, 0, __pyx_t_18); __pyx_t_18 = NULL;
@@ -3131,7 +3180,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_20, 7+__pyx_t_13, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_20, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 39, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_20, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
     }
@@ -3139,16 +3188,16 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
     __Pyx_XDECREF_SET(__pyx_v_pp, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "algorithms/predpath/pathenum.pyx":40
+    /* "pathenum.pyx":39
  * 	for pth, rpth in zip(paths, relpaths):
  * 		pp = RelationalPath(s, p, o, 0., length, pth, rpth, np.ones(length + 1))
  * 		discovered_paths.append(pp)             # <<<<<<<<<<<<<<
  * 	return discovered_paths
  * 
  */
-    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_discovered_paths, __pyx_v_pp); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 40, __pyx_L1_error)
+    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_discovered_paths, __pyx_v_pp); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 39, __pyx_L1_error)
 
-    /* "algorithms/predpath/pathenum.pyx":38
+    /* "pathenum.pyx":37
  * 	# convert to Python objects
  * 	discovered_paths = []
  * 	for pth, rpth in zip(paths, relpaths):             # <<<<<<<<<<<<<<
@@ -3158,19 +3207,19 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":41
+  /* "pathenum.pyx":40
  * 		pp = RelationalPath(s, p, o, 0., length, pth, rpth, np.ones(length + 1))
  * 		discovered_paths.append(pp)
  * 	return discovered_paths             # <<<<<<<<<<<<<<
  * 
- * 
+ * cpdef get_paths_sm(G, s, p, o, relsim_wt, weights = 10.0, maxpaths=-1):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_discovered_paths);
   __pyx_r = __pyx_v_discovered_paths;
   goto __pyx_L0;
 
-  /* "algorithms/predpath/pathenum.pyx":22
+  /* "pathenum.pyx":21
  * # ================ PATH ENUMERATION PROCEDURE ================
  * 
  * cpdef get_paths(G, s, p, o, length=3, maxpaths=-1):             # <<<<<<<<<<<<<<
@@ -3191,7 +3240,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
   __Pyx_XDECREF(__pyx_t_18);
   __Pyx_XDECREF(__pyx_t_19);
   __Pyx_XDECREF(__pyx_t_20);
-  __Pyx_AddTraceback("algorithms.predpath.pathenum.get_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pathenum.get_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_data, 1);
@@ -3209,9 +3258,9 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10algorithms_8predpath_8pathenum_1get_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10algorithms_8predpath_8pathenum_get_paths[] = "Returns all paths of length `length` starting at s and ending in o.";
-static PyObject *__pyx_pw_10algorithms_8predpath_8pathenum_1get_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_8pathenum_1get_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_8pathenum_get_paths[] = "Returns all paths of length `length` starting at s and ending in o.";
+static PyObject *__pyx_pw_8pathenum_1get_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_G = 0;
   PyObject *__pyx_v_s = 0;
   PyObject *__pyx_v_p = 0;
@@ -3254,19 +3303,19 @@ static PyObject *__pyx_pw_10algorithms_8predpath_8pathenum_1get_paths(PyObject *
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_paths", 0, 4, 6, 1); __PYX_ERR(0, 22, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_paths", 0, 4, 6, 1); __PYX_ERR(0, 21, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_paths", 0, 4, 6, 2); __PYX_ERR(0, 22, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_paths", 0, 4, 6, 2); __PYX_ERR(0, 21, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_o)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("get_paths", 0, 4, 6, 3); __PYX_ERR(0, 22, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("get_paths", 0, 4, 6, 3); __PYX_ERR(0, 21, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
@@ -3282,7 +3331,7 @@ static PyObject *__pyx_pw_10algorithms_8predpath_8pathenum_1get_paths(PyObject *
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_paths") < 0)) __PYX_ERR(0, 22, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_paths") < 0)) __PYX_ERR(0, 21, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3307,30 +3356,30 @@ static PyObject *__pyx_pw_10algorithms_8predpath_8pathenum_1get_paths(PyObject *
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_paths", 0, 4, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 22, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_paths", 0, 4, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 21, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("algorithms.predpath.pathenum.get_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pathenum.get_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10algorithms_8predpath_8pathenum_get_paths(__pyx_self, __pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_v_length, __pyx_v_maxpaths);
+  __pyx_r = __pyx_pf_8pathenum_get_paths(__pyx_self, __pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_v_length, __pyx_v_maxpaths);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10algorithms_8predpath_8pathenum_get_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_length, PyObject *__pyx_v_maxpaths) {
+static PyObject *__pyx_pf_8pathenum_get_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_length, PyObject *__pyx_v_maxpaths) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  struct __pyx_opt_args_10algorithms_8predpath_8pathenum_get_paths __pyx_t_2;
+  struct __pyx_opt_args_8pathenum_get_paths __pyx_t_2;
   __Pyx_RefNannySetupContext("get_paths", 0);
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2.__pyx_n = 2;
   __pyx_t_2.length = __pyx_v_length;
   __pyx_t_2.maxpaths = __pyx_v_maxpaths;
-  __pyx_t_1 = __pyx_f_10algorithms_8predpath_8pathenum_get_paths(__pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_8pathenum_get_paths(__pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3339,7 +3388,7 @@ static PyObject *__pyx_pf_10algorithms_8predpath_8pathenum_get_paths(CYTHON_UNUS
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("algorithms.predpath.pathenum.get_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pathenum.get_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3347,7 +3396,936 @@ static PyObject *__pyx_pf_10algorithms_8predpath_8pathenum_get_paths(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "algorithms/predpath/pathenum.pyx":48
+/* "pathenum.pyx":42
+ * 	return discovered_paths
+ * 
+ * cpdef get_paths_sm(G, s, p, o, relsim_wt, weights = 10.0, maxpaths=-1):             # <<<<<<<<<<<<<<
+ * 	# "Returns all paths of length `length` starting at s and ending in o."
+ * 	cdef:
+ */
+
+static PyObject *__pyx_pw_8pathenum_3get_paths_sm(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_8pathenum_get_paths_sm(PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_relsim_wt, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_8pathenum_get_paths_sm *__pyx_optional_args) {
+  PyObject *__pyx_v_weights = ((PyObject *)__pyx_float_10_0);
+  PyObject *__pyx_v_maxpaths = ((PyObject *)__pyx_int_neg_1);
+  __Pyx_memviewslice __pyx_v_data = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_indices = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_indptr = { 0, 0, { 0 }, { 0 }, { 0 } };
+  PyObject *__pyx_v_paths = 0;
+  PyObject *__pyx_v_relpaths = 0;
+  PyObject *__pyx_v_discovered_paths = 0;
+  PyObject *__pyx_v_targets = NULL;
+  PyObject *__pyx_v_pathlen = NULL;
+  PyObject *__pyx_v_pth = NULL;
+  PyObject *__pyx_v_rpth = NULL;
+  PyObject *__pyx_v_pp = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  __Pyx_memviewslice __pyx_t_7 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_t_8 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_t_9 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_10;
+  int __pyx_t_11;
+  double __pyx_t_12;
+  int __pyx_t_13;
+  struct __pyx_opt_args_8pathenum_enumerate_paths_sm __pyx_t_14;
+  PyObject *(*__pyx_t_15)(PyObject *);
+  Py_ssize_t __pyx_t_16;
+  PyObject *(*__pyx_t_17)(PyObject *);
+  PyObject *__pyx_t_18 = NULL;
+  PyObject *__pyx_t_19 = NULL;
+  PyObject *__pyx_t_20 = NULL;
+  int __pyx_t_21;
+  __Pyx_RefNannySetupContext("get_paths_sm", 0);
+  if (__pyx_optional_args) {
+    if (__pyx_optional_args->__pyx_n > 0) {
+      __pyx_v_weights = __pyx_optional_args->weights;
+      if (__pyx_optional_args->__pyx_n > 1) {
+        __pyx_v_maxpaths = __pyx_optional_args->maxpaths;
+      }
+    }
+  }
+
+  /* "pathenum.pyx":51
+ * 
+ * 	#setting up the path weights
+ * 	targets = G.csr.indices % G.N #shift this function to the caller             # <<<<<<<<<<<<<<
+ * 	G.csr.data[targets == o] = 1 # no cost for target t => max. specificity.
+ * 	G.csr.data = np.multiply(relsim_wt, G.csr.data)
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_indices); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_N); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = PyNumber_Remainder(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_targets = __pyx_t_3;
+  __pyx_t_3 = 0;
+
+  /* "pathenum.pyx":52
+ * 	#setting up the path weights
+ * 	targets = G.csr.indices % G.N #shift this function to the caller
+ * 	G.csr.data[targets == o] = 1 # no cost for target t => max. specificity.             # <<<<<<<<<<<<<<
+ * 	G.csr.data = np.multiply(relsim_wt, G.csr.data)
+ * 	# graph vectors
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = PyObject_RichCompare(__pyx_v_targets, __pyx_v_o, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (unlikely(PyObject_SetItem(__pyx_t_1, __pyx_t_3, __pyx_int_1) < 0)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "pathenum.pyx":53
+ * 	targets = G.csr.indices % G.N #shift this function to the caller
+ * 	G.csr.data[targets == o] = 1 # no cost for target t => max. specificity.
+ * 	G.csr.data = np.multiply(relsim_wt, G.csr.data)             # <<<<<<<<<<<<<<
+ * 	# graph vectors
+ * 	data = G.csr.data.astype(_float)
+ */
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_multiply); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_data); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = NULL;
+  __pyx_t_5 = 0;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_1)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_1);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __pyx_t_5 = 1;
+    }
+  }
+  #if CYTHON_FAST_PYCALL
+  if (PyFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_relsim_wt, __pyx_t_4};
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  #if CYTHON_FAST_PYCCALL
+  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+    PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_relsim_wt, __pyx_t_4};
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  } else
+  #endif
+  {
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    if (__pyx_t_1) {
+      __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1); __pyx_t_1 = NULL;
+    }
+    __Pyx_INCREF(__pyx_v_relsim_wt);
+    __Pyx_GIVEREF(__pyx_v_relsim_wt);
+    PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_5, __pyx_v_relsim_wt);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_t_4);
+    __pyx_t_4 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (__Pyx_PyObject_SetAttrStr(__pyx_t_2, __pyx_n_s_data, __pyx_t_3) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "pathenum.pyx":55
+ * 	G.csr.data = np.multiply(relsim_wt, G.csr.data)
+ * 	# graph vectors
+ * 	data = G.csr.data.astype(_float)             # <<<<<<<<<<<<<<
+ * 	indices = G.csr.indices.astype(_int64)
+ * 	indptr = G.csr.indptr.astype(_int)
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_data); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_astype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_float); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  if (!__pyx_t_4) {
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_GOTREF(__pyx_t_2);
+  } else {
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_3)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_6};
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_6};
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    } else
+    #endif
+    {
+      __pyx_t_1 = PyTuple_New(1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_4); __pyx_t_4 = NULL;
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_1, 0+1, __pyx_t_6);
+      __pyx_t_6 = 0;
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    }
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_data = __pyx_t_7;
+  __pyx_t_7.memview = NULL;
+  __pyx_t_7.data = NULL;
+
+  /* "pathenum.pyx":56
+ * 	# graph vectors
+ * 	data = G.csr.data.astype(_float)
+ * 	indices = G.csr.indices.astype(_int64)             # <<<<<<<<<<<<<<
+ * 	indptr = G.csr.indptr.astype(_int)
+ * 	paths, relpaths, pathlen = enumerate_paths_sm(
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_indices); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_astype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_int64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_6 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  if (!__pyx_t_6) {
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_GOTREF(__pyx_t_2);
+  } else {
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_3)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_t_1};
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_t_1};
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    } else
+    #endif
+    {
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6); __pyx_t_6 = NULL;
+      __Pyx_GIVEREF(__pyx_t_1);
+      PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_t_1);
+      __pyx_t_1 = 0;
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_ds_long(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_indices = __pyx_t_8;
+  __pyx_t_8.memview = NULL;
+  __pyx_t_8.data = NULL;
+
+  /* "pathenum.pyx":57
+ * 	data = G.csr.data.astype(_float)
+ * 	indices = G.csr.indices.astype(_int64)
+ * 	indptr = G.csr.indptr.astype(_int)             # <<<<<<<<<<<<<<
+ * 	paths, relpaths, pathlen = enumerate_paths_sm(
+ * 		data, indices, indptr, s, p, o, weight=weights, maxpaths=maxpaths
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_indptr); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_astype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_int); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_1 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_1)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_1);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  if (!__pyx_t_1) {
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_GOTREF(__pyx_t_2);
+  } else {
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_3)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_1, __pyx_t_4};
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_1, __pyx_t_4};
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    } else
+    #endif
+    {
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1); __pyx_t_1 = NULL;
+      __Pyx_GIVEREF(__pyx_t_4);
+      PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
+      __pyx_t_4 = 0;
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    }
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_t_2, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_indptr = __pyx_t_9;
+  __pyx_t_9.memview = NULL;
+  __pyx_t_9.data = NULL;
+
+  /* "pathenum.pyx":59
+ * 	indptr = G.csr.indptr.astype(_int)
+ * 	paths, relpaths, pathlen = enumerate_paths_sm(
+ * 		data, indices, indptr, s, p, o, weight=weights, maxpaths=maxpaths             # <<<<<<<<<<<<<<
+ * 	)
+ * 	# convert to Python objects
+ */
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_s); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_o); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_12 = __pyx_PyFloat_AsDouble(__pyx_v_weights); if (unlikely((__pyx_t_12 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyInt_As_int(__pyx_v_maxpaths); if (unlikely((__pyx_t_13 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)
+
+  /* "pathenum.pyx":58
+ * 	indices = G.csr.indices.astype(_int64)
+ * 	indptr = G.csr.indptr.astype(_int)
+ * 	paths, relpaths, pathlen = enumerate_paths_sm(             # <<<<<<<<<<<<<<
+ * 		data, indices, indptr, s, p, o, weight=weights, maxpaths=maxpaths
+ * 	)
+ */
+  __pyx_t_14.__pyx_n = 2;
+  __pyx_t_14.weight = __pyx_t_12;
+  __pyx_t_14.maxpaths = __pyx_t_13;
+  __pyx_t_2 = __pyx_f_8pathenum_enumerate_paths_sm(__pyx_v_data, __pyx_v_indices, __pyx_v_indptr, __pyx_t_5, __pyx_t_10, __pyx_t_11, &__pyx_t_14); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if ((likely(PyTuple_CheckExact(__pyx_t_2))) || (PyList_CheckExact(__pyx_t_2))) {
+    PyObject* sequence = __pyx_t_2;
+    Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
+    if (unlikely(size != 3)) {
+      if (size > 3) __Pyx_RaiseTooManyValuesError(3);
+      else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+      __PYX_ERR(0, 58, __pyx_L1_error)
+    }
+    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    if (likely(PyTuple_CheckExact(sequence))) {
+      __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0); 
+      __pyx_t_6 = PyTuple_GET_ITEM(sequence, 1); 
+      __pyx_t_4 = PyTuple_GET_ITEM(sequence, 2); 
+    } else {
+      __pyx_t_3 = PyList_GET_ITEM(sequence, 0); 
+      __pyx_t_6 = PyList_GET_ITEM(sequence, 1); 
+      __pyx_t_4 = PyList_GET_ITEM(sequence, 2); 
+    }
+    __Pyx_INCREF(__pyx_t_3);
+    __Pyx_INCREF(__pyx_t_6);
+    __Pyx_INCREF(__pyx_t_4);
+    #else
+    __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_4 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    #endif
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  } else {
+    Py_ssize_t index = -1;
+    __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_15 = Py_TYPE(__pyx_t_1)->tp_iternext;
+    index = 0; __pyx_t_3 = __pyx_t_15(__pyx_t_1); if (unlikely(!__pyx_t_3)) goto __pyx_L3_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_3);
+    index = 1; __pyx_t_6 = __pyx_t_15(__pyx_t_1); if (unlikely(!__pyx_t_6)) goto __pyx_L3_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_6);
+    index = 2; __pyx_t_4 = __pyx_t_15(__pyx_t_1); if (unlikely(!__pyx_t_4)) goto __pyx_L3_unpacking_failed;
+    __Pyx_GOTREF(__pyx_t_4);
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_1), 3) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_t_15 = NULL;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    goto __pyx_L4_unpacking_done;
+    __pyx_L3_unpacking_failed:;
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_15 = NULL;
+    if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
+    __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_L4_unpacking_done:;
+  }
+  if (!(likely(PyList_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 58, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_6))||((__pyx_t_6) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_6)->tp_name), 0))) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_v_paths = ((PyObject*)__pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_v_relpaths = ((PyObject*)__pyx_t_6);
+  __pyx_t_6 = 0;
+  __pyx_v_pathlen = __pyx_t_4;
+  __pyx_t_4 = 0;
+
+  /* "pathenum.pyx":62
+ * 	)
+ * 	# convert to Python objects
+ * 	discovered_paths = []             # <<<<<<<<<<<<<<
+ * 	for pth, rpth in zip(paths, relpaths):
+ * 		## Change np.ones(length+1) to an ndarray with weights of each edge in the path
+ */
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_v_discovered_paths = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "pathenum.pyx":63
+ * 	# convert to Python objects
+ * 	discovered_paths = []
+ * 	for pth, rpth in zip(paths, relpaths):             # <<<<<<<<<<<<<<
+ * 		## Change np.ones(length+1) to an ndarray with weights of each edge in the path
+ * 		pp = RelationalPath(s, p, o, 0., pathlen, pth, rpth, np.ones(pathlen + 1))
+ */
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_paths);
+  __Pyx_GIVEREF(__pyx_v_paths);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_paths);
+  __Pyx_INCREF(__pyx_v_relpaths);
+  __Pyx_GIVEREF(__pyx_v_relpaths);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_relpaths);
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
+    __pyx_t_2 = __pyx_t_4; __Pyx_INCREF(__pyx_t_2); __pyx_t_16 = 0;
+    __pyx_t_17 = NULL;
+  } else {
+    __pyx_t_16 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_17 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 63, __pyx_L1_error)
+  }
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_17)) {
+      if (likely(PyList_CheckExact(__pyx_t_2))) {
+        if (__pyx_t_16 >= PyList_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_16); __Pyx_INCREF(__pyx_t_4); __pyx_t_16++; if (unlikely(0 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+        #else
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_16); __pyx_t_16++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        #endif
+      } else {
+        if (__pyx_t_16 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_16); __Pyx_INCREF(__pyx_t_4); __pyx_t_16++; if (unlikely(0 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
+        #else
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_16); __pyx_t_16++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        #endif
+      }
+    } else {
+      __pyx_t_4 = __pyx_t_17(__pyx_t_2);
+      if (unlikely(!__pyx_t_4)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else __PYX_ERR(0, 63, __pyx_L1_error)
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_4);
+    }
+    if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
+      PyObject* sequence = __pyx_t_4;
+      Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
+      if (unlikely(size != 2)) {
+        if (size > 2) __Pyx_RaiseTooManyValuesError(2);
+        else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
+        __PYX_ERR(0, 63, __pyx_L1_error)
+      }
+      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+      if (likely(PyTuple_CheckExact(sequence))) {
+        __pyx_t_6 = PyTuple_GET_ITEM(sequence, 0); 
+        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
+      } else {
+        __pyx_t_6 = PyList_GET_ITEM(sequence, 0); 
+        __pyx_t_3 = PyList_GET_ITEM(sequence, 1); 
+      }
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(__pyx_t_3);
+      #else
+      __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      #endif
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    } else {
+      Py_ssize_t index = -1;
+      __pyx_t_1 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_15 = Py_TYPE(__pyx_t_1)->tp_iternext;
+      index = 0; __pyx_t_6 = __pyx_t_15(__pyx_t_1); if (unlikely(!__pyx_t_6)) goto __pyx_L7_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_6);
+      index = 1; __pyx_t_3 = __pyx_t_15(__pyx_t_1); if (unlikely(!__pyx_t_3)) goto __pyx_L7_unpacking_failed;
+      __Pyx_GOTREF(__pyx_t_3);
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_1), 2) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_t_15 = NULL;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      goto __pyx_L8_unpacking_done;
+      __pyx_L7_unpacking_failed:;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __pyx_t_15 = NULL;
+      if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
+      __PYX_ERR(0, 63, __pyx_L1_error)
+      __pyx_L8_unpacking_done:;
+    }
+    __Pyx_XDECREF_SET(__pyx_v_pth, __pyx_t_6);
+    __pyx_t_6 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_rpth, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "pathenum.pyx":65
+ * 	for pth, rpth in zip(paths, relpaths):
+ * 		## Change np.ones(length+1) to an ndarray with weights of each edge in the path
+ * 		pp = RelationalPath(s, p, o, 0., pathlen, pth, rpth, np.ones(pathlen + 1))             # <<<<<<<<<<<<<<
+ * 		discovered_paths.append(pp)
+ * 	return discovered_paths
+ */
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_RelationalPath); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ones); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_18);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_pathlen, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_19 = NULL;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_18))) {
+      __pyx_t_19 = PyMethod_GET_SELF(__pyx_t_18);
+      if (likely(__pyx_t_19)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_18);
+        __Pyx_INCREF(__pyx_t_19);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_18, function);
+      }
+    }
+    if (!__pyx_t_19) {
+      __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __Pyx_GOTREF(__pyx_t_6);
+    } else {
+      #if CYTHON_FAST_PYCALL
+      if (PyFunction_Check(__pyx_t_18)) {
+        PyObject *__pyx_temp[2] = {__pyx_t_19, __pyx_t_1};
+        __pyx_t_6 = __Pyx_PyFunction_FastCall(__pyx_t_18, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_19); __pyx_t_19 = 0;
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      } else
+      #endif
+      #if CYTHON_FAST_PYCCALL
+      if (__Pyx_PyFastCFunction_Check(__pyx_t_18)) {
+        PyObject *__pyx_temp[2] = {__pyx_t_19, __pyx_t_1};
+        __pyx_t_6 = __Pyx_PyCFunction_FastCall(__pyx_t_18, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+        __Pyx_XDECREF(__pyx_t_19); __pyx_t_19 = 0;
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      } else
+      #endif
+      {
+        __pyx_t_20 = PyTuple_New(1+1); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 65, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_20);
+        __Pyx_GIVEREF(__pyx_t_19); PyTuple_SET_ITEM(__pyx_t_20, 0, __pyx_t_19); __pyx_t_19 = NULL;
+        __Pyx_GIVEREF(__pyx_t_1);
+        PyTuple_SET_ITEM(__pyx_t_20, 0+1, __pyx_t_1);
+        __pyx_t_1 = 0;
+        __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_18, __pyx_t_20, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 65, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
+      }
+    }
+    __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+    __pyx_t_18 = NULL;
+    __pyx_t_13 = 0;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_18 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_18)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_18);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+        __pyx_t_13 = 1;
+      }
+    }
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_3)) {
+      PyObject *__pyx_temp[9] = {__pyx_t_18, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_float_0_, __pyx_v_pathlen, __pyx_v_pth, __pyx_v_rpth, __pyx_t_6};
+      __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_13, 8+__pyx_t_13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 65, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
+      PyObject *__pyx_temp[9] = {__pyx_t_18, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_float_0_, __pyx_v_pathlen, __pyx_v_pth, __pyx_v_rpth, __pyx_t_6};
+      __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_13, 8+__pyx_t_13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 65, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    } else
+    #endif
+    {
+      __pyx_t_20 = PyTuple_New(8+__pyx_t_13); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 65, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_20);
+      if (__pyx_t_18) {
+        __Pyx_GIVEREF(__pyx_t_18); PyTuple_SET_ITEM(__pyx_t_20, 0, __pyx_t_18); __pyx_t_18 = NULL;
+      }
+      __Pyx_INCREF(__pyx_v_s);
+      __Pyx_GIVEREF(__pyx_v_s);
+      PyTuple_SET_ITEM(__pyx_t_20, 0+__pyx_t_13, __pyx_v_s);
+      __Pyx_INCREF(__pyx_v_p);
+      __Pyx_GIVEREF(__pyx_v_p);
+      PyTuple_SET_ITEM(__pyx_t_20, 1+__pyx_t_13, __pyx_v_p);
+      __Pyx_INCREF(__pyx_v_o);
+      __Pyx_GIVEREF(__pyx_v_o);
+      PyTuple_SET_ITEM(__pyx_t_20, 2+__pyx_t_13, __pyx_v_o);
+      __Pyx_INCREF(__pyx_float_0_);
+      __Pyx_GIVEREF(__pyx_float_0_);
+      PyTuple_SET_ITEM(__pyx_t_20, 3+__pyx_t_13, __pyx_float_0_);
+      __Pyx_INCREF(__pyx_v_pathlen);
+      __Pyx_GIVEREF(__pyx_v_pathlen);
+      PyTuple_SET_ITEM(__pyx_t_20, 4+__pyx_t_13, __pyx_v_pathlen);
+      __Pyx_INCREF(__pyx_v_pth);
+      __Pyx_GIVEREF(__pyx_v_pth);
+      PyTuple_SET_ITEM(__pyx_t_20, 5+__pyx_t_13, __pyx_v_pth);
+      __Pyx_INCREF(__pyx_v_rpth);
+      __Pyx_GIVEREF(__pyx_v_rpth);
+      PyTuple_SET_ITEM(__pyx_t_20, 6+__pyx_t_13, __pyx_v_rpth);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_20, 7+__pyx_t_13, __pyx_t_6);
+      __pyx_t_6 = 0;
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_20, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 65, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_pp, __pyx_t_4);
+    __pyx_t_4 = 0;
+
+    /* "pathenum.pyx":66
+ * 		## Change np.ones(length+1) to an ndarray with weights of each edge in the path
+ * 		pp = RelationalPath(s, p, o, 0., pathlen, pth, rpth, np.ones(pathlen + 1))
+ * 		discovered_paths.append(pp)             # <<<<<<<<<<<<<<
+ * 	return discovered_paths
+ * 
+ */
+    __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_discovered_paths, __pyx_v_pp); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 66, __pyx_L1_error)
+
+    /* "pathenum.pyx":63
+ * 	# convert to Python objects
+ * 	discovered_paths = []
+ * 	for pth, rpth in zip(paths, relpaths):             # <<<<<<<<<<<<<<
+ * 		## Change np.ones(length+1) to an ndarray with weights of each edge in the path
+ * 		pp = RelationalPath(s, p, o, 0., pathlen, pth, rpth, np.ones(pathlen + 1))
+ */
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "pathenum.pyx":67
+ * 		pp = RelationalPath(s, p, o, 0., pathlen, pth, rpth, np.ones(pathlen + 1))
+ * 		discovered_paths.append(pp)
+ * 	return discovered_paths             # <<<<<<<<<<<<<<
+ * 
+ * @cython.boundscheck(False)
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_discovered_paths);
+  __pyx_r = __pyx_v_discovered_paths;
+  goto __pyx_L0;
+
+  /* "pathenum.pyx":42
+ * 	return discovered_paths
+ * 
+ * cpdef get_paths_sm(G, s, p, o, relsim_wt, weights = 10.0, maxpaths=-1):             # <<<<<<<<<<<<<<
+ * 	# "Returns all paths of length `length` starting at s and ending in o."
+ * 	cdef:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_6);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_9, 1);
+  __Pyx_XDECREF(__pyx_t_18);
+  __Pyx_XDECREF(__pyx_t_19);
+  __Pyx_XDECREF(__pyx_t_20);
+  __Pyx_AddTraceback("pathenum.get_paths_sm", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_data, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_indices, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_indptr, 1);
+  __Pyx_XDECREF(__pyx_v_paths);
+  __Pyx_XDECREF(__pyx_v_relpaths);
+  __Pyx_XDECREF(__pyx_v_discovered_paths);
+  __Pyx_XDECREF(__pyx_v_targets);
+  __Pyx_XDECREF(__pyx_v_pathlen);
+  __Pyx_XDECREF(__pyx_v_pth);
+  __Pyx_XDECREF(__pyx_v_rpth);
+  __Pyx_XDECREF(__pyx_v_pp);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_8pathenum_3get_paths_sm(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_8pathenum_3get_paths_sm(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_G = 0;
+  PyObject *__pyx_v_s = 0;
+  PyObject *__pyx_v_p = 0;
+  PyObject *__pyx_v_o = 0;
+  PyObject *__pyx_v_relsim_wt = 0;
+  PyObject *__pyx_v_weights = 0;
+  PyObject *__pyx_v_maxpaths = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_paths_sm (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_s,&__pyx_n_s_p,&__pyx_n_s_o,&__pyx_n_s_relsim_wt,&__pyx_n_s_weights,&__pyx_n_s_maxpaths,0};
+    PyObject* values[7] = {0,0,0,0,0,0,0};
+    values[5] = ((PyObject *)__pyx_float_10_0);
+    values[6] = ((PyObject *)__pyx_int_neg_1);
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        CYTHON_FALLTHROUGH;
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        CYTHON_FALLTHROUGH;
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        CYTHON_FALLTHROUGH;
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        CYTHON_FALLTHROUGH;
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_G)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("get_paths_sm", 0, 5, 7, 1); __PYX_ERR(0, 42, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("get_paths_sm", 0, 5, 7, 2); __PYX_ERR(0, 42, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  3:
+        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_o)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("get_paths_sm", 0, 5, 7, 3); __PYX_ERR(0, 42, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  4:
+        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_relsim_wt)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("get_paths_sm", 0, 5, 7, 4); __PYX_ERR(0, 42, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  5:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_weights);
+          if (value) { values[5] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case  6:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_maxpaths);
+          if (value) { values[6] = value; kw_args--; }
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_paths_sm") < 0)) __PYX_ERR(0, 42, __pyx_L3_error)
+      }
+    } else {
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        CYTHON_FALLTHROUGH;
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        CYTHON_FALLTHROUGH;
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+    }
+    __pyx_v_G = values[0];
+    __pyx_v_s = values[1];
+    __pyx_v_p = values[2];
+    __pyx_v_o = values[3];
+    __pyx_v_relsim_wt = values[4];
+    __pyx_v_weights = values[5];
+    __pyx_v_maxpaths = values[6];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("get_paths_sm", 0, 5, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 42, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("pathenum.get_paths_sm", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_8pathenum_2get_paths_sm(__pyx_self, __pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_v_relsim_wt, __pyx_v_weights, __pyx_v_maxpaths);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_8pathenum_2get_paths_sm(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_relsim_wt, PyObject *__pyx_v_weights, PyObject *__pyx_v_maxpaths) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  struct __pyx_opt_args_8pathenum_get_paths_sm __pyx_t_2;
+  __Pyx_RefNannySetupContext("get_paths_sm", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2.__pyx_n = 2;
+  __pyx_t_2.weights = __pyx_v_weights;
+  __pyx_t_2.maxpaths = __pyx_v_maxpaths;
+  __pyx_t_1 = __pyx_f_8pathenum_get_paths_sm(__pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_v_relsim_wt, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("pathenum.get_paths_sm", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "pathenum.pyx":73
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * cdef object enumerate_paths(             # <<<<<<<<<<<<<<
@@ -3355,7 +4333,7 @@ static PyObject *__pyx_pf_10algorithms_8predpath_8pathenum_get_paths(CYTHON_UNUS
  * 		int s, int p, int o, int length=3, int maxpaths=-1
  */
 
-static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON_UNUSED __Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_indices, __Pyx_memviewslice __pyx_v_indptr, int __pyx_v_s, CYTHON_UNUSED int __pyx_v_p, int __pyx_v_o, struct __pyx_opt_args_10algorithms_8predpath_8pathenum_enumerate_paths *__pyx_optional_args) {
+static PyObject *__pyx_f_8pathenum_enumerate_paths(CYTHON_UNUSED __Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_indices, __Pyx_memviewslice __pyx_v_indptr, int __pyx_v_s, CYTHON_UNUSED int __pyx_v_p, int __pyx_v_o, struct __pyx_opt_args_8pathenum_enumerate_paths *__pyx_optional_args) {
   int __pyx_v_length = ((int)3);
   int __pyx_v_maxpaths = ((int)-1);
   int __pyx_v_i;
@@ -3400,7 +4378,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     }
   }
 
-  /* "algorithms/predpath/pathenum.pyx":61
+  /* "pathenum.pyx":86
  * 		long[:] neighbors
  * 		np.ndarray paths_arr, relpaths_arr
  * 	N = len(indptr) - 1             # <<<<<<<<<<<<<<
@@ -3410,7 +4388,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
   __pyx_t_1 = __Pyx_MemoryView_Len(__pyx_v_indptr); 
   __pyx_v_N = (__pyx_t_1 - 1);
 
-  /* "algorithms/predpath/pathenum.pyx":62
+  /* "pathenum.pyx":87
  * 		np.ndarray paths_arr, relpaths_arr
  * 	N = len(indptr) - 1
  * 	tmp.push_back(s)             # <<<<<<<<<<<<<<
@@ -3421,10 +4399,10 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_v_tmp.push_back(__pyx_v_s);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 62, __pyx_L1_error)
+    __PYX_ERR(0, 87, __pyx_L1_error)
   }
 
-  /* "algorithms/predpath/pathenum.pyx":63
+  /* "pathenum.pyx":88
  * 	N = len(indptr) - 1
  * 	tmp.push_back(s)
  * 	path_stack.push(tmp)             # <<<<<<<<<<<<<<
@@ -3433,7 +4411,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
   __pyx_v_path_stack.push(__pyx_v_tmp);
 
-  /* "algorithms/predpath/pathenum.pyx":64
+  /* "pathenum.pyx":89
  * 	tmp.push_back(s)
  * 	path_stack.push(tmp)
  * 	tmp.clear()             # <<<<<<<<<<<<<<
@@ -3442,7 +4420,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
   __pyx_v_tmp.clear();
 
-  /* "algorithms/predpath/pathenum.pyx":65
+  /* "pathenum.pyx":90
  * 	path_stack.push(tmp)
  * 	tmp.clear()
  * 	tmp.push_back(-1)             # <<<<<<<<<<<<<<
@@ -3453,10 +4431,10 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_v_tmp.push_back(-1);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 65, __pyx_L1_error)
+    __PYX_ERR(0, 90, __pyx_L1_error)
   }
 
-  /* "algorithms/predpath/pathenum.pyx":66
+  /* "pathenum.pyx":91
  * 	tmp.clear()
  * 	tmp.push_back(-1)
  * 	relpath_stack.push(tmp)             # <<<<<<<<<<<<<<
@@ -3465,7 +4443,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
   __pyx_v_relpath_stack.push(__pyx_v_tmp);
 
-  /* "algorithms/predpath/pathenum.pyx":67
+  /* "pathenum.pyx":92
  * 	tmp.push_back(-1)
  * 	relpath_stack.push(tmp)
  * 	while path_stack.size() > 0:             # <<<<<<<<<<<<<<
@@ -3476,7 +4454,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_t_2 = ((__pyx_v_path_stack.size() > 0) != 0);
     if (!__pyx_t_2) break;
 
-    /* "algorithms/predpath/pathenum.pyx":68
+    /* "pathenum.pyx":93
  * 	relpath_stack.push(tmp)
  * 	while path_stack.size() > 0:
  * 		curr_path = path_stack.top()             # <<<<<<<<<<<<<<
@@ -3485,7 +4463,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_curr_path = __pyx_v_path_stack.top();
 
-    /* "algorithms/predpath/pathenum.pyx":69
+    /* "pathenum.pyx":94
  * 	while path_stack.size() > 0:
  * 		curr_path = path_stack.top()
  * 		path_stack.pop()             # <<<<<<<<<<<<<<
@@ -3494,7 +4472,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_path_stack.pop();
 
-    /* "algorithms/predpath/pathenum.pyx":70
+    /* "pathenum.pyx":95
  * 		curr_path = path_stack.top()
  * 		path_stack.pop()
  * 		curr_relpath = relpath_stack.top()             # <<<<<<<<<<<<<<
@@ -3503,7 +4481,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_curr_relpath = __pyx_v_relpath_stack.top();
 
-    /* "algorithms/predpath/pathenum.pyx":71
+    /* "pathenum.pyx":96
  * 		path_stack.pop()
  * 		curr_relpath = relpath_stack.top()
  * 		relpath_stack.pop()             # <<<<<<<<<<<<<<
@@ -3512,7 +4490,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_relpath_stack.pop();
 
-    /* "algorithms/predpath/pathenum.pyx":72
+    /* "pathenum.pyx":97
  * 		curr_relpath = relpath_stack.top()
  * 		relpath_stack.pop()
  * 		node = curr_path.back()             # <<<<<<<<<<<<<<
@@ -3521,7 +4499,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_node = __pyx_v_curr_path.back();
 
-    /* "algorithms/predpath/pathenum.pyx":73
+    /* "pathenum.pyx":98
  * 		relpath_stack.pop()
  * 		node = curr_path.back()
  * 		if curr_path.size() == length + 1:             # <<<<<<<<<<<<<<
@@ -3531,7 +4509,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_t_2 = ((__pyx_v_curr_path.size() == (__pyx_v_length + 1)) != 0);
     if (__pyx_t_2) {
 
-      /* "algorithms/predpath/pathenum.pyx":74
+      /* "pathenum.pyx":99
  * 		node = curr_path.back()
  * 		if curr_path.size() == length + 1:
  * 			if node == o:             # <<<<<<<<<<<<<<
@@ -3541,7 +4519,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
       __pyx_t_2 = ((__pyx_v_node == __pyx_v_o) != 0);
       if (__pyx_t_2) {
 
-        /* "algorithms/predpath/pathenum.pyx":75
+        /* "pathenum.pyx":100
  * 		if curr_path.size() == length + 1:
  * 			if node == o:
  * 				discovered_paths.push_back(curr_path)             # <<<<<<<<<<<<<<
@@ -3552,10 +4530,10 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
           __pyx_v_discovered_paths.push_back(__pyx_v_curr_path);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          __PYX_ERR(0, 75, __pyx_L1_error)
+          __PYX_ERR(0, 100, __pyx_L1_error)
         }
 
-        /* "algorithms/predpath/pathenum.pyx":76
+        /* "pathenum.pyx":101
  * 			if node == o:
  * 				discovered_paths.push_back(curr_path)
  * 				discovered_relpaths.push_back(curr_relpath)             # <<<<<<<<<<<<<<
@@ -3566,10 +4544,10 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
           __pyx_v_discovered_relpaths.push_back(__pyx_v_curr_relpath);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          __PYX_ERR(0, 76, __pyx_L1_error)
+          __PYX_ERR(0, 101, __pyx_L1_error)
         }
 
-        /* "algorithms/predpath/pathenum.pyx":77
+        /* "pathenum.pyx":102
  * 				discovered_paths.push_back(curr_path)
  * 				discovered_relpaths.push_back(curr_relpath)
  * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:             # <<<<<<<<<<<<<<
@@ -3587,7 +4565,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
         __pyx_L8_bool_binop_done:;
         if (__pyx_t_2) {
 
-          /* "algorithms/predpath/pathenum.pyx":79
+          /* "pathenum.pyx":104
  * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:
  * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
  * 					break             # <<<<<<<<<<<<<<
@@ -3596,7 +4574,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
           goto __pyx_L4_break;
 
-          /* "algorithms/predpath/pathenum.pyx":77
+          /* "pathenum.pyx":102
  * 				discovered_paths.push_back(curr_path)
  * 				discovered_relpaths.push_back(curr_relpath)
  * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:             # <<<<<<<<<<<<<<
@@ -3605,7 +4583,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
         }
 
-        /* "algorithms/predpath/pathenum.pyx":74
+        /* "pathenum.pyx":99
  * 		node = curr_path.back()
  * 		if curr_path.size() == length + 1:
  * 			if node == o:             # <<<<<<<<<<<<<<
@@ -3614,7 +4592,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
       }
 
-      /* "algorithms/predpath/pathenum.pyx":80
+      /* "pathenum.pyx":105
  * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
  * 					break
  * 			continue             # <<<<<<<<<<<<<<
@@ -3623,7 +4601,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
       goto __pyx_L3_continue;
 
-      /* "algorithms/predpath/pathenum.pyx":73
+      /* "pathenum.pyx":98
  * 		relpath_stack.pop()
  * 		node = curr_path.back()
  * 		if curr_path.size() == length + 1:             # <<<<<<<<<<<<<<
@@ -3632,7 +4610,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     }
 
-    /* "algorithms/predpath/pathenum.pyx":81
+    /* "pathenum.pyx":106
  * 					break
  * 			continue
  * 		start = indptr[node]             # <<<<<<<<<<<<<<
@@ -3642,7 +4620,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_t_4 = __pyx_v_node;
     __pyx_v_start = (*((int *) ( /* dim=0 */ (__pyx_v_indptr.data + __pyx_t_4 * __pyx_v_indptr.strides[0]) )));
 
-    /* "algorithms/predpath/pathenum.pyx":82
+    /* "pathenum.pyx":107
  * 			continue
  * 		start = indptr[node]
  * 		end = indptr[node + 1]             # <<<<<<<<<<<<<<
@@ -3652,7 +4630,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_t_5 = (__pyx_v_node + 1);
     __pyx_v_end = (*((int *) ( /* dim=0 */ (__pyx_v_indptr.data + __pyx_t_5 * __pyx_v_indptr.strides[0]) )));
 
-    /* "algorithms/predpath/pathenum.pyx":83
+    /* "pathenum.pyx":108
  * 		start = indptr[node]
  * 		end = indptr[node + 1]
  * 		neighbors = indices[start:end] # nbrs in wide-CSR             # <<<<<<<<<<<<<<
@@ -3677,7 +4655,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 83, __pyx_L1_error)
+    __PYX_ERR(0, 108, __pyx_L1_error)
 }
 
 __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
@@ -3685,7 +4663,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
     __pyx_t_6.memview = NULL;
     __pyx_t_6.data = NULL;
 
-    /* "algorithms/predpath/pathenum.pyx":84
+    /* "pathenum.pyx":109
  * 		end = indptr[node + 1]
  * 		neighbors = indices[start:end] # nbrs in wide-CSR
  * 		N_neigh = end - start             # <<<<<<<<<<<<<<
@@ -3694,7 +4672,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
  */
     __pyx_v_N_neigh = (__pyx_v_end - __pyx_v_start);
 
-    /* "algorithms/predpath/pathenum.pyx":85
+    /* "pathenum.pyx":110
  * 		neighbors = indices[start:end] # nbrs in wide-CSR
  * 		N_neigh = end - start
  * 		for i in xrange(N_neigh):             # <<<<<<<<<<<<<<
@@ -3706,7 +4684,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
     for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
       __pyx_v_i = __pyx_t_9;
 
-      /* "algorithms/predpath/pathenum.pyx":86
+      /* "pathenum.pyx":111
  * 		N_neigh = end - start
  * 		for i in xrange(N_neigh):
  * 			nbr = neighbors[i] % N # predecessor vec             # <<<<<<<<<<<<<<
@@ -3716,7 +4694,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
       __pyx_t_10 = __pyx_v_i;
       __pyx_v_nbr = ((*((long *) ( /* dim=0 */ (__pyx_v_neighbors.data + __pyx_t_10 * __pyx_v_neighbors.strides[0]) ))) % __pyx_v_N);
 
-      /* "algorithms/predpath/pathenum.pyx":87
+      /* "pathenum.pyx":112
  * 		for i in xrange(N_neigh):
  * 			nbr = neighbors[i] % N # predecessor vec
  * 			rel = (neighbors[i] - nbr) / N # relation vec             # <<<<<<<<<<<<<<
@@ -3726,7 +4704,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
       __pyx_t_11 = __pyx_v_i;
       __pyx_v_rel = (((*((long *) ( /* dim=0 */ (__pyx_v_neighbors.data + __pyx_t_11 * __pyx_v_neighbors.strides[0]) ))) - __pyx_v_nbr) / __pyx_v_N);
 
-      /* "algorithms/predpath/pathenum.pyx":88
+      /* "pathenum.pyx":113
  * 			nbr = neighbors[i] % N # predecessor vec
  * 			rel = (neighbors[i] - nbr) / N # relation vec
  * 			curr_path.push_back(nbr)             # <<<<<<<<<<<<<<
@@ -3737,10 +4715,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
         __pyx_v_curr_path.push_back(__pyx_v_nbr);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 88, __pyx_L1_error)
+        __PYX_ERR(0, 113, __pyx_L1_error)
       }
 
-      /* "algorithms/predpath/pathenum.pyx":89
+      /* "pathenum.pyx":114
  * 			rel = (neighbors[i] - nbr) / N # relation vec
  * 			curr_path.push_back(nbr)
  * 			path_stack.push(curr_path)             # <<<<<<<<<<<<<<
@@ -3749,7 +4727,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
  */
       __pyx_v_path_stack.push(__pyx_v_curr_path);
 
-      /* "algorithms/predpath/pathenum.pyx":90
+      /* "pathenum.pyx":115
  * 			curr_path.push_back(nbr)
  * 			path_stack.push(curr_path)
  * 			curr_path.pop_back()             # <<<<<<<<<<<<<<
@@ -3758,7 +4736,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
  */
       __pyx_v_curr_path.pop_back();
 
-      /* "algorithms/predpath/pathenum.pyx":91
+      /* "pathenum.pyx":116
  * 			path_stack.push(curr_path)
  * 			curr_path.pop_back()
  * 			curr_relpath.push_back(rel)             # <<<<<<<<<<<<<<
@@ -3769,10 +4747,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
         __pyx_v_curr_relpath.push_back(__pyx_v_rel);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 91, __pyx_L1_error)
+        __PYX_ERR(0, 116, __pyx_L1_error)
       }
 
-      /* "algorithms/predpath/pathenum.pyx":92
+      /* "pathenum.pyx":117
  * 			curr_path.pop_back()
  * 			curr_relpath.push_back(rel)
  * 			relpath_stack.push(curr_relpath)             # <<<<<<<<<<<<<<
@@ -3781,7 +4759,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
  */
       __pyx_v_relpath_stack.push(__pyx_v_curr_relpath);
 
-      /* "algorithms/predpath/pathenum.pyx":93
+      /* "pathenum.pyx":118
  * 			curr_relpath.push_back(rel)
  * 			relpath_stack.push(curr_relpath)
  * 			curr_relpath.pop_back()             # <<<<<<<<<<<<<<
@@ -3794,18 +4772,19 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
   }
   __pyx_L4_break:;
 
-  /* "algorithms/predpath/pathenum.pyx":94
+  /* "pathenum.pyx":119
  * 			relpath_stack.push(curr_relpath)
  * 			curr_relpath.pop_back()
  * 	return discovered_paths, discovered_relpaths             # <<<<<<<<<<<<<<
  * 
+ * @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_12 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_paths); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_12 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_paths); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_relpaths); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_13 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_relpaths); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
-  __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_12);
   PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_12);
@@ -3817,7 +4796,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
   __pyx_t_14 = 0;
   goto __pyx_L0;
 
-  /* "algorithms/predpath/pathenum.pyx":48
+  /* "pathenum.pyx":73
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * cdef object enumerate_paths(             # <<<<<<<<<<<<<<
@@ -3831,7 +4810,613 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
   __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_13);
   __Pyx_XDECREF(__pyx_t_14);
-  __Pyx_AddTraceback("algorithms.predpath.pathenum.enumerate_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pathenum.enumerate_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "pathenum.pyx":125
+ * @cython.initializedcheck(False)
+ * @cython.cdivision(True)
+ * cdef object enumerate_paths_sm(             # <<<<<<<<<<<<<<
+ * 		double[:] data, long[:] indices, int[:] indptr,
+ * 		int s, int p, int o, double weight=10, int maxpaths=-1
+ */
+
+static PyObject *__pyx_f_8pathenum_enumerate_paths_sm(__Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_indices, __Pyx_memviewslice __pyx_v_indptr, int __pyx_v_s, CYTHON_UNUSED int __pyx_v_p, int __pyx_v_o, struct __pyx_opt_args_8pathenum_enumerate_paths_sm *__pyx_optional_args) {
+  double __pyx_v_weight = ((double)10.0);
+  int __pyx_v_maxpaths = ((int)-1);
+  int __pyx_v_i;
+  int __pyx_v_N;
+  int __pyx_v_node;
+  int __pyx_v_nbr;
+  int __pyx_v_rel;
+  int __pyx_v_start;
+  int __pyx_v_end;
+  int __pyx_v_N_neigh;
+  int __pyx_v_path_len;
+  std::stack<std::vector<int> >  __pyx_v_path_stack;
+  std::stack<std::vector<int> >  __pyx_v_relpath_stack;
+  std::vector<int>  __pyx_v_curr_path;
+  std::vector<int>  __pyx_v_curr_relpath;
+  std::vector<int>  __pyx_v_tmp;
+  std::vector<double>  __pyx_v_curr_path_weight;
+  std::vector<double>  __pyx_v_tmp_weight;
+  std::stack<std::vector<double> >  __pyx_v_path_weight_stack;
+  double __pyx_v_total_path_weight;
+  CYTHON_UNUSED double __pyx_v_node_weight;
+  std::vector<std::vector<int> >  __pyx_v_discovered_paths;
+  std::vector<std::vector<int> >  __pyx_v_discovered_relpaths;
+  __Pyx_memviewslice __pyx_v_neighbors = { 0, 0, { 0 }, { 0 }, { 0 } };
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  size_t __pyx_t_1;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  Py_ssize_t __pyx_t_4;
+  Py_ssize_t __pyx_t_5;
+  __Pyx_memviewslice __pyx_t_6 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  PyObject *__pyx_t_13 = NULL;
+  PyObject *__pyx_t_14 = NULL;
+  PyObject *__pyx_t_15 = NULL;
+  PyObject *__pyx_t_16 = NULL;
+  __Pyx_RefNannySetupContext("enumerate_paths_sm", 0);
+  if (__pyx_optional_args) {
+    if (__pyx_optional_args->__pyx_n > 0) {
+      __pyx_v_weight = __pyx_optional_args->weight;
+      if (__pyx_optional_args->__pyx_n > 1) {
+        __pyx_v_maxpaths = __pyx_optional_args->maxpaths;
+      }
+    }
+  }
+
+  /* "pathenum.pyx":141
+ * 		long[:] neighbors
+ * 		np.ndarray paths_arr, relpaths_arr
+ * 	path_len = 0             # <<<<<<<<<<<<<<
+ * 	N = len(indptr) - 1
+ * 	tmp_weight.push_back(0)
+ */
+  __pyx_v_path_len = 0;
+
+  /* "pathenum.pyx":142
+ * 		np.ndarray paths_arr, relpaths_arr
+ * 	path_len = 0
+ * 	N = len(indptr) - 1             # <<<<<<<<<<<<<<
+ * 	tmp_weight.push_back(0)
+ * 	tmp.push_back(s)
+ */
+  __pyx_t_1 = __Pyx_MemoryView_Len(__pyx_v_indptr); 
+  __pyx_v_N = (__pyx_t_1 - 1);
+
+  /* "pathenum.pyx":143
+ * 	path_len = 0
+ * 	N = len(indptr) - 1
+ * 	tmp_weight.push_back(0)             # <<<<<<<<<<<<<<
+ * 	tmp.push_back(s)
+ * 	path_stack.push(tmp)
+ */
+  try {
+    __pyx_v_tmp_weight.push_back(0.0);
+  } catch(...) {
+    __Pyx_CppExn2PyErr();
+    __PYX_ERR(0, 143, __pyx_L1_error)
+  }
+
+  /* "pathenum.pyx":144
+ * 	N = len(indptr) - 1
+ * 	tmp_weight.push_back(0)
+ * 	tmp.push_back(s)             # <<<<<<<<<<<<<<
+ * 	path_stack.push(tmp)
+ * 	path_weight_stack.push(tmp_weight)
+ */
+  try {
+    __pyx_v_tmp.push_back(__pyx_v_s);
+  } catch(...) {
+    __Pyx_CppExn2PyErr();
+    __PYX_ERR(0, 144, __pyx_L1_error)
+  }
+
+  /* "pathenum.pyx":145
+ * 	tmp_weight.push_back(0)
+ * 	tmp.push_back(s)
+ * 	path_stack.push(tmp)             # <<<<<<<<<<<<<<
+ * 	path_weight_stack.push(tmp_weight)
+ * 	tmp.clear()
+ */
+  __pyx_v_path_stack.push(__pyx_v_tmp);
+
+  /* "pathenum.pyx":146
+ * 	tmp.push_back(s)
+ * 	path_stack.push(tmp)
+ * 	path_weight_stack.push(tmp_weight)             # <<<<<<<<<<<<<<
+ * 	tmp.clear()
+ * 	tmp.push_back(-1)
+ */
+  __pyx_v_path_weight_stack.push(__pyx_v_tmp_weight);
+
+  /* "pathenum.pyx":147
+ * 	path_stack.push(tmp)
+ * 	path_weight_stack.push(tmp_weight)
+ * 	tmp.clear()             # <<<<<<<<<<<<<<
+ * 	tmp.push_back(-1)
+ * 	relpath_stack.push(tmp)
+ */
+  __pyx_v_tmp.clear();
+
+  /* "pathenum.pyx":148
+ * 	path_weight_stack.push(tmp_weight)
+ * 	tmp.clear()
+ * 	tmp.push_back(-1)             # <<<<<<<<<<<<<<
+ * 	relpath_stack.push(tmp)
+ * 	total_path_weight = 0
+ */
+  try {
+    __pyx_v_tmp.push_back(-1);
+  } catch(...) {
+    __Pyx_CppExn2PyErr();
+    __PYX_ERR(0, 148, __pyx_L1_error)
+  }
+
+  /* "pathenum.pyx":149
+ * 	tmp.clear()
+ * 	tmp.push_back(-1)
+ * 	relpath_stack.push(tmp)             # <<<<<<<<<<<<<<
+ * 	total_path_weight = 0
+ * 	while path_stack.size() > 0:
+ */
+  __pyx_v_relpath_stack.push(__pyx_v_tmp);
+
+  /* "pathenum.pyx":150
+ * 	tmp.push_back(-1)
+ * 	relpath_stack.push(tmp)
+ * 	total_path_weight = 0             # <<<<<<<<<<<<<<
+ * 	while path_stack.size() > 0:
+ * 		curr_path = path_stack.top()
+ */
+  __pyx_v_total_path_weight = 0.0;
+
+  /* "pathenum.pyx":151
+ * 	relpath_stack.push(tmp)
+ * 	total_path_weight = 0
+ * 	while path_stack.size() > 0:             # <<<<<<<<<<<<<<
+ * 		curr_path = path_stack.top()
+ * 		curr_path_weight = path_weight_stack.top()
+ */
+  while (1) {
+    __pyx_t_2 = ((__pyx_v_path_stack.size() > 0) != 0);
+    if (!__pyx_t_2) break;
+
+    /* "pathenum.pyx":152
+ * 	total_path_weight = 0
+ * 	while path_stack.size() > 0:
+ * 		curr_path = path_stack.top()             # <<<<<<<<<<<<<<
+ * 		curr_path_weight = path_weight_stack.top()
+ * 		path_stack.pop()
+ */
+    __pyx_v_curr_path = __pyx_v_path_stack.top();
+
+    /* "pathenum.pyx":153
+ * 	while path_stack.size() > 0:
+ * 		curr_path = path_stack.top()
+ * 		curr_path_weight = path_weight_stack.top()             # <<<<<<<<<<<<<<
+ * 		path_stack.pop()
+ * 		path_weight_stack.pop()
+ */
+    __pyx_v_curr_path_weight = __pyx_v_path_weight_stack.top();
+
+    /* "pathenum.pyx":154
+ * 		curr_path = path_stack.top()
+ * 		curr_path_weight = path_weight_stack.top()
+ * 		path_stack.pop()             # <<<<<<<<<<<<<<
+ * 		path_weight_stack.pop()
+ * 		curr_relpath = relpath_stack.top()
+ */
+    __pyx_v_path_stack.pop();
+
+    /* "pathenum.pyx":155
+ * 		curr_path_weight = path_weight_stack.top()
+ * 		path_stack.pop()
+ * 		path_weight_stack.pop()             # <<<<<<<<<<<<<<
+ * 		curr_relpath = relpath_stack.top()
+ * 		relpath_stack.pop()
+ */
+    __pyx_v_path_weight_stack.pop();
+
+    /* "pathenum.pyx":156
+ * 		path_stack.pop()
+ * 		path_weight_stack.pop()
+ * 		curr_relpath = relpath_stack.top()             # <<<<<<<<<<<<<<
+ * 		relpath_stack.pop()
+ * 		node = curr_path.back()
+ */
+    __pyx_v_curr_relpath = __pyx_v_relpath_stack.top();
+
+    /* "pathenum.pyx":157
+ * 		path_weight_stack.pop()
+ * 		curr_relpath = relpath_stack.top()
+ * 		relpath_stack.pop()             # <<<<<<<<<<<<<<
+ * 		node = curr_path.back()
+ * 		node_weight = curr_path_weight.back()
+ */
+    __pyx_v_relpath_stack.pop();
+
+    /* "pathenum.pyx":158
+ * 		curr_relpath = relpath_stack.top()
+ * 		relpath_stack.pop()
+ * 		node = curr_path.back()             # <<<<<<<<<<<<<<
+ * 		node_weight = curr_path_weight.back()
+ * 		if total_path_weight <= weight:
+ */
+    __pyx_v_node = __pyx_v_curr_path.back();
+
+    /* "pathenum.pyx":159
+ * 		relpath_stack.pop()
+ * 		node = curr_path.back()
+ * 		node_weight = curr_path_weight.back()             # <<<<<<<<<<<<<<
+ * 		if total_path_weight <= weight:
+ * 			if node == o:
+ */
+    __pyx_v_node_weight = __pyx_v_curr_path_weight.back();
+
+    /* "pathenum.pyx":160
+ * 		node = curr_path.back()
+ * 		node_weight = curr_path_weight.back()
+ * 		if total_path_weight <= weight:             # <<<<<<<<<<<<<<
+ * 			if node == o:
+ * 				discovered_paths.push_back(curr_path)
+ */
+    __pyx_t_2 = ((__pyx_v_total_path_weight <= __pyx_v_weight) != 0);
+    if (__pyx_t_2) {
+
+      /* "pathenum.pyx":161
+ * 		node_weight = curr_path_weight.back()
+ * 		if total_path_weight <= weight:
+ * 			if node == o:             # <<<<<<<<<<<<<<
+ * 				discovered_paths.push_back(curr_path)
+ * 				discovered_relpaths.push_back(curr_relpath)
+ */
+      __pyx_t_2 = ((__pyx_v_node == __pyx_v_o) != 0);
+      if (__pyx_t_2) {
+
+        /* "pathenum.pyx":162
+ * 		if total_path_weight <= weight:
+ * 			if node == o:
+ * 				discovered_paths.push_back(curr_path)             # <<<<<<<<<<<<<<
+ * 				discovered_relpaths.push_back(curr_relpath)
+ * 				total_path_weight = 0
+ */
+        try {
+          __pyx_v_discovered_paths.push_back(__pyx_v_curr_path);
+        } catch(...) {
+          __Pyx_CppExn2PyErr();
+          __PYX_ERR(0, 162, __pyx_L1_error)
+        }
+
+        /* "pathenum.pyx":163
+ * 			if node == o:
+ * 				discovered_paths.push_back(curr_path)
+ * 				discovered_relpaths.push_back(curr_relpath)             # <<<<<<<<<<<<<<
+ * 				total_path_weight = 0
+ * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:
+ */
+        try {
+          __pyx_v_discovered_relpaths.push_back(__pyx_v_curr_relpath);
+        } catch(...) {
+          __Pyx_CppExn2PyErr();
+          __PYX_ERR(0, 163, __pyx_L1_error)
+        }
+
+        /* "pathenum.pyx":164
+ * 				discovered_paths.push_back(curr_path)
+ * 				discovered_relpaths.push_back(curr_relpath)
+ * 				total_path_weight = 0             # <<<<<<<<<<<<<<
+ * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:
+ * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
+ */
+        __pyx_v_total_path_weight = 0.0;
+
+        /* "pathenum.pyx":165
+ * 				discovered_relpaths.push_back(curr_relpath)
+ * 				total_path_weight = 0
+ * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:             # <<<<<<<<<<<<<<
+ * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
+ * 					break
+ */
+        __pyx_t_3 = ((__pyx_v_maxpaths != -1L) != 0);
+        if (__pyx_t_3) {
+        } else {
+          __pyx_t_2 = __pyx_t_3;
+          goto __pyx_L8_bool_binop_done;
+        }
+        __pyx_t_3 = ((__pyx_v_discovered_paths.size() >= __pyx_v_maxpaths) != 0);
+        __pyx_t_2 = __pyx_t_3;
+        __pyx_L8_bool_binop_done:;
+        if (__pyx_t_2) {
+
+          /* "pathenum.pyx":167
+ * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:
+ * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
+ * 					break             # <<<<<<<<<<<<<<
+ * 			continue
+ * 		## Find the weights here.
+ */
+          goto __pyx_L4_break;
+
+          /* "pathenum.pyx":165
+ * 				discovered_relpaths.push_back(curr_relpath)
+ * 				total_path_weight = 0
+ * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:             # <<<<<<<<<<<<<<
+ * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
+ * 					break
+ */
+        }
+
+        /* "pathenum.pyx":161
+ * 		node_weight = curr_path_weight.back()
+ * 		if total_path_weight <= weight:
+ * 			if node == o:             # <<<<<<<<<<<<<<
+ * 				discovered_paths.push_back(curr_path)
+ * 				discovered_relpaths.push_back(curr_relpath)
+ */
+      }
+
+      /* "pathenum.pyx":168
+ * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
+ * 					break
+ * 			continue             # <<<<<<<<<<<<<<
+ * 		## Find the weights here.
+ * 		start = indptr[node]
+ */
+      goto __pyx_L3_continue;
+
+      /* "pathenum.pyx":160
+ * 		node = curr_path.back()
+ * 		node_weight = curr_path_weight.back()
+ * 		if total_path_weight <= weight:             # <<<<<<<<<<<<<<
+ * 			if node == o:
+ * 				discovered_paths.push_back(curr_path)
+ */
+    }
+
+    /* "pathenum.pyx":170
+ * 			continue
+ * 		## Find the weights here.
+ * 		start = indptr[node]             # <<<<<<<<<<<<<<
+ * 		end = indptr[node + 1]
+ * 		neighbors = indices[start:end] # nbrs in wide-CSR
+ */
+    __pyx_t_4 = __pyx_v_node;
+    __pyx_v_start = (*((int *) ( /* dim=0 */ (__pyx_v_indptr.data + __pyx_t_4 * __pyx_v_indptr.strides[0]) )));
+
+    /* "pathenum.pyx":171
+ * 		## Find the weights here.
+ * 		start = indptr[node]
+ * 		end = indptr[node + 1]             # <<<<<<<<<<<<<<
+ * 		neighbors = indices[start:end] # nbrs in wide-CSR
+ * 		N_neigh = end - start
+ */
+    __pyx_t_5 = (__pyx_v_node + 1);
+    __pyx_v_end = (*((int *) ( /* dim=0 */ (__pyx_v_indptr.data + __pyx_t_5 * __pyx_v_indptr.strides[0]) )));
+
+    /* "pathenum.pyx":172
+ * 		start = indptr[node]
+ * 		end = indptr[node + 1]
+ * 		neighbors = indices[start:end] # nbrs in wide-CSR             # <<<<<<<<<<<<<<
+ * 		N_neigh = end - start
+ * 		for i in xrange(N_neigh):
+ */
+    __pyx_t_6.data = __pyx_v_indices.data;
+    __pyx_t_6.memview = __pyx_v_indices.memview;
+    __PYX_INC_MEMVIEW(&__pyx_t_6, 0);
+    __pyx_t_7 = -1;
+    if (unlikely(__pyx_memoryview_slice_memviewslice(
+    &__pyx_t_6,
+    __pyx_v_indices.shape[0], __pyx_v_indices.strides[0], __pyx_v_indices.suboffsets[0],
+    0,
+    0,
+    &__pyx_t_7,
+    __pyx_v_start,
+    __pyx_v_end,
+    0,
+    1,
+    1,
+    0,
+    1) < 0))
+{
+    __PYX_ERR(0, 172, __pyx_L1_error)
+}
+
+__PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
+    __pyx_v_neighbors = __pyx_t_6;
+    __pyx_t_6.memview = NULL;
+    __pyx_t_6.data = NULL;
+
+    /* "pathenum.pyx":173
+ * 		end = indptr[node + 1]
+ * 		neighbors = indices[start:end] # nbrs in wide-CSR
+ * 		N_neigh = end - start             # <<<<<<<<<<<<<<
+ * 		for i in xrange(N_neigh):
+ * 			nbr = neighbors[i] % N # predecessor vec
+ */
+    __pyx_v_N_neigh = (__pyx_v_end - __pyx_v_start);
+
+    /* "pathenum.pyx":174
+ * 		neighbors = indices[start:end] # nbrs in wide-CSR
+ * 		N_neigh = end - start
+ * 		for i in xrange(N_neigh):             # <<<<<<<<<<<<<<
+ * 			nbr = neighbors[i] % N # predecessor vec
+ * 			rel = (neighbors[i] - nbr) / N # relation vec
+ */
+    __pyx_t_7 = __pyx_v_N_neigh;
+    __pyx_t_8 = __pyx_t_7;
+    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
+      __pyx_v_i = __pyx_t_9;
+
+      /* "pathenum.pyx":175
+ * 		N_neigh = end - start
+ * 		for i in xrange(N_neigh):
+ * 			nbr = neighbors[i] % N # predecessor vec             # <<<<<<<<<<<<<<
+ * 			rel = (neighbors[i] - nbr) / N # relation vec
+ * 			path_weight_stack.push(curr_path_weight)
+ */
+      __pyx_t_10 = __pyx_v_i;
+      __pyx_v_nbr = ((*((long *) ( /* dim=0 */ (__pyx_v_neighbors.data + __pyx_t_10 * __pyx_v_neighbors.strides[0]) ))) % __pyx_v_N);
+
+      /* "pathenum.pyx":176
+ * 		for i in xrange(N_neigh):
+ * 			nbr = neighbors[i] % N # predecessor vec
+ * 			rel = (neighbors[i] - nbr) / N # relation vec             # <<<<<<<<<<<<<<
+ * 			path_weight_stack.push(curr_path_weight)
+ * 			curr_path_weight.push_back(data[nbr])
+ */
+      __pyx_t_11 = __pyx_v_i;
+      __pyx_v_rel = (((*((long *) ( /* dim=0 */ (__pyx_v_neighbors.data + __pyx_t_11 * __pyx_v_neighbors.strides[0]) ))) - __pyx_v_nbr) / __pyx_v_N);
+
+      /* "pathenum.pyx":177
+ * 			nbr = neighbors[i] % N # predecessor vec
+ * 			rel = (neighbors[i] - nbr) / N # relation vec
+ * 			path_weight_stack.push(curr_path_weight)             # <<<<<<<<<<<<<<
+ * 			curr_path_weight.push_back(data[nbr])
+ * 			curr_path.push_back(nbr)
+ */
+      __pyx_v_path_weight_stack.push(__pyx_v_curr_path_weight);
+
+      /* "pathenum.pyx":178
+ * 			rel = (neighbors[i] - nbr) / N # relation vec
+ * 			path_weight_stack.push(curr_path_weight)
+ * 			curr_path_weight.push_back(data[nbr])             # <<<<<<<<<<<<<<
+ * 			curr_path.push_back(nbr)
+ * 			path_stack.push(curr_path)
+ */
+      __pyx_t_12 = __pyx_v_nbr;
+      try {
+        __pyx_v_curr_path_weight.push_back((*((double *) ( /* dim=0 */ (__pyx_v_data.data + __pyx_t_12 * __pyx_v_data.strides[0]) ))));
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 178, __pyx_L1_error)
+      }
+
+      /* "pathenum.pyx":179
+ * 			path_weight_stack.push(curr_path_weight)
+ * 			curr_path_weight.push_back(data[nbr])
+ * 			curr_path.push_back(nbr)             # <<<<<<<<<<<<<<
+ * 			path_stack.push(curr_path)
+ * 			curr_path.pop_back()
+ */
+      try {
+        __pyx_v_curr_path.push_back(__pyx_v_nbr);
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 179, __pyx_L1_error)
+      }
+
+      /* "pathenum.pyx":180
+ * 			curr_path_weight.push_back(data[nbr])
+ * 			curr_path.push_back(nbr)
+ * 			path_stack.push(curr_path)             # <<<<<<<<<<<<<<
+ * 			curr_path.pop_back()
+ * 			curr_relpath.push_back(rel)
+ */
+      __pyx_v_path_stack.push(__pyx_v_curr_path);
+
+      /* "pathenum.pyx":181
+ * 			curr_path.push_back(nbr)
+ * 			path_stack.push(curr_path)
+ * 			curr_path.pop_back()             # <<<<<<<<<<<<<<
+ * 			curr_relpath.push_back(rel)
+ * 			relpath_stack.push(curr_relpath)
+ */
+      __pyx_v_curr_path.pop_back();
+
+      /* "pathenum.pyx":182
+ * 			path_stack.push(curr_path)
+ * 			curr_path.pop_back()
+ * 			curr_relpath.push_back(rel)             # <<<<<<<<<<<<<<
+ * 			relpath_stack.push(curr_relpath)
+ * 			curr_relpath.pop_back()
+ */
+      try {
+        __pyx_v_curr_relpath.push_back(__pyx_v_rel);
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 182, __pyx_L1_error)
+      }
+
+      /* "pathenum.pyx":183
+ * 			curr_path.pop_back()
+ * 			curr_relpath.push_back(rel)
+ * 			relpath_stack.push(curr_relpath)             # <<<<<<<<<<<<<<
+ * 			curr_relpath.pop_back()
+ * 	return discovered_paths, discovered_relpaths, path_len
+ */
+      __pyx_v_relpath_stack.push(__pyx_v_curr_relpath);
+
+      /* "pathenum.pyx":184
+ * 			curr_relpath.push_back(rel)
+ * 			relpath_stack.push(curr_relpath)
+ * 			curr_relpath.pop_back()             # <<<<<<<<<<<<<<
+ * 	return discovered_paths, discovered_relpaths, path_len
+ */
+      __pyx_v_curr_relpath.pop_back();
+    }
+    __pyx_L3_continue:;
+  }
+  __pyx_L4_break:;
+
+  /* "pathenum.pyx":185
+ * 			relpath_stack.push(curr_relpath)
+ * 			curr_relpath.pop_back()
+ * 	return discovered_paths, discovered_relpaths, path_len             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_13 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_paths); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_13);
+  __pyx_t_14 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_relpaths); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_14);
+  __pyx_t_15 = __Pyx_PyInt_From_int(__pyx_v_path_len); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_15);
+  __pyx_t_16 = PyTuple_New(3); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_16);
+  __Pyx_GIVEREF(__pyx_t_13);
+  PyTuple_SET_ITEM(__pyx_t_16, 0, __pyx_t_13);
+  __Pyx_GIVEREF(__pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_16, 1, __pyx_t_14);
+  __Pyx_GIVEREF(__pyx_t_15);
+  PyTuple_SET_ITEM(__pyx_t_16, 2, __pyx_t_15);
+  __pyx_t_13 = 0;
+  __pyx_t_14 = 0;
+  __pyx_t_15 = 0;
+  __pyx_r = __pyx_t_16;
+  __pyx_t_16 = 0;
+  goto __pyx_L0;
+
+  /* "pathenum.pyx":125
+ * @cython.initializedcheck(False)
+ * @cython.cdivision(True)
+ * cdef object enumerate_paths_sm(             # <<<<<<<<<<<<<<
+ * 		double[:] data, long[:] indices, int[:] indptr,
+ * 		int s, int p, int o, double weight=10, int maxpaths=-1
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_14);
+  __Pyx_XDECREF(__pyx_t_15);
+  __Pyx_XDECREF(__pyx_t_16);
+  __Pyx_AddTraceback("pathenum.enumerate_paths_sm", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
@@ -19456,7 +21041,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.predpath.pathenum.array", /*tp_name*/
+  "pathenum.array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -19564,7 +21149,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.predpath.pathenum.Enum", /*tp_name*/
+  "pathenum.Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -19814,7 +21399,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.predpath.pathenum.memoryview", /*tp_name*/
+  "pathenum.memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -19941,7 +21526,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.predpath.pathenum._memoryviewslice", /*tp_name*/
+  "pathenum._memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -20006,7 +21591,8 @@ static PyTypeObject __pyx_type___pyx_memoryviewslice = {
 };
 
 static PyMethodDef __pyx_methods[] = {
-  {"get_paths", (PyCFunction)__pyx_pw_10algorithms_8predpath_8pathenum_1get_paths, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10algorithms_8predpath_8pathenum_get_paths},
+  {"get_paths", (PyCFunction)__pyx_pw_8pathenum_1get_paths, METH_VARARGS|METH_KEYWORDS, __pyx_doc_8pathenum_get_paths},
+  {"get_paths_sm", (PyCFunction)__pyx_pw_8pathenum_3get_paths_sm, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -20063,6 +21649,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_kp_s_MemoryView_of_r_at_0x_x, __pyx_k_MemoryView_of_r_at_0x_x, sizeof(__pyx_k_MemoryView_of_r_at_0x_x), 0, 0, 1, 0},
   {&__pyx_kp_s_MemoryView_of_r_object, __pyx_k_MemoryView_of_r_object, sizeof(__pyx_k_MemoryView_of_r_object), 0, 0, 1, 0},
+  {&__pyx_n_s_N, __pyx_k_N, sizeof(__pyx_k_N), 0, 0, 1, 1},
   {&__pyx_kp_u_Non_native_byte_order_not_suppor, __pyx_k_Non_native_byte_order_not_suppor, sizeof(__pyx_k_Non_native_byte_order_not_suppor), 0, 1, 0, 0},
   {&__pyx_n_b_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 0, 0, 1},
   {&__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 0, 1, 0},
@@ -20114,6 +21701,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_maxpaths, __pyx_k_maxpaths, sizeof(__pyx_k_maxpaths), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
+  {&__pyx_n_s_multiply, __pyx_k_multiply, sizeof(__pyx_k_multiply), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
   {&__pyx_kp_u_ndarray_is_not_C_contiguous, __pyx_k_ndarray_is_not_C_contiguous, sizeof(__pyx_k_ndarray_is_not_C_contiguous), 0, 1, 0, 0},
@@ -20143,6 +21731,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_reduce, __pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_cython, __pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_ex, __pyx_k_reduce_ex, sizeof(__pyx_k_reduce_ex), 0, 0, 1, 1},
+  {&__pyx_n_s_relsim_wt, __pyx_k_relsim_wt, sizeof(__pyx_k_relsim_wt), 0, 0, 1, 1},
   {&__pyx_n_s_s, __pyx_k_s, sizeof(__pyx_k_s), 0, 0, 1, 1},
   {&__pyx_n_s_setstate, __pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 0, 1, 1},
   {&__pyx_n_s_setstate_cython, __pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 0, 1, 1},
@@ -20163,16 +21752,17 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
   {&__pyx_n_s_unpack, __pyx_k_unpack, sizeof(__pyx_k_unpack), 0, 0, 1, 1},
   {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
+  {&__pyx_n_s_weights, __pyx_k_weights, sizeof(__pyx_k_weights), 0, 0, 1, 1},
   {&__pyx_n_s_xrange, __pyx_k_xrange, sizeof(__pyx_k_xrange), 0, 0, 1, 1},
   {&__pyx_n_s_zip, __pyx_k_zip, sizeof(__pyx_k_zip), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 37, __pyx_L1_error)
   #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 110, __pyx_L1_error)
   #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 110, __pyx_L1_error)
   #endif
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 229, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(1, 242, __pyx_L1_error)
@@ -20589,6 +22179,7 @@ static int __Pyx_InitCachedConstants(void) {
 static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_float_0_ = PyFloat_FromDouble(0.); if (unlikely(!__pyx_float_0_)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_float_10_0 = PyFloat_FromDouble(10.0); if (unlikely(!__pyx_float_10_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -20632,8 +22223,10 @@ static int __Pyx_modinit_function_export_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("get_paths", (void (*)(void))__pyx_f_10algorithms_8predpath_8pathenum_get_paths, "PyObject *(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_8predpath_8pathenum_get_paths *__pyx_optional_args)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("enumerate_paths", (void (*)(void))__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths, "PyObject *(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, struct __pyx_opt_args_10algorithms_8predpath_8pathenum_enumerate_paths *__pyx_optional_args)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("get_paths", (void (*)(void))__pyx_f_8pathenum_get_paths, "PyObject *(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_8pathenum_get_paths *__pyx_optional_args)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("get_paths_sm", (void (*)(void))__pyx_f_8pathenum_get_paths_sm, "PyObject *(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_8pathenum_get_paths_sm *__pyx_optional_args)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("enumerate_paths", (void (*)(void))__pyx_f_8pathenum_enumerate_paths, "PyObject *(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, struct __pyx_opt_args_8pathenum_enumerate_paths *__pyx_optional_args)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("enumerate_paths_sm", (void (*)(void))__pyx_f_8pathenum_enumerate_paths_sm, "PyObject *(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, struct __pyx_opt_args_8pathenum_enumerate_paths_sm *__pyx_optional_args)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -20881,14 +22474,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_algorithms__predpath__pathenum) {
+  if (__pyx_module_is_main_pathenum) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "algorithms.predpath.pathenum")) {
-      if (unlikely(PyDict_SetItemString(modules, "algorithms.predpath.pathenum", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "pathenum")) {
+      if (unlikely(PyDict_SetItemString(modules, "pathenum", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -20909,7 +22502,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "algorithms/predpath/pathenum.pyx":2
+  /* "pathenum.pyx":2
  * # cython: profile=False
  * import numpy as np             # <<<<<<<<<<<<<<
  * 
@@ -20920,7 +22513,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":4
+  /* "pathenum.pyx":4
  * import numpy as np
  * 
  * from datastructures.relationalpath import RelationalPath             # <<<<<<<<<<<<<<
@@ -20941,7 +22534,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":14
+  /* "pathenum.pyx":14
  * 
  * # data types for int and float
  * _short = np.int16             # <<<<<<<<<<<<<<
@@ -20956,7 +22549,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_short, __pyx_t_1) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":15
+  /* "pathenum.pyx":15
  * # data types for int and float
  * _short = np.int16
  * _int = np.int32             # <<<<<<<<<<<<<<
@@ -20971,7 +22564,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_int, __pyx_t_2) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":16
+  /* "pathenum.pyx":16
  * _short = np.int16
  * _int = np.int32
  * _int64 = np.int64             # <<<<<<<<<<<<<<
@@ -20986,12 +22579,12 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_int64, __pyx_t_1) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":17
+  /* "pathenum.pyx":17
  * _int = np.int32
  * _int64 = np.int64
  * _float = np.float             # <<<<<<<<<<<<<<
  * 
- * 
+ * # ================ PATH ENUMERATION PROCEDURE ================
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -21001,7 +22594,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_float, __pyx_t_2) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "algorithms/predpath/pathenum.pyx":1
+  /* "pathenum.pyx":1
  * # cython: profile=False             # <<<<<<<<<<<<<<
  * import numpy as np
  * 
@@ -21172,11 +22765,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init algorithms.predpath.pathenum", 0, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init pathenum", 0, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init algorithms.predpath.pathenum");
+    PyErr_SetString(PyExc_ImportError, "init pathenum");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -21946,6 +23539,20 @@ invalid_keyword:
 bad:
     return -1;
 }
+
+/* PyObjectSetAttrStr */
+    #if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
+    PyTypeObject* tp = Py_TYPE(obj);
+    if (likely(tp->tp_setattro))
+        return tp->tp_setattro(obj, attr_name, value);
+#if PY_MAJOR_VERSION < 3
+    if (likely(tp->tp_setattr))
+        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
+#endif
+    return PyObject_SetAttr(obj, attr_name, value);
+}
+#endif
 
 /* PyErrFetchRestore */
     #if CYTHON_FAST_THREAD_STATE
