@@ -1,5 +1,5 @@
-""" 
-Script for Cython code compilation. 
+"""
+Script for Cython code compilation.
 
 ref: https://docs.python.org/3/distutils/apiref.html
 """
@@ -23,48 +23,48 @@ os.chdir(base)
 ext = [
 	# ====== DATA STRUCTURES ======
 	Extension(
-		name='datastructures.heap', 
-		sources=['datastructures/heap.pyx'], 
+		name='datastructures.heap',
+		sources=['datastructures/heap.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w']
 	),
 	# ====== CO-OCCURRENCE COUNT OF RELATIONS ======
 	Extension(
-		name='algorithms.relcooc._relcooc', 
-		sources=['algorithms/relcooc/_relcooc.pyx'], 
+		name='algorithms.relcooc._relcooc',
+		sources=['algorithms/relcooc/_relcooc.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w']
 	),
 	# ====== KNOWLEDGE STREAM (KS) ======
 	Extension(
-		name='algorithms.mincostflow.ssp_helper', 
-		sources=['algorithms/mincostflow/ssp_helper.pyx'], 
+		name='algorithms.mincostflow.ssp_helper',
+		sources=['algorithms/mincostflow/ssp_helper.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w']
 	),
 	# ====== RELATIONAL KNOWLEDGE LINKER (KL-REL) ======
 	Extension(
-		name='algorithms.relklinker.rel_closure', 
-		sources=['algorithms/relklinker/rel_closure.pyx'], 
+		name='algorithms.relklinker.rel_closure',
+		sources=['algorithms/relklinker/rel_closure.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w']
 	),
-	# ====== KNOWLEDGE LINKER (KL) ======	
+	# ====== KNOWLEDGE LINKER (KL) ======
 	Extension(
-		name='algorithms.klinker.closure', 
-		sources=['algorithms/klinker/closure.pyx'], 
+		name='algorithms.klinker.closure',
+		sources=['algorithms/klinker/closure.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w']
 	),
 	# ====== PREDICATE PATH MINING (PREDPATH) ======
 	Extension(
-		name='algorithms.predpath.pathenum', 
-		sources=['algorithms/predpath/pathenum.pyx'], 
+		name='algorithms.predpath.pathenum',
+		sources=['algorithms/predpath/pathenum.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w'],
@@ -72,8 +72,8 @@ ext = [
 	),
 	# ====== PATH RANKING ALGORITHM (PRA) ======
 	Extension(
-		name='algorithms.pra.pra_helper', 
-		sources=['algorithms/pra/pra_helper.pyx'], 
+		name='algorithms.pra.pra_helper',
+		sources=['algorithms/pra/pra_helper.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w'],
@@ -81,8 +81,8 @@ ext = [
 	),
 	# ====== KATZ (KZ) ======
 	Extension(
-		name='algorithms.linkpred.pathenum', 
-		sources=['algorithms/linkpred/pathenum.pyx'], 
+		name='algorithms.linkpred.pathenum',
+		sources=['algorithms/linkpred/pathenum.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w'],
@@ -90,8 +90,8 @@ ext = [
 	),
 	# ====== SIMRANK ======
 	Extension(
-		name='algorithms.linkpred.simrank_helper', 
-		sources=['algorithms/linkpred/simrank_helper.pyx'], 
+		name='algorithms.linkpred.simrank_helper',
+		sources=['algorithms/linkpred/simrank_helper.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w'],
