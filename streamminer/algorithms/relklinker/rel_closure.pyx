@@ -44,7 +44,7 @@ cpdef relational_closure(G, s, p, o, kind='metric', linkpred=True):
 		double[:] data
 		long[:] indices
 		int[:] indptr
-	# set the closure object 
+	# set the closure object
 	if kind == 'metric':
 		closure.disjf = fmax
 		closure.conjf = _dombit1
@@ -62,7 +62,6 @@ cpdef relational_closure(G, s, p, o, kind='metric', linkpred=True):
 	data = G.csr.data.astype(_float)
 	indices = G.csr.indices.astype(_int64)
 	indptr = G.csr.indptr.astype(_int)
-	
 	# closure
 	caps, preds, rels = cclosuress(data, indices, indptr, s, p, o, closure)
 
@@ -88,7 +87,7 @@ cpdef relational_closure(G, s, p, o, kind='metric', linkpred=True):
 @cython.initializedcheck(False)
 @cython.cdivision(True)
 cdef cclosuress(
-		double[:] data, long[:] indices, int[:] indptr, 
+		double[:] data, long[:] indices, int[:] indptr,
 		int source, int predicate, int target, Closure closure
 	):
 	"""
@@ -99,14 +98,14 @@ cdef cclosuress(
 	data, indices, indptr: array-like
 		Arrays representing the weighted knowledge graph.
 	source, predicate, target: int
-		Source (subject), predicate and target (object) of closure computation. 
+		Source (subject), predicate and target (object) of closure computation.
 		Ensure index is within limits.
 
 	Returns:
 	--------
 	caps, preds, rels: ndarray
-		Arrays representing values for capacities, predecessor information and 
-		relations under which they are connected. Note that the information is 
+		Arrays representing values for capacities, predecessor information and
+		relations under which they are connected. Note that the information is
 		accurate only for target and all nodes that are within the "radius".
 
 	Note: cap = capacity of an edge
@@ -120,8 +119,8 @@ cdef cclosuress(
 		int N, node, N_neigh, i, start, end
 		long neighbor
 		double cap, new_cap, relational_cap
-		int neigh_curr_rel 
-		int neigh_cand_rel 
+		int neigh_curr_rel
+		int neigh_cand_rel
 		double neigh_cand_cap, neigh_curr_cap # neighbor's current and candidate capacities (along current and candidate relations)
 		# ===== pointers =====
 		long *_preds
@@ -145,7 +144,7 @@ cdef cclosuress(
 	capacities[...] = 0.
 	# predecessors
 	_preds = <long*>malloc(N * sizeof(long))
-	predecessors = <long[:N]>_preds 
+	predecessors = <long[:N]>_preds
 	predecessors[...] = -1
 	# relations
 	_rels = <int*>malloc(N * sizeof(int))
@@ -204,7 +203,7 @@ cdef cclosuress(
 	return caps_arr, preds_arr, rels_arr
 
 
-## =========== Code to free up memory to avoid memory leaks =========== 
+## =========== Code to free up memory to avoid memory leaks ===========
 cdef class _finalizer:
 	cdef void *_data
 	def __dealloc__(self):
@@ -215,4 +214,3 @@ cdef void set_base(np.ndarray arr, void *carr):
 	cdef _finalizer f = _finalizer()
 	f._data = <void*>carr
 	np.set_array_base(arr, f)
-

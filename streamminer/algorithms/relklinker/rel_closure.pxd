@@ -28,6 +28,6 @@ cdef inline double _dombit1(double a, double b) nogil:
 cpdef relational_closure(G, s, p, o, kind=*, linkpred=*)
 
 cdef cclosuress(
-		double[:] data, long[:] indices, int[:] indptr, 
+		double[:] data, long[:] indices, int[:] indptr,
 		int source, int predicate, int target, Closure closure
 	)

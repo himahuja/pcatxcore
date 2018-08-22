@@ -3163,7 +3163,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_get_paths(PyObject *__
  * 		discovered_paths.append(pp)
  * 	return discovered_paths             # <<<<<<<<<<<<<<
  * 
- * 
+ * @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_discovered_paths);
@@ -3347,7 +3347,7 @@ static PyObject *__pyx_pf_10algorithms_8predpath_8pathenum_get_paths(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "algorithms/predpath/pathenum.pyx":48
+/* "algorithms/predpath/pathenum.pyx":47
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * cdef object enumerate_paths(             # <<<<<<<<<<<<<<
@@ -3400,7 +3400,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     }
   }
 
-  /* "algorithms/predpath/pathenum.pyx":61
+  /* "algorithms/predpath/pathenum.pyx":60
  * 		long[:] neighbors
  * 		np.ndarray paths_arr, relpaths_arr
  * 	N = len(indptr) - 1             # <<<<<<<<<<<<<<
@@ -3410,7 +3410,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
   __pyx_t_1 = __Pyx_MemoryView_Len(__pyx_v_indptr); 
   __pyx_v_N = (__pyx_t_1 - 1);
 
-  /* "algorithms/predpath/pathenum.pyx":62
+  /* "algorithms/predpath/pathenum.pyx":61
  * 		np.ndarray paths_arr, relpaths_arr
  * 	N = len(indptr) - 1
  * 	tmp.push_back(s)             # <<<<<<<<<<<<<<
@@ -3421,10 +3421,10 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_v_tmp.push_back(__pyx_v_s);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 62, __pyx_L1_error)
+    __PYX_ERR(0, 61, __pyx_L1_error)
   }
 
-  /* "algorithms/predpath/pathenum.pyx":63
+  /* "algorithms/predpath/pathenum.pyx":62
  * 	N = len(indptr) - 1
  * 	tmp.push_back(s)
  * 	path_stack.push(tmp)             # <<<<<<<<<<<<<<
@@ -3433,7 +3433,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
   __pyx_v_path_stack.push(__pyx_v_tmp);
 
-  /* "algorithms/predpath/pathenum.pyx":64
+  /* "algorithms/predpath/pathenum.pyx":63
  * 	tmp.push_back(s)
  * 	path_stack.push(tmp)
  * 	tmp.clear()             # <<<<<<<<<<<<<<
@@ -3442,7 +3442,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
   __pyx_v_tmp.clear();
 
-  /* "algorithms/predpath/pathenum.pyx":65
+  /* "algorithms/predpath/pathenum.pyx":64
  * 	path_stack.push(tmp)
  * 	tmp.clear()
  * 	tmp.push_back(-1)             # <<<<<<<<<<<<<<
@@ -3453,10 +3453,10 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_v_tmp.push_back(-1);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 65, __pyx_L1_error)
+    __PYX_ERR(0, 64, __pyx_L1_error)
   }
 
-  /* "algorithms/predpath/pathenum.pyx":66
+  /* "algorithms/predpath/pathenum.pyx":65
  * 	tmp.clear()
  * 	tmp.push_back(-1)
  * 	relpath_stack.push(tmp)             # <<<<<<<<<<<<<<
@@ -3465,7 +3465,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
   __pyx_v_relpath_stack.push(__pyx_v_tmp);
 
-  /* "algorithms/predpath/pathenum.pyx":67
+  /* "algorithms/predpath/pathenum.pyx":66
  * 	tmp.push_back(-1)
  * 	relpath_stack.push(tmp)
  * 	while path_stack.size() > 0:             # <<<<<<<<<<<<<<
@@ -3476,7 +3476,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_t_2 = ((__pyx_v_path_stack.size() > 0) != 0);
     if (!__pyx_t_2) break;
 
-    /* "algorithms/predpath/pathenum.pyx":68
+    /* "algorithms/predpath/pathenum.pyx":67
  * 	relpath_stack.push(tmp)
  * 	while path_stack.size() > 0:
  * 		curr_path = path_stack.top()             # <<<<<<<<<<<<<<
@@ -3485,7 +3485,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_curr_path = __pyx_v_path_stack.top();
 
-    /* "algorithms/predpath/pathenum.pyx":69
+    /* "algorithms/predpath/pathenum.pyx":68
  * 	while path_stack.size() > 0:
  * 		curr_path = path_stack.top()
  * 		path_stack.pop()             # <<<<<<<<<<<<<<
@@ -3494,7 +3494,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_path_stack.pop();
 
-    /* "algorithms/predpath/pathenum.pyx":70
+    /* "algorithms/predpath/pathenum.pyx":69
  * 		curr_path = path_stack.top()
  * 		path_stack.pop()
  * 		curr_relpath = relpath_stack.top()             # <<<<<<<<<<<<<<
@@ -3503,7 +3503,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_curr_relpath = __pyx_v_relpath_stack.top();
 
-    /* "algorithms/predpath/pathenum.pyx":71
+    /* "algorithms/predpath/pathenum.pyx":70
  * 		path_stack.pop()
  * 		curr_relpath = relpath_stack.top()
  * 		relpath_stack.pop()             # <<<<<<<<<<<<<<
@@ -3512,7 +3512,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_relpath_stack.pop();
 
-    /* "algorithms/predpath/pathenum.pyx":72
+    /* "algorithms/predpath/pathenum.pyx":71
  * 		curr_relpath = relpath_stack.top()
  * 		relpath_stack.pop()
  * 		node = curr_path.back()             # <<<<<<<<<<<<<<
@@ -3521,7 +3521,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     __pyx_v_node = __pyx_v_curr_path.back();
 
-    /* "algorithms/predpath/pathenum.pyx":73
+    /* "algorithms/predpath/pathenum.pyx":72
  * 		relpath_stack.pop()
  * 		node = curr_path.back()
  * 		if curr_path.size() == length + 1:             # <<<<<<<<<<<<<<
@@ -3531,7 +3531,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_t_2 = ((__pyx_v_curr_path.size() == (__pyx_v_length + 1)) != 0);
     if (__pyx_t_2) {
 
-      /* "algorithms/predpath/pathenum.pyx":74
+      /* "algorithms/predpath/pathenum.pyx":73
  * 		node = curr_path.back()
  * 		if curr_path.size() == length + 1:
  * 			if node == o:             # <<<<<<<<<<<<<<
@@ -3541,7 +3541,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
       __pyx_t_2 = ((__pyx_v_node == __pyx_v_o) != 0);
       if (__pyx_t_2) {
 
-        /* "algorithms/predpath/pathenum.pyx":75
+        /* "algorithms/predpath/pathenum.pyx":74
  * 		if curr_path.size() == length + 1:
  * 			if node == o:
  * 				discovered_paths.push_back(curr_path)             # <<<<<<<<<<<<<<
@@ -3552,10 +3552,10 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
           __pyx_v_discovered_paths.push_back(__pyx_v_curr_path);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          __PYX_ERR(0, 75, __pyx_L1_error)
+          __PYX_ERR(0, 74, __pyx_L1_error)
         }
 
-        /* "algorithms/predpath/pathenum.pyx":76
+        /* "algorithms/predpath/pathenum.pyx":75
  * 			if node == o:
  * 				discovered_paths.push_back(curr_path)
  * 				discovered_relpaths.push_back(curr_relpath)             # <<<<<<<<<<<<<<
@@ -3566,10 +3566,10 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
           __pyx_v_discovered_relpaths.push_back(__pyx_v_curr_relpath);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          __PYX_ERR(0, 76, __pyx_L1_error)
+          __PYX_ERR(0, 75, __pyx_L1_error)
         }
 
-        /* "algorithms/predpath/pathenum.pyx":77
+        /* "algorithms/predpath/pathenum.pyx":76
  * 				discovered_paths.push_back(curr_path)
  * 				discovered_relpaths.push_back(curr_relpath)
  * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:             # <<<<<<<<<<<<<<
@@ -3587,7 +3587,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
         __pyx_L8_bool_binop_done:;
         if (__pyx_t_2) {
 
-          /* "algorithms/predpath/pathenum.pyx":79
+          /* "algorithms/predpath/pathenum.pyx":78
  * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:
  * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
  * 					break             # <<<<<<<<<<<<<<
@@ -3596,7 +3596,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
           goto __pyx_L4_break;
 
-          /* "algorithms/predpath/pathenum.pyx":77
+          /* "algorithms/predpath/pathenum.pyx":76
  * 				discovered_paths.push_back(curr_path)
  * 				discovered_relpaths.push_back(curr_relpath)
  * 				if maxpaths != -1 and discovered_paths.size() >= maxpaths:             # <<<<<<<<<<<<<<
@@ -3605,7 +3605,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
         }
 
-        /* "algorithms/predpath/pathenum.pyx":74
+        /* "algorithms/predpath/pathenum.pyx":73
  * 		node = curr_path.back()
  * 		if curr_path.size() == length + 1:
  * 			if node == o:             # <<<<<<<<<<<<<<
@@ -3614,7 +3614,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
       }
 
-      /* "algorithms/predpath/pathenum.pyx":80
+      /* "algorithms/predpath/pathenum.pyx":79
  * 					# print '[L:{}, maxpaths:{}]'.format(length, maxpaths),
  * 					break
  * 			continue             # <<<<<<<<<<<<<<
@@ -3623,7 +3623,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
       goto __pyx_L3_continue;
 
-      /* "algorithms/predpath/pathenum.pyx":73
+      /* "algorithms/predpath/pathenum.pyx":72
  * 		relpath_stack.pop()
  * 		node = curr_path.back()
  * 		if curr_path.size() == length + 1:             # <<<<<<<<<<<<<<
@@ -3632,7 +3632,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
  */
     }
 
-    /* "algorithms/predpath/pathenum.pyx":81
+    /* "algorithms/predpath/pathenum.pyx":80
  * 					break
  * 			continue
  * 		start = indptr[node]             # <<<<<<<<<<<<<<
@@ -3642,7 +3642,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_t_4 = __pyx_v_node;
     __pyx_v_start = (*((int *) ( /* dim=0 */ (__pyx_v_indptr.data + __pyx_t_4 * __pyx_v_indptr.strides[0]) )));
 
-    /* "algorithms/predpath/pathenum.pyx":82
+    /* "algorithms/predpath/pathenum.pyx":81
  * 			continue
  * 		start = indptr[node]
  * 		end = indptr[node + 1]             # <<<<<<<<<<<<<<
@@ -3652,7 +3652,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     __pyx_t_5 = (__pyx_v_node + 1);
     __pyx_v_end = (*((int *) ( /* dim=0 */ (__pyx_v_indptr.data + __pyx_t_5 * __pyx_v_indptr.strides[0]) )));
 
-    /* "algorithms/predpath/pathenum.pyx":83
+    /* "algorithms/predpath/pathenum.pyx":82
  * 		start = indptr[node]
  * 		end = indptr[node + 1]
  * 		neighbors = indices[start:end] # nbrs in wide-CSR             # <<<<<<<<<<<<<<
@@ -3677,7 +3677,7 @@ static PyObject *__pyx_f_10algorithms_8predpath_8pathenum_enumerate_paths(CYTHON
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 83, __pyx_L1_error)
+    __PYX_ERR(0, 82, __pyx_L1_error)
 }
 
 __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
@@ -3685,7 +3685,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
     __pyx_t_6.memview = NULL;
     __pyx_t_6.data = NULL;
 
-    /* "algorithms/predpath/pathenum.pyx":84
+    /* "algorithms/predpath/pathenum.pyx":83
  * 		end = indptr[node + 1]
  * 		neighbors = indices[start:end] # nbrs in wide-CSR
  * 		N_neigh = end - start             # <<<<<<<<<<<<<<
@@ -3694,7 +3694,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
  */
     __pyx_v_N_neigh = (__pyx_v_end - __pyx_v_start);
 
-    /* "algorithms/predpath/pathenum.pyx":85
+    /* "algorithms/predpath/pathenum.pyx":84
  * 		neighbors = indices[start:end] # nbrs in wide-CSR
  * 		N_neigh = end - start
  * 		for i in xrange(N_neigh):             # <<<<<<<<<<<<<<
@@ -3706,7 +3706,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
     for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
       __pyx_v_i = __pyx_t_9;
 
-      /* "algorithms/predpath/pathenum.pyx":86
+      /* "algorithms/predpath/pathenum.pyx":85
  * 		N_neigh = end - start
  * 		for i in xrange(N_neigh):
  * 			nbr = neighbors[i] % N # predecessor vec             # <<<<<<<<<<<<<<
@@ -3716,7 +3716,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
       __pyx_t_10 = __pyx_v_i;
       __pyx_v_nbr = ((*((long *) ( /* dim=0 */ (__pyx_v_neighbors.data + __pyx_t_10 * __pyx_v_neighbors.strides[0]) ))) % __pyx_v_N);
 
-      /* "algorithms/predpath/pathenum.pyx":87
+      /* "algorithms/predpath/pathenum.pyx":86
  * 		for i in xrange(N_neigh):
  * 			nbr = neighbors[i] % N # predecessor vec
  * 			rel = (neighbors[i] - nbr) / N # relation vec             # <<<<<<<<<<<<<<
@@ -3726,7 +3726,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
       __pyx_t_11 = __pyx_v_i;
       __pyx_v_rel = (((*((long *) ( /* dim=0 */ (__pyx_v_neighbors.data + __pyx_t_11 * __pyx_v_neighbors.strides[0]) ))) - __pyx_v_nbr) / __pyx_v_N);
 
-      /* "algorithms/predpath/pathenum.pyx":88
+      /* "algorithms/predpath/pathenum.pyx":87
  * 			nbr = neighbors[i] % N # predecessor vec
  * 			rel = (neighbors[i] - nbr) / N # relation vec
  * 			curr_path.push_back(nbr)             # <<<<<<<<<<<<<<
@@ -3737,10 +3737,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
         __pyx_v_curr_path.push_back(__pyx_v_nbr);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 88, __pyx_L1_error)
+        __PYX_ERR(0, 87, __pyx_L1_error)
       }
 
-      /* "algorithms/predpath/pathenum.pyx":89
+      /* "algorithms/predpath/pathenum.pyx":88
  * 			rel = (neighbors[i] - nbr) / N # relation vec
  * 			curr_path.push_back(nbr)
  * 			path_stack.push(curr_path)             # <<<<<<<<<<<<<<
@@ -3749,7 +3749,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
  */
       __pyx_v_path_stack.push(__pyx_v_curr_path);
 
-      /* "algorithms/predpath/pathenum.pyx":90
+      /* "algorithms/predpath/pathenum.pyx":89
  * 			curr_path.push_back(nbr)
  * 			path_stack.push(curr_path)
  * 			curr_path.pop_back()             # <<<<<<<<<<<<<<
@@ -3758,7 +3758,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
  */
       __pyx_v_curr_path.pop_back();
 
-      /* "algorithms/predpath/pathenum.pyx":91
+      /* "algorithms/predpath/pathenum.pyx":90
  * 			path_stack.push(curr_path)
  * 			curr_path.pop_back()
  * 			curr_relpath.push_back(rel)             # <<<<<<<<<<<<<<
@@ -3769,10 +3769,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
         __pyx_v_curr_relpath.push_back(__pyx_v_rel);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 91, __pyx_L1_error)
+        __PYX_ERR(0, 90, __pyx_L1_error)
       }
 
-      /* "algorithms/predpath/pathenum.pyx":92
+      /* "algorithms/predpath/pathenum.pyx":91
  * 			curr_path.pop_back()
  * 			curr_relpath.push_back(rel)
  * 			relpath_stack.push(curr_relpath)             # <<<<<<<<<<<<<<
@@ -3781,12 +3781,11 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
  */
       __pyx_v_relpath_stack.push(__pyx_v_curr_relpath);
 
-      /* "algorithms/predpath/pathenum.pyx":93
+      /* "algorithms/predpath/pathenum.pyx":92
  * 			curr_relpath.push_back(rel)
  * 			relpath_stack.push(curr_relpath)
  * 			curr_relpath.pop_back()             # <<<<<<<<<<<<<<
  * 	return discovered_paths, discovered_relpaths
- * 
  */
       __pyx_v_curr_relpath.pop_back();
     }
@@ -3794,18 +3793,17 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
   }
   __pyx_L4_break:;
 
-  /* "algorithms/predpath/pathenum.pyx":94
+  /* "algorithms/predpath/pathenum.pyx":93
  * 			relpath_stack.push(curr_relpath)
  * 			curr_relpath.pop_back()
  * 	return discovered_paths, discovered_relpaths             # <<<<<<<<<<<<<<
- * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_12 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_paths); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_12 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_paths); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_relpaths); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_13 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_discovered_relpaths); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
-  __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
   __Pyx_GIVEREF(__pyx_t_12);
   PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_12);
@@ -3817,7 +3815,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
   __pyx_t_14 = 0;
   goto __pyx_L0;
 
-  /* "algorithms/predpath/pathenum.pyx":48
+  /* "algorithms/predpath/pathenum.pyx":47
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * cdef object enumerate_paths(             # <<<<<<<<<<<<<<
@@ -20170,9 +20168,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 static int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 38, __pyx_L1_error)
   #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 84, __pyx_L1_error)
   #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 84, __pyx_L1_error)
   #endif
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 229, __pyx_L1_error)
   __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(1, 242, __pyx_L1_error)
