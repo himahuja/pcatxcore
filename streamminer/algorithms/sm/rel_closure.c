@@ -16,12 +16,12 @@
         "include_dirs": [
             "/Users/himanshuahuja/anaconda3/envs/pcatwd2/lib/python2.7/site-packages/numpy/core/include"
         ], 
-        "name": "algorithms.relklinker.rel_closure", 
+        "name": "algorithms.sm.rel_closure", 
         "sources": [
-            "algorithms/relklinker/rel_closure.pyx"
+            "algorithms/sm/rel_closure.pyx"
         ]
     }, 
-    "module_name": "algorithms.relklinker.rel_closure"
+    "module_name": "algorithms.sm.rel_closure"
 }
 END: Cython Metadata */
 
@@ -584,8 +584,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__algorithms__relklinker__rel_closure
-#define __PYX_HAVE_API__algorithms__relklinker__rel_closure
+#define __PYX_HAVE__algorithms__sm__rel_closure
+#define __PYX_HAVE_API__algorithms__sm__rel_closure
 /* Early includes */
 #include <string.h>
 #include <stdlib.h>
@@ -820,9 +820,9 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "algorithms/relklinker/rel_closure.pyx",
+  "algorithms/sm/rel_closure.pyx",
   "stringsource",
-  "./algorithms/relklinker/rel_closure.pxd",
+  "./algorithms/sm/rel_closure.pxd",
   "__init__.pxd",
   "type.pxd",
   "./datastructures/heap.pxd",
@@ -1170,7 +1170,7 @@ static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(do
 /*--- Type declarations ---*/
 struct __pyx_obj_14datastructures_4heap_BinaryHeap;
 struct __pyx_obj_14datastructures_4heap_FastUpdateBinaryHeap;
-struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer;
+struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
@@ -1211,30 +1211,30 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  * cdef inline object PyArray_MultiIterNew1(a):
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
-struct __pyx_t_10algorithms_10relklinker_11rel_closure_Closure;
-typedef struct __pyx_t_10algorithms_10relklinker_11rel_closure_Closure __pyx_t_10algorithms_10relklinker_11rel_closure_Closure;
-struct __pyx_opt_args_10algorithms_10relklinker_11rel_closure_relational_closure;
+struct __pyx_t_10algorithms_2sm_11rel_closure_Closure;
+typedef struct __pyx_t_10algorithms_2sm_11rel_closure_Closure __pyx_t_10algorithms_2sm_11rel_closure_Closure;
+struct __pyx_opt_args_10algorithms_2sm_11rel_closure_relational_closure_sm;
 
-/* "algorithms/relklinker/rel_closure.pxd":5
+/* "algorithms/sm/rel_closure.pxd":5
  * from libc.string cimport memset
  * 
  * ctypedef struct Closure:             # <<<<<<<<<<<<<<
  * 	double conjf(double, double) nogil
  * 	double disjf(double, double) nogil
  */
-struct __pyx_t_10algorithms_10relklinker_11rel_closure_Closure {
+struct __pyx_t_10algorithms_2sm_11rel_closure_Closure {
   double (*conjf)(double, double);
   double (*disjf)(double, double);
 };
 
-/* "algorithms/relklinker/rel_closure.pxd":28
+/* "algorithms/sm/rel_closure.pxd":28
  * 
  * 
- * cpdef relational_closure(G, s, p, o, kind=*, linkpred=*)             # <<<<<<<<<<<<<<
+ * cpdef relational_closure_sm(G, s, p, o, kind=*, linkpred=*)             # <<<<<<<<<<<<<<
  * 
  * cdef cclosuress(
  */
-struct __pyx_opt_args_10algorithms_10relklinker_11rel_closure_relational_closure {
+struct __pyx_opt_args_10algorithms_2sm_11rel_closure_relational_closure_sm {
   int __pyx_n;
   PyObject *kind;
   PyObject *linkpred;
@@ -1275,14 +1275,14 @@ struct __pyx_obj_14datastructures_4heap_FastUpdateBinaryHeap {
 };
 
 
-/* "algorithms/relklinker/rel_closure.pyx":207
+/* "algorithms/sm/rel_closure.pyx":207
  * 
  * ## =========== Code to free up memory to avoid memory leaks ===========
  * cdef class _finalizer:             # <<<<<<<<<<<<<<
  * 	cdef void *_data
  * 	def __dealloc__(self):
  */
-struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer {
+struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer {
   PyObject_HEAD
   void *_data;
 };
@@ -2242,8 +2242,8 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *, PyObjec
 static PyTypeObject *__pyx_ptype_14datastructures_4heap_BinaryHeap = 0;
 static PyTypeObject *__pyx_ptype_14datastructures_4heap_FastUpdateBinaryHeap = 0;
 
-/* Module declarations from 'algorithms.relklinker.rel_closure' */
-static PyTypeObject *__pyx_ptype_10algorithms_10relklinker_11rel_closure__finalizer = 0;
+/* Module declarations from 'algorithms.sm.rel_closure' */
+static PyTypeObject *__pyx_ptype_10algorithms_2sm_11rel_closure__finalizer = 0;
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
@@ -2255,10 +2255,10 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static CYTHON_INLINE double __pyx_f_10algorithms_10relklinker_11rel_closure__dombit1(double, double); /*proto*/
-static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_closure(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_10relklinker_11rel_closure_relational_closure *__pyx_optional_args); /*proto*/
-static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, __pyx_t_10algorithms_10relklinker_11rel_closure_Closure); /*proto*/
-static void __pyx_f_10algorithms_10relklinker_11rel_closure_set_base(PyArrayObject *, void *); /*proto*/
+static CYTHON_INLINE double __pyx_f_10algorithms_2sm_11rel_closure__dombit1(double, double); /*proto*/
+static PyObject *__pyx_f_10algorithms_2sm_11rel_closure_relational_closure_sm(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_2sm_11rel_closure_relational_closure_sm *__pyx_optional_args); /*proto*/
+static PyObject *__pyx_f_10algorithms_2sm_11rel_closure_cclosuress(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, __pyx_t_10algorithms_2sm_11rel_closure_Closure); /*proto*/
+static void __pyx_f_10algorithms_2sm_11rel_closure_set_base(PyArrayObject *, void *); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -2296,11 +2296,11 @@ static PyObject *__pyx_format_from_typeinfo(__Pyx_TypeInfo *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_long = { "long", NULL, sizeof(long), { 0 }, 0, IS_UNSIGNED(long) ? 'U' : 'I', IS_UNSIGNED(long), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_int = { "int", NULL, sizeof(int), { 0 }, 0, IS_UNSIGNED(int) ? 'U' : 'I', IS_UNSIGNED(int), 0 };
-#define __Pyx_MODULE_NAME "algorithms.relklinker.rel_closure"
-extern int __pyx_module_is_main_algorithms__relklinker__rel_closure;
-int __pyx_module_is_main_algorithms__relklinker__rel_closure = 0;
+#define __Pyx_MODULE_NAME "algorithms.sm.rel_closure"
+extern int __pyx_module_is_main_algorithms__sm__rel_closure;
+int __pyx_module_is_main_algorithms__sm__rel_closure = 0;
 
-/* Implementation of 'algorithms.relklinker.rel_closure' */
+/* Implementation of 'algorithms.sm.rel_closure' */
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_xrange;
@@ -2576,10 +2576,10 @@ static PyObject *__pyx_kp_s_unknown_metric_kind;
 static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_xrange;
-static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_relational_closure(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_kind, PyObject *__pyx_v_linkpred); /* proto */
-static void __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer___dealloc__(struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_10algorithms_2sm_11rel_closure_relational_closure_sm(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_kind, PyObject *__pyx_v_linkpred); /* proto */
+static void __pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer___dealloc__(struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -2624,7 +2624,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_16_memoryviewslice_4base___get__
 static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_tp_new_10algorithms_10relklinker_11rel_closure__finalizer(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_10algorithms_2sm_11rel_closure__finalizer(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2677,19 +2677,19 @@ static PyObject *__pyx_tuple__45;
 static PyObject *__pyx_codeobj__46;
 /* Late includes */
 
-/* "algorithms/relklinker/rel_closure.pyx":22
+/* "algorithms/sm/rel_closure.pyx":22
  * # ================ CLOSURE PROCEDURES ================
  * 
- * cpdef relational_closure(G, s, p, o, kind='metric', linkpred=True):             # <<<<<<<<<<<<<<
+ * cpdef relational_closure_sm(G, s, p, o, kind='metric', linkpred=True):             # <<<<<<<<<<<<<<
  * 	"""
  * 	Computes a relational closure using Dijkstra's algorithm.
  */
 
-static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_1relational_closure(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_closure(PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_10relklinker_11rel_closure_relational_closure *__pyx_optional_args) {
+static PyObject *__pyx_pw_10algorithms_2sm_11rel_closure_1relational_closure_sm(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_10algorithms_2sm_11rel_closure_relational_closure_sm(PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, CYTHON_UNUSED int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_2sm_11rel_closure_relational_closure_sm *__pyx_optional_args) {
   PyObject *__pyx_v_kind = ((PyObject *)__pyx_n_s_metric);
   PyObject *__pyx_v_linkpred = ((PyObject *)Py_True);
-  __pyx_t_10algorithms_10relklinker_11rel_closure_Closure __pyx_v_closure;
+  __pyx_t_10algorithms_2sm_11rel_closure_Closure __pyx_v_closure;
   __Pyx_memviewslice __pyx_v_data = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_indices = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_indptr = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -2700,8 +2700,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   PyObject *__pyx_v_rel_path = NULL;
   PyObject *__pyx_v_shortcaps = NULL;
   PyObject *__pyx_v_i = NULL;
-  Py_ssize_t __pyx_v_pathlen;
-  PyObject *__pyx_v_rp = NULL;
+  CYTHON_UNUSED Py_ssize_t __pyx_v_pathlen;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -2720,8 +2719,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   PyObject *(*__pyx_t_14)(PyObject *);
   int __pyx_t_15;
   Py_ssize_t __pyx_t_16;
-  PyObject *__pyx_t_17 = NULL;
-  __Pyx_RefNannySetupContext("relational_closure", 0);
+  __Pyx_RefNannySetupContext("relational_closure_sm", 0);
   if (__pyx_optional_args) {
     if (__pyx_optional_args->__pyx_n > 0) {
       __pyx_v_kind = __pyx_optional_args->kind;
@@ -2731,7 +2729,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     }
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":48
+  /* "algorithms/sm/rel_closure.pyx":48
  * 		int[:] indptr
  * 	# set the closure object
  * 	if kind == 'metric':             # <<<<<<<<<<<<<<
@@ -2741,7 +2739,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_kind, __pyx_n_s_metric, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 48, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "algorithms/relklinker/rel_closure.pyx":49
+    /* "algorithms/sm/rel_closure.pyx":49
  * 	# set the closure object
  * 	if kind == 'metric':
  * 		closure.disjf = fmax             # <<<<<<<<<<<<<<
@@ -2750,16 +2748,16 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
  */
     __pyx_v_closure.disjf = fmax;
 
-    /* "algorithms/relklinker/rel_closure.pyx":50
+    /* "algorithms/sm/rel_closure.pyx":50
  * 	if kind == 'metric':
  * 		closure.disjf = fmax
  * 		closure.conjf = _dombit1             # <<<<<<<<<<<<<<
  * 	elif kind == 'ultrametric':
  * 		closure.disjf = fmax
  */
-    __pyx_v_closure.conjf = __pyx_f_10algorithms_10relklinker_11rel_closure__dombit1;
+    __pyx_v_closure.conjf = __pyx_f_10algorithms_2sm_11rel_closure__dombit1;
 
-    /* "algorithms/relklinker/rel_closure.pyx":48
+    /* "algorithms/sm/rel_closure.pyx":48
  * 		int[:] indptr
  * 	# set the closure object
  * 	if kind == 'metric':             # <<<<<<<<<<<<<<
@@ -2769,7 +2767,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     goto __pyx_L3;
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":51
+  /* "algorithms/sm/rel_closure.pyx":51
  * 		closure.disjf = fmax
  * 		closure.conjf = _dombit1
  * 	elif kind == 'ultrametric':             # <<<<<<<<<<<<<<
@@ -2779,7 +2777,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_kind, __pyx_n_s_ultrametric, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 51, __pyx_L1_error)
   if (likely(__pyx_t_1)) {
 
-    /* "algorithms/relklinker/rel_closure.pyx":52
+    /* "algorithms/sm/rel_closure.pyx":52
  * 		closure.conjf = _dombit1
  * 	elif kind == 'ultrametric':
  * 		closure.disjf = fmax             # <<<<<<<<<<<<<<
@@ -2788,7 +2786,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
  */
     __pyx_v_closure.disjf = fmax;
 
-    /* "algorithms/relklinker/rel_closure.pyx":53
+    /* "algorithms/sm/rel_closure.pyx":53
  * 	elif kind == 'ultrametric':
  * 		closure.disjf = fmax
  * 		closure.conjf = fmin             # <<<<<<<<<<<<<<
@@ -2797,7 +2795,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
  */
     __pyx_v_closure.conjf = fmin;
 
-    /* "algorithms/relklinker/rel_closure.pyx":51
+    /* "algorithms/sm/rel_closure.pyx":51
  * 		closure.disjf = fmax
  * 		closure.conjf = _dombit1
  * 	elif kind == 'ultrametric':             # <<<<<<<<<<<<<<
@@ -2807,7 +2805,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     goto __pyx_L3;
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":55
+  /* "algorithms/sm/rel_closure.pyx":55
  * 		closure.conjf = fmin
  * 	else:
  * 		raise ValueError('unknown metric kind: {}'.format(kind))             # <<<<<<<<<<<<<<
@@ -2869,7 +2867,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   }
   __pyx_L3:;
 
-  /* "algorithms/relklinker/rel_closure.pyx":58
+  /* "algorithms/sm/rel_closure.pyx":58
  * 
  * 	# link prediction
  * 	if linkpred and G[s, o, p] != 0:             # <<<<<<<<<<<<<<
@@ -2904,7 +2902,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "algorithms/relklinker/rel_closure.pyx":59
+    /* "algorithms/sm/rel_closure.pyx":59
  * 	# link prediction
  * 	if linkpred and G[s, o, p] != 0:
  * 		G[s, o, p] = 0.             # <<<<<<<<<<<<<<
@@ -2925,7 +2923,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     if (unlikely(PyObject_SetItem(__pyx_v_G, __pyx_t_3, __pyx_float_0_) < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "algorithms/relklinker/rel_closure.pyx":58
+    /* "algorithms/sm/rel_closure.pyx":58
  * 
  * 	# link prediction
  * 	if linkpred and G[s, o, p] != 0:             # <<<<<<<<<<<<<<
@@ -2934,7 +2932,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
  */
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":62
+  /* "algorithms/sm/rel_closure.pyx":62
  * 
  * 	# graph vectors
  * 	data = G.csr.data.astype(_float)             # <<<<<<<<<<<<<<
@@ -3003,12 +3001,12 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "algorithms/relklinker/rel_closure.pyx":63
+  /* "algorithms/sm/rel_closure.pyx":63
  * 	# graph vectors
  * 	data = G.csr.data.astype(_float)
  * 	indices = G.csr.indices.astype(_int64)             # <<<<<<<<<<<<<<
  * 	indptr = G.csr.indptr.astype(_int)
- * 	# closure
+ * 
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -3072,12 +3070,12 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "algorithms/relklinker/rel_closure.pyx":64
+  /* "algorithms/sm/rel_closure.pyx":64
  * 	data = G.csr.data.astype(_float)
  * 	indices = G.csr.indices.astype(_int64)
  * 	indptr = G.csr.indptr.astype(_int)             # <<<<<<<<<<<<<<
+ * 
  * 	# closure
- * 	caps, preds, rels = cclosuress(data, indices, indptr, s, p, o, closure)
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_G, __pyx_n_s_csr); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -3141,17 +3139,17 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
 
-  /* "algorithms/relklinker/rel_closure.pyx":66
- * 	indptr = G.csr.indptr.astype(_int)
+  /* "algorithms/sm/rel_closure.pyx":67
+ * 
  * 	# closure
  * 	caps, preds, rels = cclosuress(data, indices, indptr, s, p, o, closure)             # <<<<<<<<<<<<<<
  * 
- * 	# construct path from the returned vectors
+ * 	path = []
  */
-  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_s); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L1_error)
-  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L1_error)
-  __pyx_t_13 = __Pyx_PyInt_As_int(__pyx_v_o); if (unlikely((__pyx_t_13 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L1_error)
-  __pyx_t_3 = __pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__pyx_v_data, __pyx_v_indices, __pyx_v_indptr, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_v_closure); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_s); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_v_p); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyInt_As_int(__pyx_v_o); if (unlikely((__pyx_t_13 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_10algorithms_2sm_11rel_closure_cclosuress(__pyx_v_data, __pyx_v_indices, __pyx_v_indptr, __pyx_t_11, __pyx_t_12, __pyx_t_13, __pyx_v_closure); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if ((likely(PyTuple_CheckExact(__pyx_t_3))) || (PyList_CheckExact(__pyx_t_3))) {
     PyObject* sequence = __pyx_t_3;
@@ -3159,7 +3157,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     if (unlikely(size != 3)) {
       if (size > 3) __Pyx_RaiseTooManyValuesError(3);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 66, __pyx_L1_error)
+      __PYX_ERR(0, 67, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -3175,17 +3173,17 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     __Pyx_INCREF(__pyx_t_5);
     __Pyx_INCREF(__pyx_t_4);
     #else
-    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_5 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     #endif
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_7 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_7 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_14 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -3195,7 +3193,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     __Pyx_GOTREF(__pyx_t_5);
     index = 2; __pyx_t_4 = __pyx_t_14(__pyx_t_7); if (unlikely(!__pyx_t_4)) goto __pyx_L7_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_4);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_14(__pyx_t_7), 3) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_14(__pyx_t_7), 3) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
     __pyx_t_14 = NULL;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     goto __pyx_L8_unpacking_done;
@@ -3203,7 +3201,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_14 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 66, __pyx_L1_error)
+    __PYX_ERR(0, 67, __pyx_L1_error)
     __pyx_L8_unpacking_done:;
   }
   __pyx_v_caps = __pyx_t_2;
@@ -3213,9 +3211,9 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_v_rels = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":69
+  /* "algorithms/sm/rel_closure.pyx":69
+ * 	caps, preds, rels = cclosuress(data, indices, indptr, s, p, o, closure)
  * 
- * 	# construct path from the returned vectors
  * 	path = []             # <<<<<<<<<<<<<<
  * 	rel_path = []
  * 	shortcaps = []
@@ -3225,8 +3223,8 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_v_path = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":70
- * 	# construct path from the returned vectors
+  /* "algorithms/sm/rel_closure.pyx":70
+ * 
  * 	path = []
  * 	rel_path = []             # <<<<<<<<<<<<<<
  * 	shortcaps = []
@@ -3237,7 +3235,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_v_rel_path = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":71
+  /* "algorithms/sm/rel_closure.pyx":71
  * 	path = []
  * 	rel_path = []
  * 	shortcaps = []             # <<<<<<<<<<<<<<
@@ -3249,7 +3247,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __pyx_v_shortcaps = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":72
+  /* "algorithms/sm/rel_closure.pyx":72
  * 	rel_path = []
  * 	shortcaps = []
  * 	i = o             # <<<<<<<<<<<<<<
@@ -3259,7 +3257,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __Pyx_INCREF(__pyx_v_o);
   __pyx_v_i = __pyx_v_o;
 
-  /* "algorithms/relklinker/rel_closure.pyx":73
+  /* "algorithms/sm/rel_closure.pyx":73
  * 	shortcaps = []
  * 	i = o
  * 	while i != -1:             # <<<<<<<<<<<<<<
@@ -3272,7 +3270,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (!__pyx_t_1) break;
 
-    /* "algorithms/relklinker/rel_closure.pyx":74
+    /* "algorithms/sm/rel_closure.pyx":74
  * 	i = o
  * 	while i != -1:
  * 		path.append(i)             # <<<<<<<<<<<<<<
@@ -3281,7 +3279,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
  */
     __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_path, __pyx_v_i); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 74, __pyx_L1_error)
 
-    /* "algorithms/relklinker/rel_closure.pyx":75
+    /* "algorithms/sm/rel_closure.pyx":75
  * 	while i != -1:
  * 		path.append(i)
  * 		rel_path.append(rels[i])             # <<<<<<<<<<<<<<
@@ -3293,7 +3291,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_rel_path, __pyx_t_3); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 75, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "algorithms/relklinker/rel_closure.pyx":76
+    /* "algorithms/sm/rel_closure.pyx":76
  * 		path.append(i)
  * 		rel_path.append(rels[i])
  * 		shortcaps.append(caps[i])             # <<<<<<<<<<<<<<
@@ -3305,7 +3303,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     __pyx_t_15 = __Pyx_PyList_Append(__pyx_v_shortcaps, __pyx_t_3); if (unlikely(__pyx_t_15 == ((int)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "algorithms/relklinker/rel_closure.pyx":77
+    /* "algorithms/sm/rel_closure.pyx":77
  * 		rel_path.append(rels[i])
  * 		shortcaps.append(caps[i])
  * 		i = preds[i]             # <<<<<<<<<<<<<<
@@ -3318,12 +3316,12 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
     __pyx_t_3 = 0;
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":78
+  /* "algorithms/sm/rel_closure.pyx":78
  * 		shortcaps.append(caps[i])
  * 		i = preds[i]
  * 	path, rel_path = path[::-1], rel_path[::-1]             # <<<<<<<<<<<<<<
  * 	pathlen = len(path) - 1
- * 	rp = RelationalPath(s, p, o, caps[o], pathlen, path, rel_path, shortcaps)
+ * 
  */
   __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_path, __pyx_slice_); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -3334,115 +3332,43 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __Pyx_DECREF_SET(__pyx_v_rel_path, ((PyObject*)__pyx_t_4));
   __pyx_t_4 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":79
+  /* "algorithms/sm/rel_closure.pyx":79
  * 		i = preds[i]
  * 	path, rel_path = path[::-1], rel_path[::-1]
  * 	pathlen = len(path) - 1             # <<<<<<<<<<<<<<
- * 	rp = RelationalPath(s, p, o, caps[o], pathlen, path, rel_path, shortcaps)
- * 	return rp
+ * 
+ * 	return shortcaps, path, rel_path
  */
   __pyx_t_16 = PyList_GET_SIZE(__pyx_v_path); if (unlikely(__pyx_t_16 == ((Py_ssize_t)-1))) __PYX_ERR(0, 79, __pyx_L1_error)
   __pyx_v_pathlen = (__pyx_t_16 - 1);
 
-  /* "algorithms/relklinker/rel_closure.pyx":80
- * 	path, rel_path = path[::-1], rel_path[::-1]
+  /* "algorithms/sm/rel_closure.pyx":81
  * 	pathlen = len(path) - 1
- * 	rp = RelationalPath(s, p, o, caps[o], pathlen, path, rel_path, shortcaps)             # <<<<<<<<<<<<<<
- * 	return rp
  * 
- */
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_RelationalPath); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_v_caps, __pyx_v_o); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 80, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_pathlen); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 80, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_7 = NULL;
-  __pyx_t_13 = 0;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_7)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_7);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-      __pyx_t_13 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_3)) {
-    PyObject *__pyx_temp[9] = {__pyx_t_7, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_t_5, __pyx_t_2, __pyx_v_path, __pyx_v_rel_path, __pyx_v_shortcaps};
-    __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_13, 8+__pyx_t_13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 80, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
-    PyObject *__pyx_temp[9] = {__pyx_t_7, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_t_5, __pyx_t_2, __pyx_v_path, __pyx_v_rel_path, __pyx_v_shortcaps};
-    __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_13, 8+__pyx_t_13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 80, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  } else
-  #endif
-  {
-    __pyx_t_17 = PyTuple_New(8+__pyx_t_13); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 80, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_17);
-    if (__pyx_t_7) {
-      __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_7); __pyx_t_7 = NULL;
-    }
-    __Pyx_INCREF(__pyx_v_s);
-    __Pyx_GIVEREF(__pyx_v_s);
-    PyTuple_SET_ITEM(__pyx_t_17, 0+__pyx_t_13, __pyx_v_s);
-    __Pyx_INCREF(__pyx_v_p);
-    __Pyx_GIVEREF(__pyx_v_p);
-    PyTuple_SET_ITEM(__pyx_t_17, 1+__pyx_t_13, __pyx_v_p);
-    __Pyx_INCREF(__pyx_v_o);
-    __Pyx_GIVEREF(__pyx_v_o);
-    PyTuple_SET_ITEM(__pyx_t_17, 2+__pyx_t_13, __pyx_v_o);
-    __Pyx_GIVEREF(__pyx_t_5);
-    PyTuple_SET_ITEM(__pyx_t_17, 3+__pyx_t_13, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_17, 4+__pyx_t_13, __pyx_t_2);
-    __Pyx_INCREF(__pyx_v_path);
-    __Pyx_GIVEREF(__pyx_v_path);
-    PyTuple_SET_ITEM(__pyx_t_17, 5+__pyx_t_13, __pyx_v_path);
-    __Pyx_INCREF(__pyx_v_rel_path);
-    __Pyx_GIVEREF(__pyx_v_rel_path);
-    PyTuple_SET_ITEM(__pyx_t_17, 6+__pyx_t_13, __pyx_v_rel_path);
-    __Pyx_INCREF(__pyx_v_shortcaps);
-    __Pyx_GIVEREF(__pyx_v_shortcaps);
-    PyTuple_SET_ITEM(__pyx_t_17, 7+__pyx_t_13, __pyx_v_shortcaps);
-    __pyx_t_5 = 0;
-    __pyx_t_2 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_17, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 80, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_v_rp = __pyx_t_4;
-  __pyx_t_4 = 0;
-
-  /* "algorithms/relklinker/rel_closure.pyx":81
- * 	pathlen = len(path) - 1
- * 	rp = RelationalPath(s, p, o, caps[o], pathlen, path, rel_path, shortcaps)
- * 	return rp             # <<<<<<<<<<<<<<
+ * 	return shortcaps, path, rel_path             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_rp);
-  __pyx_r = __pyx_v_rp;
+  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_INCREF(__pyx_v_shortcaps);
+  __Pyx_GIVEREF(__pyx_v_shortcaps);
+  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_shortcaps);
+  __Pyx_INCREF(__pyx_v_path);
+  __Pyx_GIVEREF(__pyx_v_path);
+  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_v_path);
+  __Pyx_INCREF(__pyx_v_rel_path);
+  __Pyx_GIVEREF(__pyx_v_rel_path);
+  PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_v_rel_path);
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":22
+  /* "algorithms/sm/rel_closure.pyx":22
  * # ================ CLOSURE PROCEDURES ================
  * 
- * cpdef relational_closure(G, s, p, o, kind='metric', linkpred=True):             # <<<<<<<<<<<<<<
+ * cpdef relational_closure_sm(G, s, p, o, kind='metric', linkpred=True):             # <<<<<<<<<<<<<<
  * 	"""
  * 	Computes a relational closure using Dijkstra's algorithm.
  */
@@ -3457,8 +3383,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_9, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
-  __Pyx_XDECREF(__pyx_t_17);
-  __Pyx_AddTraceback("algorithms.relklinker.rel_closure.relational_closure", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("algorithms.sm.rel_closure.relational_closure_sm", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_data, 1);
@@ -3471,16 +3396,15 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_relational_clos
   __Pyx_XDECREF(__pyx_v_rel_path);
   __Pyx_XDECREF(__pyx_v_shortcaps);
   __Pyx_XDECREF(__pyx_v_i);
-  __Pyx_XDECREF(__pyx_v_rp);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_1relational_closure(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10algorithms_10relklinker_11rel_closure_relational_closure[] = "\n\tComputes a relational closure using Dijkstra's algorithm.\n\n\tParameters:\n\t-----------\n\tG: rgraph\n\t\tA knowledge graph with weights already set. E.g. An entry (i, j, k)\n\t\tmay represent the product of relational similarity and specificity\n\t\tdue to the incident node.\n\ts, p, o: int\n\t\tIndices corresponding to the subject, predicate and object of the triple.\n\tlinkpred: bool\n\t\tWhether to perform link prediction.\n\n\tReturns:\n\t--------\n\trp: RelationalPath\n\t\tA relational path found through closure.\n\t";
-static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_1relational_closure(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10algorithms_2sm_11rel_closure_1relational_closure_sm(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_10algorithms_2sm_11rel_closure_relational_closure_sm[] = "\n\tComputes a relational closure using Dijkstra's algorithm.\n\n\tParameters:\n\t-----------\n\tG: rgraph\n\t\tA knowledge graph with weights already set. E.g. An entry (i, j, k)\n\t\tmay represent the product of relational similarity and specificity\n\t\tdue to the incident node.\n\ts, p, o: int\n\t\tIndices corresponding to the subject, predicate and object of the triple.\n\tlinkpred: bool\n\t\tWhether to perform link prediction.\n\n\tReturns:\n\t--------\n\trp: RelationalPath\n\t\tA relational path found through closure.\n\t";
+static PyObject *__pyx_pw_10algorithms_2sm_11rel_closure_1relational_closure_sm(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_G = 0;
   PyObject *__pyx_v_s = 0;
   PyObject *__pyx_v_p = 0;
@@ -3489,7 +3413,7 @@ static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_1relational_cl
   PyObject *__pyx_v_linkpred = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("relational_closure (wrapper)", 0);
+  __Pyx_RefNannySetupContext("relational_closure_sm (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_s,&__pyx_n_s_p,&__pyx_n_s_o,&__pyx_n_s_kind,&__pyx_n_s_linkpred,0};
     PyObject* values[6] = {0,0,0,0,0,0};
@@ -3523,19 +3447,19 @@ static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_1relational_cl
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("relational_closure", 0, 4, 6, 1); __PYX_ERR(0, 22, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("relational_closure_sm", 0, 4, 6, 1); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_p)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("relational_closure", 0, 4, 6, 2); __PYX_ERR(0, 22, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("relational_closure_sm", 0, 4, 6, 2); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_o)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("relational_closure", 0, 4, 6, 3); __PYX_ERR(0, 22, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("relational_closure_sm", 0, 4, 6, 3); __PYX_ERR(0, 22, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
@@ -3551,7 +3475,7 @@ static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_1relational_cl
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "relational_closure") < 0)) __PYX_ERR(0, 22, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "relational_closure_sm") < 0)) __PYX_ERR(0, 22, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3576,30 +3500,30 @@ static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_1relational_cl
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("relational_closure", 0, 4, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 22, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("relational_closure_sm", 0, 4, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 22, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("algorithms.relklinker.rel_closure.relational_closure", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("algorithms.sm.rel_closure.relational_closure_sm", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10algorithms_10relklinker_11rel_closure_relational_closure(__pyx_self, __pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_v_kind, __pyx_v_linkpred);
+  __pyx_r = __pyx_pf_10algorithms_2sm_11rel_closure_relational_closure_sm(__pyx_self, __pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, __pyx_v_kind, __pyx_v_linkpred);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_relational_closure(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_kind, PyObject *__pyx_v_linkpred) {
+static PyObject *__pyx_pf_10algorithms_2sm_11rel_closure_relational_closure_sm(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_s, PyObject *__pyx_v_p, PyObject *__pyx_v_o, PyObject *__pyx_v_kind, PyObject *__pyx_v_linkpred) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  struct __pyx_opt_args_10algorithms_10relklinker_11rel_closure_relational_closure __pyx_t_2;
-  __Pyx_RefNannySetupContext("relational_closure", 0);
+  struct __pyx_opt_args_10algorithms_2sm_11rel_closure_relational_closure_sm __pyx_t_2;
+  __Pyx_RefNannySetupContext("relational_closure_sm", 0);
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2.__pyx_n = 2;
   __pyx_t_2.kind = __pyx_v_kind;
   __pyx_t_2.linkpred = __pyx_v_linkpred;
-  __pyx_t_1 = __pyx_f_10algorithms_10relklinker_11rel_closure_relational_closure(__pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_10algorithms_2sm_11rel_closure_relational_closure_sm(__pyx_v_G, __pyx_v_s, __pyx_v_p, __pyx_v_o, 0, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3608,7 +3532,7 @@ static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_relational_clo
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("algorithms.relklinker.rel_closure.relational_closure", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("algorithms.sm.rel_closure.relational_closure_sm", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3616,7 +3540,7 @@ static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_relational_clo
   return __pyx_r;
 }
 
-/* "algorithms/relklinker/rel_closure.pyx":89
+/* "algorithms/sm/rel_closure.pyx":89
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * cdef cclosuress(             # <<<<<<<<<<<<<<
@@ -3624,7 +3548,7 @@ static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_relational_clo
  * 		int source, int predicate, int target, Closure closure
  */
 
-static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_indices, __Pyx_memviewslice __pyx_v_indptr, int __pyx_v_source, CYTHON_UNUSED int __pyx_v_predicate, int __pyx_v_target, __pyx_t_10algorithms_10relklinker_11rel_closure_Closure __pyx_v_closure) {
+static PyObject *__pyx_f_10algorithms_2sm_11rel_closure_cclosuress(__Pyx_memviewslice __pyx_v_data, __Pyx_memviewslice __pyx_v_indices, __Pyx_memviewslice __pyx_v_indptr, int __pyx_v_source, CYTHON_UNUSED int __pyx_v_predicate, int __pyx_v_target, __pyx_t_10algorithms_2sm_11rel_closure_Closure __pyx_v_closure) {
   struct __pyx_obj_14datastructures_4heap_FastUpdateBinaryHeap *__pyx_v_Q = 0;
   int __pyx_v_N;
   int __pyx_v_node;
@@ -3686,7 +3610,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
   PyObject *__pyx_t_29 = NULL;
   __Pyx_RefNannySetupContext("cclosuress", 0);
 
-  /* "algorithms/relklinker/rel_closure.pyx":139
+  /* "algorithms/sm/rel_closure.pyx":139
  * 	# Initialize arrays to hold results
  * 	# =======================================
  * 	N = len(indptr) - 1             # <<<<<<<<<<<<<<
@@ -3696,7 +3620,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
   __pyx_t_1 = __Pyx_MemoryView_Len(__pyx_v_indptr); 
   __pyx_v_N = (__pyx_t_1 - 1);
 
-  /* "algorithms/relklinker/rel_closure.pyx":140
+  /* "algorithms/sm/rel_closure.pyx":140
  * 	# =======================================
  * 	N = len(indptr) - 1
  * 	Q = FastUpdateBinaryHeap(N, N)             # <<<<<<<<<<<<<<
@@ -3721,7 +3645,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
   __pyx_v_Q = ((struct __pyx_obj_14datastructures_4heap_FastUpdateBinaryHeap *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":142
+  /* "algorithms/sm/rel_closure.pyx":142
  * 	Q = FastUpdateBinaryHeap(N, N)
  * 	# capacities
  * 	_caps = <double*>malloc(N * sizeof(double))             # <<<<<<<<<<<<<<
@@ -3730,7 +3654,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
   __pyx_v__caps = ((double *)malloc((__pyx_v_N * (sizeof(double)))));
 
-  /* "algorithms/relklinker/rel_closure.pyx":143
+  /* "algorithms/sm/rel_closure.pyx":143
  * 	# capacities
  * 	_caps = <double*>malloc(N * sizeof(double))
  * 	capacities = <double[:N]>_caps             # <<<<<<<<<<<<<<
@@ -3757,7 +3681,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "algorithms/relklinker/rel_closure.pyx":144
+  /* "algorithms/sm/rel_closure.pyx":144
  * 	_caps = <double*>malloc(N * sizeof(double))
  * 	capacities = <double[:N]>_caps
  * 	capacities[...] = 0.             # <<<<<<<<<<<<<<
@@ -3779,7 +3703,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
       }
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":146
+  /* "algorithms/sm/rel_closure.pyx":146
  * 	capacities[...] = 0.
  * 	# predecessors
  * 	_preds = <long*>malloc(N * sizeof(long))             # <<<<<<<<<<<<<<
@@ -3788,7 +3712,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
   __pyx_v__preds = ((long *)malloc((__pyx_v_N * (sizeof(long)))));
 
-  /* "algorithms/relklinker/rel_closure.pyx":147
+  /* "algorithms/sm/rel_closure.pyx":147
  * 	# predecessors
  * 	_preds = <long*>malloc(N * sizeof(long))
  * 	predecessors = <long[:N]>_preds             # <<<<<<<<<<<<<<
@@ -3815,7 +3739,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "algorithms/relklinker/rel_closure.pyx":148
+  /* "algorithms/sm/rel_closure.pyx":148
  * 	_preds = <long*>malloc(N * sizeof(long))
  * 	predecessors = <long[:N]>_preds
  * 	predecessors[...] = -1             # <<<<<<<<<<<<<<
@@ -3837,7 +3761,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
       }
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":150
+  /* "algorithms/sm/rel_closure.pyx":150
  * 	predecessors[...] = -1
  * 	# relations
  * 	_rels = <int*>malloc(N * sizeof(int))             # <<<<<<<<<<<<<<
@@ -3846,7 +3770,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
   __pyx_v__rels = ((int *)malloc((__pyx_v_N * (sizeof(int)))));
 
-  /* "algorithms/relklinker/rel_closure.pyx":151
+  /* "algorithms/sm/rel_closure.pyx":151
  * 	# relations
  * 	_rels = <int*>malloc(N * sizeof(int))
  * 	relations = <int[:N]>_rels             # <<<<<<<<<<<<<<
@@ -3873,7 +3797,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "algorithms/relklinker/rel_closure.pyx":152
+  /* "algorithms/sm/rel_closure.pyx":152
  * 	_rels = <int*>malloc(N * sizeof(int))
  * 	relations = <int[:N]>_rels
  * 	relations[...] = -1             # <<<<<<<<<<<<<<
@@ -3895,7 +3819,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
       }
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":154
+  /* "algorithms/sm/rel_closure.pyx":154
  * 	relations[...] = -1
  * 	# found/visited/explored part of the graph
  * 	_found = <int*>malloc(N * sizeof(int))             # <<<<<<<<<<<<<<
@@ -3904,7 +3828,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
   __pyx_v__found = ((int *)malloc((__pyx_v_N * (sizeof(int)))));
 
-  /* "algorithms/relklinker/rel_closure.pyx":155
+  /* "algorithms/sm/rel_closure.pyx":155
  * 	# found/visited/explored part of the graph
  * 	_found = <int*>malloc(N * sizeof(int))
  * 	found = <int[:N]>malloc(N * sizeof(int))             # <<<<<<<<<<<<<<
@@ -3932,7 +3856,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
 
-  /* "algorithms/relklinker/rel_closure.pyx":156
+  /* "algorithms/sm/rel_closure.pyx":156
  * 	_found = <int*>malloc(N * sizeof(int))
  * 	found = <int[:N]>malloc(N * sizeof(int))
  * 	found[...] = 0             # <<<<<<<<<<<<<<
@@ -3954,7 +3878,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
       }
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":159
+  /* "algorithms/sm/rel_closure.pyx":159
  * 
  * 	# populate the queue
  * 	for node in range(N):             # <<<<<<<<<<<<<<
@@ -3966,7 +3890,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_node = __pyx_t_12;
 
-    /* "algorithms/relklinker/rel_closure.pyx":160
+    /* "algorithms/sm/rel_closure.pyx":160
  * 	# populate the queue
  * 	for node in range(N):
  * 		if node == source:             # <<<<<<<<<<<<<<
@@ -3976,7 +3900,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     __pyx_t_13 = ((__pyx_v_node == __pyx_v_source) != 0);
     if (__pyx_t_13) {
 
-      /* "algorithms/relklinker/rel_closure.pyx":161
+      /* "algorithms/sm/rel_closure.pyx":161
  * 	for node in range(N):
  * 		if node == source:
  * 			cap = 1.             # <<<<<<<<<<<<<<
@@ -3985,7 +3909,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
       __pyx_v_cap = 1.;
 
-      /* "algorithms/relklinker/rel_closure.pyx":160
+      /* "algorithms/sm/rel_closure.pyx":160
  * 	# populate the queue
  * 	for node in range(N):
  * 		if node == source:             # <<<<<<<<<<<<<<
@@ -3995,7 +3919,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
       goto __pyx_L5;
     }
 
-    /* "algorithms/relklinker/rel_closure.pyx":164
+    /* "algorithms/sm/rel_closure.pyx":164
  * 			# value, node, predecessor, relation index
  * 		else:
  * 			cap = 0.0             # <<<<<<<<<<<<<<
@@ -4007,7 +3931,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     }
     __pyx_L5:;
 
-    /* "algorithms/relklinker/rel_closure.pyx":165
+    /* "algorithms/sm/rel_closure.pyx":165
  * 		else:
  * 			cap = 0.0
  * 		capacities[node] = cap             # <<<<<<<<<<<<<<
@@ -4017,7 +3941,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     __pyx_t_14 = __pyx_v_node;
     *((double *) ( /* dim=0 */ (__pyx_v_capacities.data + __pyx_t_14 * __pyx_v_capacities.strides[0]) )) = __pyx_v_cap;
 
-    /* "algorithms/relklinker/rel_closure.pyx":166
+    /* "algorithms/sm/rel_closure.pyx":166
  * 			cap = 0.0
  * 		capacities[node] = cap
  * 		Q.push_fast(-cap, node)             # <<<<<<<<<<<<<<
@@ -4027,7 +3951,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     (void)(((struct __pyx_vtabstruct_14datastructures_4heap_FastUpdateBinaryHeap *)__pyx_v_Q->__pyx_base.__pyx_vtab)->__pyx_base.push_fast(((struct __pyx_obj_14datastructures_4heap_BinaryHeap *)__pyx_v_Q), (-__pyx_v_cap), __pyx_v_node));
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":169
+  /* "algorithms/sm/rel_closure.pyx":169
  * 
  * 	# compute path
  * 	while Q.count:             # <<<<<<<<<<<<<<
@@ -4038,7 +3962,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     __pyx_t_13 = (__pyx_v_Q->__pyx_base.count != 0);
     if (!__pyx_t_13) break;
 
-    /* "algorithms/relklinker/rel_closure.pyx":170
+    /* "algorithms/sm/rel_closure.pyx":170
  * 	# compute path
  * 	while Q.count:
  * 		cap = - Q.pop_fast() # +ve             # <<<<<<<<<<<<<<
@@ -4047,7 +3971,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
     __pyx_v_cap = (-((struct __pyx_vtabstruct_14datastructures_4heap_FastUpdateBinaryHeap *)__pyx_v_Q->__pyx_base.__pyx_vtab)->__pyx_base.pop_fast(((struct __pyx_obj_14datastructures_4heap_BinaryHeap *)__pyx_v_Q)));
 
-    /* "algorithms/relklinker/rel_closure.pyx":171
+    /* "algorithms/sm/rel_closure.pyx":171
  * 	while Q.count:
  * 		cap = - Q.pop_fast() # +ve
  * 		node = Q._popped_ref             # <<<<<<<<<<<<<<
@@ -4057,7 +3981,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     __pyx_t_10 = __pyx_v_Q->__pyx_base._popped_ref;
     __pyx_v_node = __pyx_t_10;
 
-    /* "algorithms/relklinker/rel_closure.pyx":172
+    /* "algorithms/sm/rel_closure.pyx":172
  * 		cap = - Q.pop_fast() # +ve
  * 		node = Q._popped_ref
  * 		if found[node] == 0:             # <<<<<<<<<<<<<<
@@ -4068,7 +3992,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     __pyx_t_13 = (((*((int *) ( /* dim=0 */ (__pyx_v_found.data + __pyx_t_15 * __pyx_v_found.strides[0]) ))) == 0) != 0);
     if (__pyx_t_13) {
 
-      /* "algorithms/relklinker/rel_closure.pyx":173
+      /* "algorithms/sm/rel_closure.pyx":173
  * 		node = Q._popped_ref
  * 		if found[node] == 0:
  * 			found[node] = 1             # <<<<<<<<<<<<<<
@@ -4078,7 +4002,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
       __pyx_t_16 = __pyx_v_node;
       *((int *) ( /* dim=0 */ (__pyx_v_found.data + __pyx_t_16 * __pyx_v_found.strides[0]) )) = 1;
 
-      /* "algorithms/relklinker/rel_closure.pyx":172
+      /* "algorithms/sm/rel_closure.pyx":172
  * 		cap = - Q.pop_fast() # +ve
  * 		node = Q._popped_ref
  * 		if found[node] == 0:             # <<<<<<<<<<<<<<
@@ -4087,7 +4011,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
     }
 
-    /* "algorithms/relklinker/rel_closure.pyx":174
+    /* "algorithms/sm/rel_closure.pyx":174
  * 		if found[node] == 0:
  * 			found[node] = 1
  * 		if node == target:             # <<<<<<<<<<<<<<
@@ -4097,7 +4021,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     __pyx_t_13 = ((__pyx_v_node == __pyx_v_target) != 0);
     if (__pyx_t_13) {
 
-      /* "algorithms/relklinker/rel_closure.pyx":175
+      /* "algorithms/sm/rel_closure.pyx":175
  * 			found[node] = 1
  * 		if node == target:
  * 			break # break when target has been extracted from the heap             # <<<<<<<<<<<<<<
@@ -4106,7 +4030,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
       goto __pyx_L7_break;
 
-      /* "algorithms/relklinker/rel_closure.pyx":174
+      /* "algorithms/sm/rel_closure.pyx":174
  * 		if found[node] == 0:
  * 			found[node] = 1
  * 		if node == target:             # <<<<<<<<<<<<<<
@@ -4115,7 +4039,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
  */
     }
 
-    /* "algorithms/relklinker/rel_closure.pyx":178
+    /* "algorithms/sm/rel_closure.pyx":178
  * 
  * 		# continue search to node's neighbors
  * 		start = indptr[node]             # <<<<<<<<<<<<<<
@@ -4125,7 +4049,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     __pyx_t_17 = __pyx_v_node;
     __pyx_v_start = (*((int *) ( /* dim=0 */ (__pyx_v_indptr.data + __pyx_t_17 * __pyx_v_indptr.strides[0]) )));
 
-    /* "algorithms/relklinker/rel_closure.pyx":179
+    /* "algorithms/sm/rel_closure.pyx":179
  * 		# continue search to node's neighbors
  * 		start = indptr[node]
  * 		end = indptr[node + 1]             # <<<<<<<<<<<<<<
@@ -4135,7 +4059,7 @@ static PyObject *__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress(__Py
     __pyx_t_18 = (__pyx_v_node + 1);
     __pyx_v_end = (*((int *) ( /* dim=0 */ (__pyx_v_indptr.data + __pyx_t_18 * __pyx_v_indptr.strides[0]) )));
 
-    /* "algorithms/relklinker/rel_closure.pyx":180
+    /* "algorithms/sm/rel_closure.pyx":180
  * 		start = indptr[node]
  * 		end = indptr[node + 1]
  * 		neighbors = indices[start:end] # nbrs in wide-CSR             # <<<<<<<<<<<<<<
@@ -4168,7 +4092,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_neighbors, 1);
     __pyx_t_7.memview = NULL;
     __pyx_t_7.data = NULL;
 
-    /* "algorithms/relklinker/rel_closure.pyx":181
+    /* "algorithms/sm/rel_closure.pyx":181
  * 		end = indptr[node + 1]
  * 		neighbors = indices[start:end] # nbrs in wide-CSR
  * 		nbr_caps = data[start:end]             # <<<<<<<<<<<<<<
@@ -4201,7 +4125,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
     __pyx_t_6.memview = NULL;
     __pyx_t_6.data = NULL;
 
-    /* "algorithms/relklinker/rel_closure.pyx":182
+    /* "algorithms/sm/rel_closure.pyx":182
  * 		neighbors = indices[start:end] # nbrs in wide-CSR
  * 		nbr_caps = data[start:end]
  * 		N_neigh = end - start             # <<<<<<<<<<<<<<
@@ -4210,7 +4134,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
  */
     __pyx_v_N_neigh = (__pyx_v_end - __pyx_v_start);
 
-    /* "algorithms/relklinker/rel_closure.pyx":183
+    /* "algorithms/sm/rel_closure.pyx":183
  * 		nbr_caps = data[start:end]
  * 		N_neigh = end - start
  * 		for i in xrange(N_neigh):             # <<<<<<<<<<<<<<
@@ -4222,7 +4146,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
     for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
       __pyx_v_i = __pyx_t_12;
 
-      /* "algorithms/relklinker/rel_closure.pyx":184
+      /* "algorithms/sm/rel_closure.pyx":184
  * 		N_neigh = end - start
  * 		for i in xrange(N_neigh):
  * 			neighbor = neighbors[i] % N # predecessor vec             # <<<<<<<<<<<<<<
@@ -4232,7 +4156,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
       __pyx_t_19 = __pyx_v_i;
       __pyx_v_neighbor = ((*((long *) ( /* dim=0 */ (__pyx_v_neighbors.data + __pyx_t_19 * __pyx_v_neighbors.strides[0]) ))) % __pyx_v_N);
 
-      /* "algorithms/relklinker/rel_closure.pyx":185
+      /* "algorithms/sm/rel_closure.pyx":185
  * 		for i in xrange(N_neigh):
  * 			neighbor = neighbors[i] % N # predecessor vec
  * 			neigh_cand_rel = (neighbors[i] - neighbor) / N # relation vec             # <<<<<<<<<<<<<<
@@ -4242,7 +4166,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
       __pyx_t_20 = __pyx_v_i;
       __pyx_v_neigh_cand_rel = (((*((long *) ( /* dim=0 */ (__pyx_v_neighbors.data + __pyx_t_20 * __pyx_v_neighbors.strides[0]) ))) - __pyx_v_neighbor) / __pyx_v_N);
 
-      /* "algorithms/relklinker/rel_closure.pyx":186
+      /* "algorithms/sm/rel_closure.pyx":186
  * 			neighbor = neighbors[i] % N # predecessor vec
  * 			neigh_cand_rel = (neighbors[i] - neighbor) / N # relation vec
  * 			relational_cap = nbr_caps[i] # weight of current edge (node, neighbor, neigh_cand_rel)             # <<<<<<<<<<<<<<
@@ -4252,7 +4176,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
       __pyx_t_21 = __pyx_v_i;
       __pyx_v_relational_cap = (*((double *) ( /* dim=0 */ (__pyx_v_nbr_caps.data + __pyx_t_21 * __pyx_v_nbr_caps.strides[0]) )));
 
-      /* "algorithms/relklinker/rel_closure.pyx":187
+      /* "algorithms/sm/rel_closure.pyx":187
  * 			neigh_cand_rel = (neighbors[i] - neighbor) / N # relation vec
  * 			relational_cap = nbr_caps[i] # weight of current edge (node, neighbor, neigh_cand_rel)
  * 			if found[neighbor] == 0:             # <<<<<<<<<<<<<<
@@ -4263,7 +4187,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
       __pyx_t_13 = (((*((int *) ( /* dim=0 */ (__pyx_v_found.data + __pyx_t_22 * __pyx_v_found.strides[0]) ))) == 0) != 0);
       if (__pyx_t_13) {
 
-        /* "algorithms/relklinker/rel_closure.pyx":188
+        /* "algorithms/sm/rel_closure.pyx":188
  * 			relational_cap = nbr_caps[i] # weight of current edge (node, neighbor, neigh_cand_rel)
  * 			if found[neighbor] == 0:
  * 				neigh_curr_cap = capacities[neighbor] # current cap/dist to source             # <<<<<<<<<<<<<<
@@ -4273,7 +4197,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
         __pyx_t_23 = __pyx_v_neighbor;
         __pyx_v_neigh_curr_cap = (*((double *) ( /* dim=0 */ (__pyx_v_capacities.data + __pyx_t_23 * __pyx_v_capacities.strides[0]) )));
 
-        /* "algorithms/relklinker/rel_closure.pyx":189
+        /* "algorithms/sm/rel_closure.pyx":189
  * 			if found[neighbor] == 0:
  * 				neigh_curr_cap = capacities[neighbor] # current cap/dist to source
  * 				neigh_curr_rel = relations[neighbor] # relation through which neighbor is connected to its predecessor             # <<<<<<<<<<<<<<
@@ -4283,7 +4207,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
         __pyx_t_24 = __pyx_v_neighbor;
         __pyx_v_neigh_curr_rel = (*((int *) ( /* dim=0 */ (__pyx_v_relations.data + __pyx_t_24 * __pyx_v_relations.strides[0]) )));
 
-        /* "algorithms/relklinker/rel_closure.pyx":190
+        /* "algorithms/sm/rel_closure.pyx":190
  * 				neigh_curr_cap = capacities[neighbor] # current cap/dist to source
  * 				neigh_curr_rel = relations[neighbor] # relation through which neighbor is connected to its predecessor
  * 				neigh_cand_cap = closure.conjf(cap, relational_cap) # candidate capacity             # <<<<<<<<<<<<<<
@@ -4292,7 +4216,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
  */
         __pyx_v_neigh_cand_cap = __pyx_v_closure.conjf(__pyx_v_cap, __pyx_v_relational_cap);
 
-        /* "algorithms/relklinker/rel_closure.pyx":191
+        /* "algorithms/sm/rel_closure.pyx":191
  * 				neigh_curr_rel = relations[neighbor] # relation through which neighbor is connected to its predecessor
  * 				neigh_cand_cap = closure.conjf(cap, relational_cap) # candidate capacity
  * 				new_cap = closure.disjf(neigh_cand_cap, neigh_curr_cap)             # <<<<<<<<<<<<<<
@@ -4301,7 +4225,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
  */
         __pyx_v_new_cap = __pyx_v_closure.disjf(__pyx_v_neigh_cand_cap, __pyx_v_neigh_curr_cap);
 
-        /* "algorithms/relklinker/rel_closure.pyx":192
+        /* "algorithms/sm/rel_closure.pyx":192
  * 				neigh_cand_cap = closure.conjf(cap, relational_cap) # candidate capacity
  * 				new_cap = closure.disjf(neigh_cand_cap, neigh_curr_cap)
  * 				if new_cap > neigh_curr_cap:             # <<<<<<<<<<<<<<
@@ -4311,7 +4235,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
         __pyx_t_13 = ((__pyx_v_new_cap > __pyx_v_neigh_curr_cap) != 0);
         if (__pyx_t_13) {
 
-          /* "algorithms/relklinker/rel_closure.pyx":193
+          /* "algorithms/sm/rel_closure.pyx":193
  * 				new_cap = closure.disjf(neigh_cand_cap, neigh_curr_cap)
  * 				if new_cap > neigh_curr_cap:
  * 					capacities[neighbor] = new_cap             # <<<<<<<<<<<<<<
@@ -4321,7 +4245,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
           __pyx_t_25 = __pyx_v_neighbor;
           *((double *) ( /* dim=0 */ (__pyx_v_capacities.data + __pyx_t_25 * __pyx_v_capacities.strides[0]) )) = __pyx_v_new_cap;
 
-          /* "algorithms/relklinker/rel_closure.pyx":194
+          /* "algorithms/sm/rel_closure.pyx":194
  * 				if new_cap > neigh_curr_cap:
  * 					capacities[neighbor] = new_cap
  * 					predecessors[neighbor] = node             # <<<<<<<<<<<<<<
@@ -4331,7 +4255,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
           __pyx_t_26 = __pyx_v_neighbor;
           *((long *) ( /* dim=0 */ (__pyx_v_predecessors.data + __pyx_t_26 * __pyx_v_predecessors.strides[0]) )) = __pyx_v_node;
 
-          /* "algorithms/relklinker/rel_closure.pyx":195
+          /* "algorithms/sm/rel_closure.pyx":195
  * 					capacities[neighbor] = new_cap
  * 					predecessors[neighbor] = node
  * 					relations[neighbor] = neigh_cand_rel # candidate relation             # <<<<<<<<<<<<<<
@@ -4341,7 +4265,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
           __pyx_t_27 = __pyx_v_neighbor;
           *((int *) ( /* dim=0 */ (__pyx_v_relations.data + __pyx_t_27 * __pyx_v_relations.strides[0]) )) = __pyx_v_neigh_cand_rel;
 
-          /* "algorithms/relklinker/rel_closure.pyx":196
+          /* "algorithms/sm/rel_closure.pyx":196
  * 					predecessors[neighbor] = node
  * 					relations[neighbor] = neigh_cand_rel # candidate relation
  * 					Q.push_if_lower_fast(-new_cap, neighbor) # heapify             # <<<<<<<<<<<<<<
@@ -4350,7 +4274,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
  */
           (void)(((struct __pyx_vtabstruct_14datastructures_4heap_FastUpdateBinaryHeap *)__pyx_v_Q->__pyx_base.__pyx_vtab)->push_if_lower_fast(__pyx_v_Q, (-__pyx_v_new_cap), __pyx_v_neighbor));
 
-          /* "algorithms/relklinker/rel_closure.pyx":192
+          /* "algorithms/sm/rel_closure.pyx":192
  * 				neigh_cand_cap = closure.conjf(cap, relational_cap) # candidate capacity
  * 				new_cap = closure.disjf(neigh_cand_cap, neigh_curr_cap)
  * 				if new_cap > neigh_curr_cap:             # <<<<<<<<<<<<<<
@@ -4359,7 +4283,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
  */
         }
 
-        /* "algorithms/relklinker/rel_closure.pyx":187
+        /* "algorithms/sm/rel_closure.pyx":187
  * 			neigh_cand_rel = (neighbors[i] - neighbor) / N # relation vec
  * 			relational_cap = nbr_caps[i] # weight of current edge (node, neighbor, neigh_cand_rel)
  * 			if found[neighbor] == 0:             # <<<<<<<<<<<<<<
@@ -4371,7 +4295,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
   }
   __pyx_L7_break:;
 
-  /* "algorithms/relklinker/rel_closure.pyx":197
+  /* "algorithms/sm/rel_closure.pyx":197
  * 					relations[neighbor] = neigh_cand_rel # candidate relation
  * 					Q.push_if_lower_fast(-new_cap, neighbor) # heapify
  * 	caps_arr = np.asarray(capacities)             # <<<<<<<<<<<<<<
@@ -4435,7 +4359,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
   __pyx_v_caps_arr = ((PyArrayObject *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":198
+  /* "algorithms/sm/rel_closure.pyx":198
  * 					Q.push_if_lower_fast(-new_cap, neighbor) # heapify
  * 	caps_arr = np.asarray(capacities)
  * 	preds_arr = np.asarray(predecessors)             # <<<<<<<<<<<<<<
@@ -4499,7 +4423,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
   __pyx_v_preds_arr = ((PyArrayObject *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":199
+  /* "algorithms/sm/rel_closure.pyx":199
  * 	caps_arr = np.asarray(capacities)
  * 	preds_arr = np.asarray(predecessors)
  * 	rels_arr = np.asarray(relations)             # <<<<<<<<<<<<<<
@@ -4563,34 +4487,34 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
   __pyx_v_rels_arr = ((PyArrayObject *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":200
+  /* "algorithms/sm/rel_closure.pyx":200
  * 	preds_arr = np.asarray(predecessors)
  * 	rels_arr = np.asarray(relations)
  * 	set_base(caps_arr, _caps)             # <<<<<<<<<<<<<<
  * 	set_base(preds_arr, _preds)
  * 	set_base(rels_arr, _rels)
  */
-  __pyx_f_10algorithms_10relklinker_11rel_closure_set_base(__pyx_v_caps_arr, __pyx_v__caps);
+  __pyx_f_10algorithms_2sm_11rel_closure_set_base(__pyx_v_caps_arr, __pyx_v__caps);
 
-  /* "algorithms/relklinker/rel_closure.pyx":201
+  /* "algorithms/sm/rel_closure.pyx":201
  * 	rels_arr = np.asarray(relations)
  * 	set_base(caps_arr, _caps)
  * 	set_base(preds_arr, _preds)             # <<<<<<<<<<<<<<
  * 	set_base(rels_arr, _rels)
  * 	return caps_arr, preds_arr, rels_arr
  */
-  __pyx_f_10algorithms_10relklinker_11rel_closure_set_base(__pyx_v_preds_arr, __pyx_v__preds);
+  __pyx_f_10algorithms_2sm_11rel_closure_set_base(__pyx_v_preds_arr, __pyx_v__preds);
 
-  /* "algorithms/relklinker/rel_closure.pyx":202
+  /* "algorithms/sm/rel_closure.pyx":202
  * 	set_base(caps_arr, _caps)
  * 	set_base(preds_arr, _preds)
  * 	set_base(rels_arr, _rels)             # <<<<<<<<<<<<<<
  * 	return caps_arr, preds_arr, rels_arr
  * 
  */
-  __pyx_f_10algorithms_10relklinker_11rel_closure_set_base(__pyx_v_rels_arr, __pyx_v__rels);
+  __pyx_f_10algorithms_2sm_11rel_closure_set_base(__pyx_v_rels_arr, __pyx_v__rels);
 
-  /* "algorithms/relklinker/rel_closure.pyx":203
+  /* "algorithms/sm/rel_closure.pyx":203
  * 	set_base(preds_arr, _preds)
  * 	set_base(rels_arr, _rels)
  * 	return caps_arr, preds_arr, rels_arr             # <<<<<<<<<<<<<<
@@ -4613,7 +4537,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":89
+  /* "algorithms/sm/rel_closure.pyx":89
  * @cython.initializedcheck(False)
  * @cython.cdivision(True)
  * cdef cclosuress(             # <<<<<<<<<<<<<<
@@ -4632,7 +4556,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
   __Pyx_XDECREF(__pyx_t_28);
   __Pyx_XDECREF(__pyx_t_29);
-  __Pyx_AddTraceback("algorithms.relklinker.rel_closure.cclosuress", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("algorithms.sm.rel_closure.cclosuress", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_Q);
@@ -4650,7 +4574,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
   return __pyx_r;
 }
 
-/* "algorithms/relklinker/rel_closure.pyx":209
+/* "algorithms/sm/rel_closure.pyx":209
  * cdef class _finalizer:
  * 	cdef void *_data
  * 	def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -4659,22 +4583,22 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_nbr_caps, 1);
  */
 
 /* Python wrapper */
-static void __pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_1__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_1__dealloc__(PyObject *__pyx_v_self) {
+static void __pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_1__dealloc__(PyObject *__pyx_v_self); /*proto*/
+static void __pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_1__dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer___dealloc__(((struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *)__pyx_v_self));
+  __pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer___dealloc__(((struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
 
-static void __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer___dealloc__(struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *__pyx_v_self) {
+static void __pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer___dealloc__(struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "algorithms/relklinker/rel_closure.pyx":210
+  /* "algorithms/sm/rel_closure.pyx":210
  * 	cdef void *_data
  * 	def __dealloc__(self):
  * 		if self._data is not NULL:             # <<<<<<<<<<<<<<
@@ -4684,7 +4608,7 @@ static void __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer___deal
   __pyx_t_1 = ((__pyx_v_self->_data != NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "algorithms/relklinker/rel_closure.pyx":211
+    /* "algorithms/sm/rel_closure.pyx":211
  * 	def __dealloc__(self):
  * 		if self._data is not NULL:
  * 			free(self._data)             # <<<<<<<<<<<<<<
@@ -4693,7 +4617,7 @@ static void __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer___deal
  */
     free(__pyx_v_self->_data);
 
-    /* "algorithms/relklinker/rel_closure.pyx":210
+    /* "algorithms/sm/rel_closure.pyx":210
  * 	cdef void *_data
  * 	def __dealloc__(self):
  * 		if self._data is not NULL:             # <<<<<<<<<<<<<<
@@ -4702,7 +4626,7 @@ static void __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer___deal
  */
   }
 
-  /* "algorithms/relklinker/rel_closure.pyx":209
+  /* "algorithms/sm/rel_closure.pyx":209
  * cdef class _finalizer:
  * 	cdef void *_data
  * 	def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -4721,19 +4645,19 @@ static void __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer___deal
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_2__reduce_cython__(((struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer_2__reduce_cython__(((struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *__pyx_v_self) {
+static PyObject *__pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4760,7 +4684,7 @@ static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_2
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("algorithms.relklinker.rel_closure._finalizer.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("algorithms.sm.rel_closure._finalizer.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -4775,19 +4699,19 @@ static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_2
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_4__setstate_cython__(((struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer_4__setstate_cython__(((struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_10algorithms_2sm_11rel_closure_10_finalizer_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4814,14 +4738,14 @@ static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_4
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("algorithms.relklinker.rel_closure._finalizer.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("algorithms.sm.rel_closure._finalizer.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "algorithms/relklinker/rel_closure.pyx":213
+/* "algorithms/sm/rel_closure.pyx":213
  * 			free(self._data)
  * 
  * cdef void set_base(np.ndarray arr, void *carr):             # <<<<<<<<<<<<<<
@@ -4829,25 +4753,25 @@ static PyObject *__pyx_pf_10algorithms_10relklinker_11rel_closure_10_finalizer_4
  * 	f._data = <void*>carr
  */
 
-static void __pyx_f_10algorithms_10relklinker_11rel_closure_set_base(PyArrayObject *__pyx_v_arr, void *__pyx_v_carr) {
-  struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *__pyx_v_f = 0;
+static void __pyx_f_10algorithms_2sm_11rel_closure_set_base(PyArrayObject *__pyx_v_arr, void *__pyx_v_carr) {
+  struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *__pyx_v_f = 0;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("set_base", 0);
 
-  /* "algorithms/relklinker/rel_closure.pyx":214
+  /* "algorithms/sm/rel_closure.pyx":214
  * 
  * cdef void set_base(np.ndarray arr, void *carr):
  * 	cdef _finalizer f = _finalizer()             # <<<<<<<<<<<<<<
  * 	f._data = <void*>carr
  * 	np.set_array_base(arr, f)
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_10algorithms_10relklinker_11rel_closure__finalizer)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_10algorithms_2sm_11rel_closure__finalizer)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_f = ((struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer *)__pyx_t_1);
+  __pyx_v_f = ((struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":215
+  /* "algorithms/sm/rel_closure.pyx":215
  * cdef void set_base(np.ndarray arr, void *carr):
  * 	cdef _finalizer f = _finalizer()
  * 	f._data = <void*>carr             # <<<<<<<<<<<<<<
@@ -4855,14 +4779,14 @@ static void __pyx_f_10algorithms_10relklinker_11rel_closure_set_base(PyArrayObje
  */
   __pyx_v_f->_data = ((void *)__pyx_v_carr);
 
-  /* "algorithms/relklinker/rel_closure.pyx":216
+  /* "algorithms/sm/rel_closure.pyx":216
  * 	cdef _finalizer f = _finalizer()
  * 	f._data = <void*>carr
  * 	np.set_array_base(arr, f)             # <<<<<<<<<<<<<<
  */
   __pyx_f_5numpy_set_array_base(__pyx_v_arr, ((PyObject *)__pyx_v_f));
 
-  /* "algorithms/relklinker/rel_closure.pyx":213
+  /* "algorithms/sm/rel_closure.pyx":213
  * 			free(self._data)
  * 
  * cdef void set_base(np.ndarray arr, void *carr):             # <<<<<<<<<<<<<<
@@ -4874,13 +4798,13 @@ static void __pyx_f_10algorithms_10relklinker_11rel_closure_set_base(PyArrayObje
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_WriteUnraisable("algorithms.relklinker.rel_closure.set_base", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("algorithms.sm.rel_closure.set_base", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_f);
   __Pyx_RefNannyFinishContext();
 }
 
-/* "algorithms/relklinker/rel_closure.pxd":9
+/* "algorithms/sm/rel_closure.pxd":9
  * 	double disjf(double, double) nogil
  * 
  * cdef inline double _dombit1(double a, double b) nogil:             # <<<<<<<<<<<<<<
@@ -4888,14 +4812,14 @@ static void __pyx_f_10algorithms_10relklinker_11rel_closure_set_base(PyArrayObje
  * 
  */
 
-static CYTHON_INLINE double __pyx_f_10algorithms_10relklinker_11rel_closure__dombit1(double __pyx_v_a, double __pyx_v_b) {
+static CYTHON_INLINE double __pyx_f_10algorithms_2sm_11rel_closure__dombit1(double __pyx_v_a, double __pyx_v_b) {
   double __pyx_r;
   int __pyx_t_1;
   int __pyx_t_2;
   double __pyx_t_3;
   double __pyx_t_4;
 
-  /* "algorithms/relklinker/rel_closure.pxd":22
+  /* "algorithms/sm/rel_closure.pxd":22
  * 
  * 	"""
  * 	if a == b == 0:             # <<<<<<<<<<<<<<
@@ -4909,7 +4833,7 @@ static CYTHON_INLINE double __pyx_f_10algorithms_10relklinker_11rel_closure__dom
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "algorithms/relklinker/rel_closure.pxd":23
+    /* "algorithms/sm/rel_closure.pxd":23
  * 	"""
  * 	if a == b == 0:
  * 		return 0.0             # <<<<<<<<<<<<<<
@@ -4919,7 +4843,7 @@ static CYTHON_INLINE double __pyx_f_10algorithms_10relklinker_11rel_closure__dom
     __pyx_r = 0.0;
     goto __pyx_L0;
 
-    /* "algorithms/relklinker/rel_closure.pxd":22
+    /* "algorithms/sm/rel_closure.pxd":22
  * 
  * 	"""
  * 	if a == b == 0:             # <<<<<<<<<<<<<<
@@ -4928,7 +4852,7 @@ static CYTHON_INLINE double __pyx_f_10algorithms_10relklinker_11rel_closure__dom
  */
   }
 
-  /* "algorithms/relklinker/rel_closure.pxd":25
+  /* "algorithms/sm/rel_closure.pxd":25
  * 		return 0.0
  * 	else:
  * 		return (a * b) / (a + b - a * b)             # <<<<<<<<<<<<<<
@@ -4952,7 +4876,7 @@ static CYTHON_INLINE double __pyx_f_10algorithms_10relklinker_11rel_closure__dom
     goto __pyx_L0;
   }
 
-  /* "algorithms/relklinker/rel_closure.pxd":9
+  /* "algorithms/sm/rel_closure.pxd":9
  * 	double disjf(double, double) nogil
  * 
  * cdef inline double _dombit1(double a, double b) nogil:             # <<<<<<<<<<<<<<
@@ -4962,7 +4886,7 @@ static CYTHON_INLINE double __pyx_f_10algorithms_10relklinker_11rel_closure__dom
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_WriteUnraisable("algorithms.relklinker.rel_closure._dombit1", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
+  __Pyx_WriteUnraisable("algorithms.sm.rel_closure._dombit1", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
   __pyx_r = 0;
   __pyx_L0:;
   return __pyx_r;
@@ -20692,7 +20616,7 @@ static PyObject *__pyx_format_from_typeinfo(__Pyx_TypeInfo *__pyx_v_type) {
   return __pyx_r;
 }
 
-static PyObject *__pyx_tp_new_10algorithms_10relklinker_11rel_closure__finalizer(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_10algorithms_2sm_11rel_closure__finalizer(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -20703,7 +20627,7 @@ static PyObject *__pyx_tp_new_10algorithms_10relklinker_11rel_closure__finalizer
   return o;
 }
 
-static void __pyx_tp_dealloc_10algorithms_10relklinker_11rel_closure__finalizer(PyObject *o) {
+static void __pyx_tp_dealloc_10algorithms_2sm_11rel_closure__finalizer(PyObject *o) {
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -20713,25 +20637,25 @@ static void __pyx_tp_dealloc_10algorithms_10relklinker_11rel_closure__finalizer(
     PyObject *etype, *eval, *etb;
     PyErr_Fetch(&etype, &eval, &etb);
     ++Py_REFCNT(o);
-    __pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_1__dealloc__(o);
+    __pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_1__dealloc__(o);
     --Py_REFCNT(o);
     PyErr_Restore(etype, eval, etb);
   }
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static PyMethodDef __pyx_methods_10algorithms_10relklinker_11rel_closure__finalizer[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_3__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_10algorithms_10relklinker_11rel_closure_10_finalizer_5__setstate_cython__, METH_O, 0},
+static PyMethodDef __pyx_methods_10algorithms_2sm_11rel_closure__finalizer[] = {
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_3__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_10algorithms_2sm_11rel_closure_10_finalizer_5__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_10algorithms_10relklinker_11rel_closure__finalizer = {
+static PyTypeObject __pyx_type_10algorithms_2sm_11rel_closure__finalizer = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.relklinker.rel_closure._finalizer", /*tp_name*/
-  sizeof(struct __pyx_obj_10algorithms_10relklinker_11rel_closure__finalizer), /*tp_basicsize*/
+  "algorithms.sm.rel_closure._finalizer", /*tp_name*/
+  sizeof(struct __pyx_obj_10algorithms_2sm_11rel_closure__finalizer), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_10algorithms_10relklinker_11rel_closure__finalizer, /*tp_dealloc*/
+  __pyx_tp_dealloc_10algorithms_2sm_11rel_closure__finalizer, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -20759,7 +20683,7 @@ static PyTypeObject __pyx_type_10algorithms_10relklinker_11rel_closure__finalize
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_10algorithms_10relklinker_11rel_closure__finalizer, /*tp_methods*/
+  __pyx_methods_10algorithms_2sm_11rel_closure__finalizer, /*tp_methods*/
   0, /*tp_members*/
   0, /*tp_getset*/
   0, /*tp_base*/
@@ -20769,7 +20693,7 @@ static PyTypeObject __pyx_type_10algorithms_10relklinker_11rel_closure__finalize
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_10algorithms_10relklinker_11rel_closure__finalizer, /*tp_new*/
+  __pyx_tp_new_10algorithms_2sm_11rel_closure__finalizer, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -20906,7 +20830,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.relklinker.rel_closure.array", /*tp_name*/
+  "algorithms.sm.rel_closure.array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -21014,7 +20938,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.relklinker.rel_closure.Enum", /*tp_name*/
+  "algorithms.sm.rel_closure.Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -21264,7 +21188,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.relklinker.rel_closure.memoryview", /*tp_name*/
+  "algorithms.sm.rel_closure.memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -21391,7 +21315,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "algorithms.relklinker.rel_closure._memoryviewslice", /*tp_name*/
+  "algorithms.sm.rel_closure._memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -21456,7 +21380,7 @@ static PyTypeObject __pyx_type___pyx_memoryviewslice = {
 };
 
 static PyMethodDef __pyx_methods[] = {
-  {"relational_closure", (PyCFunction)__pyx_pw_10algorithms_10relklinker_11rel_closure_1relational_closure, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10algorithms_10relklinker_11rel_closure_relational_closure},
+  {"relational_closure_sm", (PyCFunction)__pyx_pw_10algorithms_2sm_11rel_closure_1relational_closure_sm, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10algorithms_2sm_11rel_closure_relational_closure_sm},
   {0, 0, 0, 0}
 };
 
@@ -21653,12 +21577,12 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "algorithms/relklinker/rel_closure.pyx":78
+  /* "algorithms/sm/rel_closure.pyx":78
  * 		shortcaps.append(caps[i])
  * 		i = preds[i]
  * 	path, rel_path = path[::-1], rel_path[::-1]             # <<<<<<<<<<<<<<
  * 	pathlen = len(path) - 1
- * 	rp = RelationalPath(s, p, o, caps[o], pathlen, path, rel_path, shortcaps)
+ * 
  */
   __pyx_slice_ = PySlice_New(Py_None, Py_None, __pyx_int_neg_1); if (unlikely(!__pyx_slice_)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice_);
@@ -22124,8 +22048,8 @@ static int __Pyx_modinit_function_export_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("relational_closure", (void (*)(void))__pyx_f_10algorithms_10relklinker_11rel_closure_relational_closure, "PyObject *(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_10relklinker_11rel_closure_relational_closure *__pyx_optional_args)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("cclosuress", (void (*)(void))__pyx_f_10algorithms_10relklinker_11rel_closure_cclosuress, "PyObject *(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, __pyx_t_10algorithms_10relklinker_11rel_closure_Closure)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("relational_closure_sm", (void (*)(void))__pyx_f_10algorithms_2sm_11rel_closure_relational_closure_sm, "PyObject *(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch, struct __pyx_opt_args_10algorithms_2sm_11rel_closure_relational_closure_sm *__pyx_optional_args)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("cclosuress", (void (*)(void))__pyx_f_10algorithms_2sm_11rel_closure_cclosuress, "PyObject *(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, __pyx_t_10algorithms_2sm_11rel_closure_Closure)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -22137,14 +22061,14 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_10algorithms_10relklinker_11rel_closure__finalizer) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
-  __pyx_type_10algorithms_10relklinker_11rel_closure__finalizer.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_10algorithms_10relklinker_11rel_closure__finalizer.tp_dictoffset && __pyx_type_10algorithms_10relklinker_11rel_closure__finalizer.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_10algorithms_10relklinker_11rel_closure__finalizer.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if (PyType_Ready(&__pyx_type_10algorithms_2sm_11rel_closure__finalizer) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_type_10algorithms_2sm_11rel_closure__finalizer.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_10algorithms_2sm_11rel_closure__finalizer.tp_dictoffset && __pyx_type_10algorithms_2sm_11rel_closure__finalizer.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_10algorithms_2sm_11rel_closure__finalizer.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttrString(__pyx_m, "_finalizer", (PyObject *)&__pyx_type_10algorithms_10relklinker_11rel_closure__finalizer) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10algorithms_10relklinker_11rel_closure__finalizer) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
-  __pyx_ptype_10algorithms_10relklinker_11rel_closure__finalizer = &__pyx_type_10algorithms_10relklinker_11rel_closure__finalizer;
+  if (PyObject_SetAttrString(__pyx_m, "_finalizer", (PyObject *)&__pyx_type_10algorithms_2sm_11rel_closure__finalizer) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_10algorithms_2sm_11rel_closure__finalizer) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_ptype_10algorithms_2sm_11rel_closure__finalizer = &__pyx_type_10algorithms_2sm_11rel_closure__finalizer;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) __PYX_ERR(1, 104, __pyx_L1_error)
@@ -22385,14 +22309,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_algorithms__relklinker__rel_closure) {
+  if (__pyx_module_is_main_algorithms__sm__rel_closure) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "algorithms.relklinker.rel_closure")) {
-      if (unlikely(PyDict_SetItemString(modules, "algorithms.relklinker.rel_closure", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "algorithms.sm.rel_closure")) {
+      if (unlikely(PyDict_SetItemString(modules, "algorithms.sm.rel_closure", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -22413,7 +22337,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "algorithms/relklinker/rel_closure.pyx":2
+  /* "algorithms/sm/rel_closure.pyx":2
  * # cython: profile=False
  * import numpy as np             # <<<<<<<<<<<<<<
  * 
@@ -22424,7 +22348,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":4
+  /* "algorithms/sm/rel_closure.pyx":4
  * import numpy as np
  * 
  * from datastructures.relationalpath import RelationalPath             # <<<<<<<<<<<<<<
@@ -22445,7 +22369,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":14
+  /* "algorithms/sm/rel_closure.pyx":14
  * 
  * # data types for int and float
  * _short = np.int16             # <<<<<<<<<<<<<<
@@ -22460,7 +22384,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_short, __pyx_t_1) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":15
+  /* "algorithms/sm/rel_closure.pyx":15
  * # data types for int and float
  * _short = np.int16
  * _int = np.int32             # <<<<<<<<<<<<<<
@@ -22475,7 +22399,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_int, __pyx_t_2) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":16
+  /* "algorithms/sm/rel_closure.pyx":16
  * _short = np.int16
  * _int = np.int32
  * _int64 = np.int64             # <<<<<<<<<<<<<<
@@ -22490,7 +22414,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_int64, __pyx_t_1) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":17
+  /* "algorithms/sm/rel_closure.pyx":17
  * _int = np.int32
  * _int64 = np.int64
  * _float = np.float             # <<<<<<<<<<<<<<
@@ -22505,7 +22429,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_float, __pyx_t_2) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "algorithms/relklinker/rel_closure.pyx":1
+  /* "algorithms/sm/rel_closure.pyx":1
  * # cython: profile=False             # <<<<<<<<<<<<<<
  * import numpy as np
  * 
@@ -22676,11 +22600,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init algorithms.relklinker.rel_closure", 0, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init algorithms.sm.rel_closure", 0, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init algorithms.relklinker.rel_closure");
+    PyErr_SetString(PyExc_ImportError, "init algorithms.sm.rel_closure");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

@@ -19,7 +19,7 @@ _float = np.float
 
 # ================ CLOSURE PROCEDURES ================
 
-cpdef relational_closure(G, s, p, o, kind='metric', linkpred=True):
+cpdef relational_closure_sm(G, s, p, o, kind='metric', linkpred=True):
 	"""
 	Computes a relational closure using Dijkstra's algorithm.
 
@@ -62,10 +62,10 @@ cpdef relational_closure(G, s, p, o, kind='metric', linkpred=True):
 	data = G.csr.data.astype(_float)
 	indices = G.csr.indices.astype(_int64)
 	indptr = G.csr.indptr.astype(_int)
+
 	# closure
 	caps, preds, rels = cclosuress(data, indices, indptr, s, p, o, closure)
 
-	# construct path from the returned vectors
 	path = []
 	rel_path = []
 	shortcaps = []
@@ -77,8 +77,8 @@ cpdef relational_closure(G, s, p, o, kind='metric', linkpred=True):
 		i = preds[i]
 	path, rel_path = path[::-1], rel_path[::-1]
 	pathlen = len(path) - 1
-	rp = RelationalPath(s, p, o, caps[o], pathlen, path, rel_path, shortcaps)
-	return rp
+
+	return shortcaps, path, rel_path
 
 
 # Shortest path algorithm to include edge similarities in computation

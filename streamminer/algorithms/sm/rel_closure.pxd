@@ -25,7 +25,7 @@ cdef inline double _dombit1(double a, double b) nogil:
 		return (a * b) / (a + b - a * b)
 
 
-cpdef relational_closure(G, s, p, o, kind=*, linkpred=*)
+cpdef relational_closure_sm(G, s, p, o, kind=*, linkpred=*)
 
 cdef cclosuress(
 		double[:] data, long[:] indices, int[:] indptr,
