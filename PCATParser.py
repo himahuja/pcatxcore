@@ -162,7 +162,6 @@ def parse_single_page(link, query_string = "test"):
     if link[-4:] != '.pdf':
             try:
                 html = urllib.request.urlopen(link).read()
-                print(type(html))
                 return (html, bytes(text_from_html(html), 'utf-8').decode('utf-8', 'ignore'))
             except Exception as e:
                 print(link + " threw the following exception " + str(e))
