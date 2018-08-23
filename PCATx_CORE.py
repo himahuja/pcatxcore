@@ -30,34 +30,34 @@ def PCATx_CORE_supervised(recursive=True):
     
     """
     name = input("What company would you like to crawl for?   ")
-    pm = ProfileManager()
+#    pm = ProfileManager()
     wiki = wikiParser(name)
     newName = wiki[2]
     foundInDatabase = False
     driver = setDriver()
-    if pm.get(name) != None or pm.get(newName) != None:
-        foundInDatabase = True
-        query = { 'name' : name }
-        print("Currently web crawling: {}".format(name))
-        driver = Site_Crawler_Parser_All.setDriver()
-        sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
+#    if pm.get(name) != None or pm.get(newName) != None:
+#        foundInDatabase = True
+#        query = { 'name' : name }
+#        print("Currently web crawling: {}".format(name))
+#        driver = Site_Crawler_Parser_All.setDriver()
+#        sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
+#    else:
+    yon = input("Did you mean this company? (y/n) {}   ".format(wiki[2]))
+    if yon.lower() == "y":
+        query = { 'name' : newName }
+        sub_list = Site_Crawler_Parser_All.get_sub(newName, driver)
     else:
-        yon = input("Did you mean this company? (y/n) {}   ".format(wiki[2]))
-        if yon.lower() == "y":
-            query = { 'name' : newName }
-            sub_list = Site_Crawler_Parser_All.get_sub(newName, driver)
-        else:
-            query = { 'name' : name }
-            sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
-        matches = difflib.get_close_matches(name, pm.get_aliases(), cutoff = .4) + difflib.get_close_matches(newName, pm.get_aliases(), cutoff = .4)
-        if len(matches) > 0:
-            print("0. None of the below")
-            for i in range(len(matches)):
-                print("{}. {}".format(str(i+1), matches[i]))
-            answer = input("Did you mean any of these?  ")
-            if answer != 0:
-                foundInDatabase = True
-                name = matches[int(answer)]
+        query = { 'name' : name }
+        sub_list = Site_Crawler_Parser_All.get_sub(name, driver)
+#        matches = difflib.get_close_matches(name, pm.get_aliases(), cutoff = .4) + difflib.get_close_matches(newName, pm.get_aliases(), cutoff = .4)
+#        if len(matches) > 0:
+#            print("0. None of the below")
+#            for i in range(len(matches)):
+#                print("{}. {}".format(str(i+1), matches[i]))
+#            answer = input("Did you mean any of these?  ")
+#            if answer != 0:
+#                foundInDatabase = True
+#                name = matches[int(answer)]
     crawlerWrapper(query, "google", driver, headless = True)
 #    crawlerWrapper(query, "google-subs")
     with open("data/parsedLinks/{}.pk".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])), "rb") as handle:
@@ -75,7 +75,7 @@ def PCATx_CORE_supervised(recursive=True):
         resources.append((str(wiki[0]), wiki[3]))
     wrm.read_in_from_iterator(parser_iter(query['name'], url_list))
     if(len(wrm) > 0):
-        wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
+        wrm.save(file_name="data/webresourcemanager/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
     generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
     driver.quit()
     if recursive:
@@ -127,7 +127,7 @@ def PCATx_CORE_unsupervised(list_of_companies):
             resources = []
             wrm.read_in_from_iterator(parser_iter(query['name'], url_list))
             if(len(wrm) > 0):
-                wrm.save(file_name="data/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
+                wrm.save(file_name="data/webresourcemanager/webresourcemanagers/{}.json".format(re.sub('[^0-9A-Za-z-]+', '', query['name'])))
             generate_HTML_output(wrm, wiki[4], sub_list, resources, query['name'])
         except:
             driver = setDriver()
