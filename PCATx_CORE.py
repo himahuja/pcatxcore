@@ -15,19 +15,19 @@ from gensim import models
 def PCATx_CORE_supervised(recursive=True):
     """
     Runs the Web Crawling Architecture, PCATx CORE, in a supervised fashion
-    
+
     Asks for a company name as input which it sends to Wikipedia. The dialog then asks if Wikipedia match (if one is found) is the company you are looking for and looks for close matches in the ProfileManager to retrieve relevant company info. From there, the Web Crawler retrieves relevant web pages and generate_HTML_output produces a Master Document. Web Resource Managers for each company are saved.
 
-    
+
     Parameters
     ----------
     recursive : bool
         whether or not you'd like to call PCATx_CORE_unsupervised on the list of subsidiaries found (default = True)
-    
+
     Returns
     -------
     None
-    
+
     """
     name = input("What company would you like to crawl for?   ")
     pm = ProfileManager()
@@ -84,19 +84,19 @@ def PCATx_CORE_supervised(recursive=True):
 def PCATx_CORE_unsupervised(list_of_companies):
     """
     Runs the Web Crawling Architecture, PCATx CORE, in an unsupervised fashion
-    
+
     The Web Crawler retrieves relevant web pages and generate_HTML_output produces a Master Document for each company in the list, adding subsidiaries found to the queue. Web Resource Managers for each company are saved. The queue is saved as JSON list at "data/PCATx_CORE_unsupervised_save_list.json" every 100 companies and when the function throws an exception
 
-    
+
     Parameters
     ----------
     list_of_companies : list of strings
         the list of companies you would like to produce Master Documents for
-    
+
     Returns
     -------
     None
-    
+
     """
     company_queue = queue.Queue()
 
@@ -159,22 +159,20 @@ def PCATx_CORE_unsupervised(list_of_companies):
             file.truncate()
             file.close()
 
-
-
 def basic_relevance_filter(document):
     """
     Basic relevance filter on the basis of characters in sentence. Filters out sentences with fewer than 50 characters or more than 750 characters.
 
-    
+
     Parameters
     ----------
     document : list of strings
         a list of sentences you would like to filter
-    
+
     Returns
     -------
     None
-    
+
     """
     new_doc = []
     for sentence in document:
@@ -189,7 +187,7 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
     """
     Generates an HTML Master Document
 
-    
+
     Parameters
     ----------
     wrm : WebResourceManager
@@ -202,11 +200,11 @@ def generate_HTML_output(wrm, table, sub_list, dbresources, name):
         a list of resources for the company in the company's profile in Profile Manager
     name : string
         name of the company the Master Document is about (for the title of the doc)
-    
+
     Returns
     -------
     None
-    
+
     """
     html = '<!DOCTYPE html>\n<html lang="en" dir="ltr">\n<head>\n<title>{}</title>\n<meta charset="iso-8859-1">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<!--<link rel="stylesheet" href="../styles/layout.css" type="text/css">-->\n<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n</head>\n<body>\n<div style="width:49%; float:left; style:block"><center>{}</center></div>\n<div style="width:49%; float:right; style:block">\n<center><h2>We found this list of subsidiaries:</h2>\n<ul>\n'.format(name, table)
     for item in sub_list:
