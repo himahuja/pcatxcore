@@ -17,7 +17,7 @@
   * PCATx_CORE
 * Milestone 3
   * Reverb
-  * StreamMiner
+  * StreamMiner (Code Private, WIP)
 
 ## Introduction
 ----------------
@@ -173,4 +173,4 @@ We chose to use [Reverb](http://reverb.cs.washington.edu/) to construct our subj
   <img alt="Diagram of PCATx Core's Computational Fact-Checking Component" src="/img/ComputationalFact-Checking.png">
 </div>
 
-We are using a novel computational fact-checking algorithm that we designed called StreamMiner. It draws much of its inspiration from [Knowledge Stream](https://arxiv.org/abs/1708.07239) and [PredPath](https://arxiv.org/abs/1510.05911).
+We are using a novel computational fact-checking algorithm that we designed called StreamMiner (Code private, work in progess). It draws much of its inspiration from [Knowledge Stream](https://arxiv.org/abs/1708.07239) and [PredPath](https://arxiv.org/abs/1510.05911).
