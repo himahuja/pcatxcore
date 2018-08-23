@@ -34,7 +34,7 @@ To learn more about the concepts we explored while developing this project inclu
   <img alt="Diagram of PCATx Core Architecture" src="/img/EntireArchitecture.png">
 </div>
 
-Our final presentation at IPAM also elaborates on our work: <a href="../docs/PCATFinalPresentation.pdf">View PDF</a>
+Our final presentation at IPAM also elaborates on our work: <a href="/docs/PCATFinalPresentation.pdf">View PDF</a>
 
 #### Milestone One
 
