@@ -80,9 +80,9 @@ class WebResourceManager(object):
         """
         try:
             if self.rel_path == None:
-                file = open("data/docs/{}.json".format(key))
+                file = open("data/webresourcemanager/docs/{}.json".format(key))
             else:
-                file = open(os.path.join(self.rel_path, "data/docs/{}.json").format(key))
+                file = open(os.path.join(self.rel_path, "data/webresourcemanager/docs/{}.json").format(key))
             profile = file.read()
             file.close()
             return json.loads(profile)
@@ -166,9 +166,9 @@ class WebResourceManager(object):
         """
         try:
             if self.rel_path == None:
-                file = open("data/docs/{}.json".format(key))
+                file = open("data/webresourcemanager/docs/{}.json".format(key))
             else:
-                file = open(os.path.join(self.rel_path, "data/docs/{}.json").format(key))
+                file = open(os.path.join(self.rel_path, "data/webresourcemanager/docs/{}.json").format(key))
             profile = file.read()
             file.close()
             return json.loads(profile)
@@ -209,7 +209,7 @@ class WebResourceManager(object):
                             doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
                     corpus_list.append(doc_list)
                     item['corpus'] = doc_list
-                    file = open(os.path.join("../data/docs", item['id']+".json"), "w")
+                    file = open(os.path.join("../data/webresourcemanager/docs", item['id']+".json"), "w")
                     file.write(json.dumps(item, sort_keys=True, indent=4))
                     file.close()
                     count+=1
@@ -226,7 +226,7 @@ class WebResourceManager(object):
                         doc_list.append(ps.stem(lmtzr.lemmatize(word.strip())))
                 corpus_list.append(doc_list)
                 item['corpus'] = doc_list
-                file = open(os.path.join("data/docs", item['id']+".json"), "w")
+                file = open(os.path.join("data/webresourcemanager/docs", item['id']+".json"), "w")
                 file.write(json.dumps(item, sort_keys=True, indent=4))
                 file.close()
                 count+=1
@@ -324,9 +324,9 @@ class WebResourceManager(object):
         file = ""
         if file_name == None:
             if self.rel_path == None:
-                file = open("data/webresourcemanager.json", "r")
+                file = open("data/webresourcemanager/webresourcemanager.json", "r")
             else:
-                file = open(os.path.join(self.rel_path, "data/webresourcemanager.json"), "r")
+                file = open(os.path.join(self.rel_path, "data/webresourcemanager/webresourcemanager.json"), "r")
         else:
             file = open(file_name, "r")
         this = json.loads(file.read())
@@ -384,17 +384,17 @@ class WebResourceManager(object):
             self.url_to_uuid[item['url']] = item['id']
             try:
                 html = item['html']
-                file = open(os.path.join("data/source", item['id'] +".html"), "w")
+                file = open(os.path.join("data/webresourcemanager/source", item['id'] +".html"), "w")
                 file.write(html.decode('utf-8', 'ignore'))
                 file.close()
                 del item['html']
             except:
                 pdf = item['pdf']
-                file = open(os.path.join("data/source", item['id'] +".pdf"), "w")
+                file = open(os.path.join("data/webresourcemanager/source", item['id'] +".pdf"), "w")
                 file.write(pdf.decode('utf-8', 'ignore'))
                 file.close()
                 del item['pdf']
-            file = open(os.path.join("data/docs", item['id']+".json"), "w")
+            file = open(os.path.join("data/webresourcemanager/docs", item['id']+".json"), "w")
             file.write(json.dumps(item, sort_keys=True, indent=4))
             file.close()    
     
@@ -442,13 +442,13 @@ class WebResourceManager(object):
     
         """
         if self.rel_path == None:
-            file = open("data/docs/{}.json".format(item['id']), "w")
+            file = open("data/webresourcemanager/docs/{}.json".format(item['id']), "w")
             file.seek(0)
             file.write(json.dumps(item, sort_keys = True, indent = 4))
             file.truncate()
             file.close()
         else:
-            file = open(os.path.join(self.rel_path, "data/docs/{}.json".format(item['id'])), "w")
+            file = open(os.path.join(self.rel_path, "data/webresourcemanager/docs/{}.json".format(item['id'])), "w")
             file.seek(0)
             file.write(json.dumps(item, sort_keys = True, indent = 4))
             file.truncate()
@@ -482,9 +482,9 @@ def convert_to_corpus(doc):
     return doc_list
             
 def main():
-    for file in os.listdir("../data/webresourcemanagers"):
+    for file in os.listdir("../data/webresourcemanager/webresourcemanagers"):
         wrm = WebResourceManager(rel_path = "..")
-        wrm.load(os.path.join("../data/webresourcemanagers", file))
+        wrm.load(os.path.join("../data/webresourcemanager/webresourcemanagers", file))
         wrm.rel_path=".."
     
 if __name__ == "__main__" :

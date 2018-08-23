@@ -50,7 +50,8 @@ class ProfileManager(object):
                 print("Error reading in one of the profile indentifier files " + str(e))
             #sic <---> naics transforms
             try:
-                self.naics_description = json.loads(open("data/profilemanager/data/naics2017_to_naics2017_title.json", "r").read())
+                #Praedicat data
+#                self.naics_description = json.loads(open("data/profilemanager/data/naics2017_to_naics2017_title.json", "r").read())
                 self.sic_description = json.loads(open("data/profilemanager/data/sic_to_description.json", "r").read())
                 self.naics_sic = json.loads(open("data/profilemanager/data/naics_to_sic.json", "r").read())
                 self.sic_naics = json.loads(open("data/profilemanager/data/sic_to_naics.json", "r").read())
@@ -66,7 +67,7 @@ class ProfileManager(object):
                 print("Error reading in one of the profile indentifier files " + str(e))
             #sic <---> naics transforms
             try:
-                self.naics_description = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/naics2017_to_naics2017_title.json"), "r").read())
+#                self.naics_description = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/naics2017_to_naics2017_title.json"), "r").read())
                 self.sic_description = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/sic_to_description.json"), "r").read())
                 self.naics_sic = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/naics_to_sic.json"), "r").read())
                 self.sic_naics = json.loads(open(os.path.join(self.rel_path, "data/profilemanager/data/sic_to_naics.json"), "r").read())
@@ -633,6 +634,7 @@ class ProfileManager(object):
         return self.naics_description[self.get(name).naics] + self.sic_description[self.get(name).sic]
         
     def parse_sec_docs(self, filename):
+        #Note: Edgardata removed
         """
         The code parses the filings which haven't already been parsed, iterating on the CIK codes contained in filename. This means if the CIK codes are disjoint, this method can safely be run in parallel.
         

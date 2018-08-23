@@ -136,10 +136,10 @@ def train_tfidf_wrm():
     
     """
     training_list = []
-    for file in os.listdir("../data/TaggedDocuments/Labeled"):
+    for file in os.listdir("../data/webresourcemanager/TaggedDocuments/Labeled"):
         filename = os.fsdecode(file)
         if filename.endswith(".json"):
-            file = json.loads(open(os.path.join("../data/TaggedDocuments/Labeled", filename), "r").read())
+            file = json.loads(open(os.path.join("../data/webresourcemanager/TaggedDocuments/Labeled", filename), "r").read())
             for td in file:
                 sentence = ""
                 for word in td[0]:
@@ -190,7 +190,7 @@ def score_tfidf_pm(tfidf, instances, iam):
             
 def score_tfidf_wrm(tfidf):
     """
-    Scores the documents in the Profile Manager instance using TF-IDF and saves them in "../data/TaggedDocuments/Classified/"
+    Scores the documents in the Profile Manager instance using TF-IDF and saves them in "../data/webresourcemanager/TaggedDocuments/Classified/"
 
     
     Parameters
@@ -203,11 +203,11 @@ def score_tfidf_wrm(tfidf):
     None
     
     """
-    for file in os.listdir("../data/TaggedDocuments/Labeled"):
+    for file in os.listdir("../data/webresourcemanager/TaggedDocuments/Labeled"):
         filename = os.fsdecode(file)
         if filename.endswith(".json"):
             output = []
-            file = json.loads(open(os.path.join("../data/TaggedDocuments/Labeled",filename), "r").read())
+            file = json.loads(open(os.path.join("../data/webresourcemanager/TaggedDocuments/Labeled",filename), "r").read())
             for td in file:
                 sentence = ""
                 for word in td[0]:
@@ -217,7 +217,7 @@ def score_tfidf_wrm(tfidf):
                     output.append([score, td[0]])
                 except Exception as e:
                     print("Exception during {}: {}".format(td[1][0], str(e)))
-            file = open("../data/TaggedDocuments/Classified/output_{}".format(filename), "w")
+            file = open("../data/webresourcemanager/TaggedDocuments/Classified/output_{}".format(filename), "w")
             file.write(json.dumps(output, sort_keys = True, indent = 4))
             file.close()
             file.close()
@@ -247,11 +247,12 @@ def get_TaggedDocuments_pm(pm, instances, iam = 0):
     idk = []
     count = 0
     numPerList = 10000
-    with open(os.path.join("../data/profilemanager/data", "names.json"), "r") as handle:
-        names = json.loads(handle.read())
+    #used Praedicat, Inc. data
+#    with open(os.path.join("../data/profilemanager/data", "names.json"), "r") as handle:
+#        names = json.loads(handle.read())
     with open(os.path.join("../data/profilemanager/data", "cas_from_wiki.json"), "r") as handle:
         cas = json.loads(handle.read())
-    templist = [word_tokenize(word) for word in names] + [word_tokenize(word) for word in cas]
+    templist = [word_tokenize(word) for word in cas]
     goodlist = []
     for wordlist in templist:
         for word in wordlist:
@@ -313,7 +314,7 @@ def get_TaggedDocuments_pm(pm, instances, iam = 0):
         
 def get_TaggedDocuments_wrm(manager):
     """
-    Produces TaggedDocuments and labels them appropriately from the documents in the Web Resource Manager instance and saves them in "../data/TaggedDocuments/Labeled/". Multithreading safe using instances/iam
+    Produces TaggedDocuments and labels them appropriately from the documents in the Web Resource Manager instance and saves them in "../data/webresourcemanager/TaggedDocuments/Labeled/". Multithreading safe using instances/iam
 
     
     Parameters
@@ -360,10 +361,10 @@ def get_TaggedDocuments_wrm(manager):
                     idk.append(TaggedDocument(words=text, tags=list({tag})))
                 count = count + 1
                 if count % numPerList == 0:
-                    file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("bad_sentences", count//numPerList), "w")
+                    file = open("../data/webresourcemanager/TaggedDocuments/Labeled/{}_{}.json".format("bad_sentences", count//numPerList), "w")
                     file.write(json.dumps(bad, sort_keys = True, indent = 4))
                     file.close()
-                    file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("idk_sentences", count//numPerList), "w")
+                    file = open("../data/webresourcemanager/TaggedDocuments/Labeled/{}_{}.json".format("idk_sentences", count//numPerList), "w")
                     file.write(json.dumps(idk, sort_keys = True, indent = 4))
                     file.close()
                     bad = []
@@ -371,10 +372,10 @@ def get_TaggedDocuments_wrm(manager):
         except (KeyError, TypeError) as e:
             print(str(e))
                 
-    file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("bad_sentences",count//numPerList), "w")
+    file = open("../data/webresourcemanager/TaggedDocuments/Labeled/{}_{}.json".format("bad_sentences",count//numPerList), "w")
     file.write(json.dumps(bad, sort_keys = True, indent = 4))
     file.close()
-    file = open("../data/TaggedDocuments/Labeled/{}_{}.json".format("idk_sentences",  count//numPerList), "w")
+    file = open("../data/webresourcemanager/TaggedDocuments/Labeled/{}_{}.json".format("idk_sentences",  count//numPerList), "w")
     file.write(json.dumps(idk, sort_keys = True, indent = 4))
     file.close()
                 
@@ -411,7 +412,7 @@ def score_docs_pm():
             
 def score_docs_wrm():
     """
-    Scores the TaggedDocuments in "../data/TaggedDocuments/Labeled" using Web Resource Manager Doc2Vec model and saves them in "../data/TaggedDocuments/Classified/".
+    Scores the TaggedDocuments in "../data/webresourcemanager/TaggedDocuments/Labeled" using Web Resource Manager Doc2Vec model and saves them in "../data/webresourcemanager/TaggedDocuments/Classified/".
 
     
     Returns
@@ -419,20 +420,20 @@ def score_docs_wrm():
     None
     
     """
-    model = Doc2Vec.load("../data/doc2vec_model")
+    model = Doc2Vec.load("../data/webresourcemanager/doc2vec_model")
     i = 0
-    for file in os.listdir("../data/TaggedDocuments/Labeled"):
+    for file in os.listdir("../data/webresourcemanager/TaggedDocuments/Labeled"):
         filename = os.fsdecode(file)
         if filename.endswith(".json"):
             output = []
-            file = json.loads(open(os.path.join("../data/TaggedDocuments/Labeled",filename), "r").read())
+            file = json.loads(open(os.path.join("../data/webresourcemanager/TaggedDocuments/Labeled",filename), "r").read())
             for td in file:
                 try:
                     bad = model.docvecs.similarity('bad',td[1][0])
                     output.append([-1 * bad, td[0]])
                 except Exception as e:
                     print("Exception during {}: {}".format(td[1][0], str(e)))
-            file = open("../data/TaggedDocuments/Classified/output_{}".format(filename), "w")
+            file = open("../data/webresourcemanager/TaggedDocuments/Classified/output_{}".format(filename), "w")
             file.write(json.dumps(output, sort_keys = True, indent = 4))
             file.close()
 
@@ -461,7 +462,7 @@ def train_model_pm():
     
 def train_model_wrm():
     """
-    Trains a Web Resource Manager Doc2Vec model using the TaggedDocuments in "../data/TaggedDocuments/Labeled" and saves the model at "../data/doc2vec_model"
+    Trains a Web Resource Manager Doc2Vec model using the TaggedDocuments in "../data/webresourcemanager/TaggedDocuments/Labeled" and saves the model at "../data/doc2vec_model"
     
     
     Returns
@@ -470,23 +471,23 @@ def train_model_wrm():
     
     """      
     docs = []
-    for file in os.listdir("../data/TaggedDocuments/Labeled"):
+    for file in os.listdir("../data/webresourcemanager/TaggedDocuments/Labeled"):
         filename = os.fsdecode(file)
         if filename.endswith(".json"):
-            file = json.loads(open(os.path.join("../data/TaggedDocuments/Labeled", filename), "r").read())
+            file = json.loads(open(os.path.join("../data/webresourcemanager/TaggedDocuments/Labeled", filename), "r").read())
             for td in file:
                 docs.append(TaggedDocument(words=td[0], tags=[x for x in td[1]]))
     model = Doc2Vec(docs, workers=7, vector_size=1000)
     print("Start training process...")
     model.train(docs, total_examples=model.corpus_count, epochs=model.iter)
     #save model
-    model.save("../data/doc2vec_model")
+    model.save("../data/webresourcemanager/doc2vec_model")
 
 def main():
 #    wrm = WebResourceManager("..")
-#    for file in os.listdir("../data/webresourcemanagers"):
+#    for file in os.listdir("../data/webresourcemanager/webresourcemanagers"):
 #        tmp = WebResourceManager()
-#        tmp.load(os.path.join("../data/webresourcemanagers", file))
+#        tmp.load(os.path.join("../data/webresourcemanager/webresourcemanagers", file))
 #        tmp.rel_path = ".."
 #        wrm.absorb_file_manager(tmp)
 #    get_TaggedDocuments_wrm(wrm)
