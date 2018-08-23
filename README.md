@@ -15,6 +15,9 @@
   * Classifier
   * ProfileManager
   * PCATx_CORE
+* Milestone 3
+  * Reverb
+  * StreamMiner
 
 ## Introduction
 ----------------
@@ -28,8 +31,16 @@ For the ability to conform to the [Robots Exclusion Standard](https://en.wikiped
 To learn more about the concepts we explored while developing this project including Computational Fact-Checking, Information Extraction, and Knowledge Graphs, all of the papers and resources the team consulted over the course of their work can be found here: [RIPS Readings](https://github.com/alexandermichels/RIPSReadings)
 
 <div align="center">
-  <img alt="Diagram of PCATx Core Architecture" src="/img/Milestones1and2.png">
+  <img alt="Diagram of PCATx Core Architecture" src="/img/EntireArchitecture.png">
 </div>
+
+Our final presentation at IPAM also elaborates on our work:
+
+<object data="../docs/PCATFinalPresentation.pdf" type="application/pdf" width="100%" height="750px">
+  <iframe src="../docs/PCATFinalPresentation.pdf" width="100%" height="100%" style="border: none;">
+    This browser does not support PDFs. Please download the PDF to view it: <a href="../docs/PCATFinalPresentation.pdf">Download PDF</a>
+  </iframe>
+</object>
 
 #### Milestone One
 
@@ -150,3 +161,22 @@ ProfileManager is a class designed for the aggregation of information related to
 * [PCATx_CORE.py](PCATx_CORE.py) --- [Documentation](docs/PCATx_CORE.md)
 
 **PCATx_CORE** drives the frameworks described in Milestones One and Two, providing driver functions for supervised and unsupervised runs of the architecture.
+
+## Milestone Three
+-----------------
+
+#### Triple Construction
+
+<div align="center">
+  <img alt="Diagram of PCATx Core's Computational Triple Construction Component" src="/img/TripleConstruction.png">
+</div>
+
+We chose to use [Reverb](http://reverb.cs.washington.edu/) to construct our subject-predicate-object triples
+
+#### Computational Fact-Checking
+
+<div align="center">
+  <img alt="Diagram of PCATx Core's Computational Fact-Checking Component" src="/img/ComputationalFact-Checking.png">
+</div>
+
+We are using a novel computational fact-checking algorithm that we designed called StreamMiner. It draws much of its inspiration from [Knowledge Stream](https://arxiv.org/abs/1708.07239) and [PredPath](https://arxiv.org/abs/1510.05911).
