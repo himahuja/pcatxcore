@@ -49,7 +49,7 @@ Milestone One is the web crawling part of our work. It consists of designing and
 Milestone 2 is focused on classification and aggregation of information. In this portion of the architecture, we are focused on filtering the data and putting it together in a way which provides the most value to Praedicat analysts.
 
 <div align="center">
-  <img alt="Diagram of Milestone 3 of the PCATx Core Architecture" src="/img/Milestone3.png">
+  <img alt="Diagram of Milestone 2 of the PCATx Core Architecture" src="/img/Milestone2.png">
 </div>
 
 #### Milestone Three
@@ -57,7 +57,7 @@ Milestone 2 is focused on classification and aggregation of information. In this
 Milestone 3 seeks to put the information we are collecting into a [knowledge graph](https://en.wikipedia.org/wiki/Semantic_network) which can be used to algorithmically check the factual validity of statements found and direct the system's search for new facts using relational machine learning.
 
 <div align="center">
-  <img alt="Diagram of Milestone 2 of the PCATx Core Architecture" src="/img/Milestone2.png">
+  <img alt="Diagram of Milestone 3 of the PCATx Core Architecture" src="/img/Milestone3.png">
 </div>
 
 ## Milestone One
